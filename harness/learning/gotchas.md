@@ -9,10 +9,12 @@ Things that cost time. Symptom -> cause -> fix.
 - **Python here is 3.14.7** - newer than most wheels target. Verify a package
   resolves (`uv pip compile --python-version 3.14`) before pinning it. A pin
   recalled from memory produced a version that does not exist.
-- **No Ollama, no Docker, no `gh` CLI installed.** The GitHub integration must
-  use the public REST API, which needs no auth for public repos. Without `gh`,
-  `/complete` cannot open the PR — it writes the body and hands over the compare
-  URL instead. Remote `origin` is `github.com/shefali289/portfolio_ai`.
+- **No Ollama, no Docker installed.** The GitHub integration must use the
+  public REST API, which needs no auth for public repos.
+- **`gh` 2.98.0 is installed** at `C:\Program Files\GitHub CLI\gh.exe`, but a
+  new shell may be needed for it to be on `PATH`. If `gh auth status` says not
+  logged in, `/complete` cannot open a PR — run `gh auth login` once. Remote
+  `origin` is `github.com/shefali289/portfolio_ai`.
 - **OneDrive locks directories during `git checkout`/`stash`.** Switching
   branches with untracked dirs present can fail with "Permission denied" and
   leave work stashed. Commit before switching branches; if a pop half-fails, the

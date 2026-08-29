@@ -82,18 +82,20 @@ git push -u origin feature/<slug>
 gh pr create --title "<type>: <description>" --body-file <task-dir>/pull-request.md
 ```
 
-The remote is `origin` → `github.com/shefali289/portfolio_ai`.
+The remote is `origin` → `github.com/shefali289/portfolio_ai`. `gh` is
+installed; if it is not on `PATH`, use `"/c/Program Files/GitHub CLI/gh.exe"`.
 
-**`gh` is not installed** (see `learning/gotchas.md`), so `gh pr create` will
-fail. Until it is: push the branch, write the PR body, and give the user the
-compare URL plus the body to paste —
+**Check `gh auth status` first.** If it reports not logged in, `gh pr create`
+will fail — `gh auth login` is interactive and cannot be run from here. In that
+case push the branch, write the PR body, and give the user the compare URL plus
+the body to paste:
 
 ```
 https://github.com/shefali289/portfolio_ai/compare/main...feature/<slug>
 ```
 
-Say plainly that the PR was not created. **Never claim a PR exists when it does
-not.**
+Then say plainly that the PR was **not** created. **Never claim a PR exists when
+it does not.**
 
 ## Step 5b — Re-run the final checklist
 

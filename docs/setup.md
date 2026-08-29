@@ -12,13 +12,19 @@ Verified before scaffolding:
 | Python | 3.14.7 | OK |
 | uv | 0.12.4 | OK - used instead of pip/venv |
 
+## Installed since
+
+- **GitHub CLI 2.98.0** — needed by `/complete` to open PRs. Requires a one-off
+  `gh auth login`. Without auth the harness writes the PR body and gives you the
+  compare URL instead.
+
 ## Not installed
 
 | Tool | Needed for | Decision |
 |---|---|---|
 | **Ollama** | local LLM (Phase 3+) | Optional - see AI provider below |
 | Docker | nothing | Not required by this project |
-| gh CLI | nothing | GitHub public API needs no auth |
+| gh CLI | opening PRs at `/complete` | **Installed** (2.98.0) — run `gh auth login` once |
 | pnpm | nothing | npm is fine |
 
 ## AI provider - chosen by env var, no lock-in

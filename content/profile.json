@@ -1,0 +1,41 @@
+{
+  "name": "Shefali Sharma",
+  "title": "AI Engineer",
+  "location": "Auckland, New Zealand",
+  "summary": "Results-driven AI and Software Engineer experienced in designing and delivering production-grade AI solutions, automation workflows, and full-stack applications. Skilled in Python, Microsoft Azure technologies, ReactJS, Generative AI and Agentic AI, with a track record of turning ambiguous problems into scalable solutions. Passionate about applying AI and engineering to solve practical business problems in fast-paced, innovative environments, with a strong commitment to continuous learning and technical excellence.",
+  "links": {
+    "email": "shefalisharma289@gmail.com",
+    "linkedin": "https://www.linkedin.com/in/shefali--sharma/",
+    "github": "https://github.com/shefali289"
+  },
+  "education": [
+    {
+      "id": "uoa-mit",
+      "qualification": "Master of Information Technology",
+      "institution": "The University of Auckland",
+      "location": "New Zealand",
+      "start": "2022",
+      "end": "2023",
+      "grade": "Cumulative GPA: 7.25/9"
+    },
+    {
+      "id": "chitkara-be",
+      "qualification": "Bachelor of Engineering in Computer Science and Engineering",
+      "institution": "Chitkara University",
+      "location": "Punjab, India",
+      "start": "2017",
+      "end": "2021",
+      "grade": "Cumulative GPA: 9.63/10"
+    }
+  ],
+  "certifications": [
+    { "id": "az-ai-engineer", "name": "Microsoft Azure AI Engineer Associate", "issuer": "Microsoft" },
+    { "id": "aws-ccp", "name": "AWS Certified Cloud Practitioner", "issuer": "AWS" },
+    { "id": "ms-data-analyst", "name": "Microsoft Certified Data Analyst Associate", "issuer": "Microsoft" },
+    { "id": "az-developer", "name": "Microsoft Certified Azure Developer Associate", "issuer": "Microsoft" }
+  ],
+  "languages": [
+    { "name": "English", "proficiency": "Full professional proficiency" },
+    { "name": "Hindi", "proficiency": "Native or bilingual proficiency" }
+  ]
+}

@@ -10,14 +10,14 @@ Pointer to what is in flight. Maintained by `/plan` and `/complete`.
 | **Slug** | `02-portfolio-ui` |
 | **Branch** | `feature/02-portfolio-ui` |
 | **Phase** | 2 of 6 |
-| **Stage** | built — G0–G3 passed; awaiting commit approval |
+| **Stage** | reviewed — G0–G4 passed; awaiting `/complete` |
 | **Task file** | `harness/tasks/active/02-portfolio-ui/task.md` |
 | **Started** | 2026-08-29 |
 
 ## Next command
 
 ```text
-/review
+/complete
 ```
 
 ## Plan summary

@@ -5,7 +5,7 @@
 | **Slug** | `02-portfolio-ui` |
 | **Branch** | `feature/02-portfolio-ui` |
 | **Phase** | Phase 2 |
-| **Status** | built — G3 passed, awaiting commit approval |
+| **Status** | reviewed — G4 passed, awaiting `/complete` |
 | **Started / Completed** | 2026-08-29 / — |
 
 > **Brief only.** `/plan 02-portfolio-ui` fills in Design, Plan and the rest. Every stage
@@ -31,14 +31,14 @@ short, everything after this phase is additive rather than load-bearing.
 
 Refined at `/plan`, checked off at `/review`.
 
-- [ ] every section renders from `content/*.json` - no hardcoded copy anywhere
-- [ ] experience items expand and collapse
-- [ ] project technology filters narrow the visible set and reset cleanly
-- [ ] clicking a skill shows where it was used; **no percentage bars**
-- [ ] invalid skill evidence refs fail a cross-content integrity test
-- [ ] page loading/error/retry and collection empty states are reachable; empty
+- [x] every section renders from `content/*.json` - no hardcoded copy anywhere
+- [x] experience items expand and collapse
+- [x] project technology filters narrow the visible set and reset cleanly
+- [x] clicking a skill shows where it was used; **no percentage bars**
+- [x] invalid skill evidence refs fail a cross-content integrity test
+- [x] page loading/error/retry and collection empty states are reachable; empty
       Building/Learning/Beyond sections are omitted rather than invented
-- [ ] no horizontal scroll at 375px; keyboard navigable; reduced motion honoured
+- [x] no horizontal scroll at 375px; keyboard navigable; reduced motion honoured
 
 ## User Experience
 
@@ -193,7 +193,7 @@ See `harness/QUALITY-GATES.md`. `PARTIAL`/`SKIPPED` are honest; a check reported
 | **G1** design | Design → Plan | PASS | 2026-08-29 | 7 questions answered; no dependency; `1-design.md` 39 lines; content/filter decision resolved |
 | **G2** test (RED) | Test → Develop | PASS | 2026-08-29 | backend 2/2 RED; frontend 6 suites RED for expected absent endpoint/components/behaviour |
 | **G3** build (GREEN) | Develop → Review | PASS | 2026-08-29 | backend 16; frontend 17; ruff/lint/typecheck/build pass; API and browser path pass; 375px + desktop visually checked |
-| **G4** review | Review → Complete | — | | tests · lint · typecheck · a11y |
+| **G4** review | Review → Complete | PASS | 2026-08-29 | fresh backend 16 + frontend 17; lint/typecheck; secrets; exact-width visual + live keyboard pass; 1 LOW non-blocking test-coverage finding |
 | **G5** completion | before archive + PR | — | | `final_checklist.py` |
 
 ## Final Checklist  *(`/complete`)*

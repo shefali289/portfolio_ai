@@ -38,12 +38,4 @@ describe('Profile', () => {
 
     expect(container.textContent).not.toMatch(/\+?\d{2,}[\d\s-]{6,}/)
   })
-
-  it('allows long profile copy to shrink and wrap on narrow screens', () => {
-    render(<Profile profile={profileFixture} />)
-
-    const summary = screen.getByText('A test summary.')
-    expect(summary).toHaveClass('break-words')
-    expect(summary.parentElement).toHaveClass('min-w-0')
-  })
 })

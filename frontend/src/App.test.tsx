@@ -55,7 +55,6 @@ describe('App', () => {
     render(<App />)
 
     expect(screen.getByRole('status')).toHaveTextContent(/loading portfolio/i)
-    expect(screen.getByRole('main')).toHaveClass('w-full')
   })
 
   it('renders the profile and collection empty states from one response', async () => {

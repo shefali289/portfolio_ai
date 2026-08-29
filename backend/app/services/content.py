@@ -52,6 +52,7 @@ class ContentService:
         self.engineering_notes: EngineeringNotes = self._load(
             "engineering-notes.json", EngineeringNotes
         )
+        self._validate_evidence_refs()
 
     @property
     def content_dir(self) -> Path:
@@ -75,3 +76,23 @@ class ContentService:
             return model.model_validate(payload)
         except ValidationError as exc:
             raise ContentError(f"{filename}: does not match its schema ({exc})") from exc
+
+    def _validate_evidence_refs(self) -> None:
+        valid_ids = {
+            "role": {item.id for item in self.experience.roles},
+            "project": {item.id for item in self.projects.projects},
+            "certification": {item.id for item in self.profile.certifications},
+            "education": {item.id for item in self.profile.education},
+            "achievement": {item.id for item in self.engineering_notes.achievements},
+        }
+
+        for group in self.skills.groups:
+            for skill in group.skills:
+                for evidence in skill.evidence:
+                    evidence_ids = valid_ids.get(evidence.type)
+                    if evidence_ids is None or evidence.ref not in evidence_ids:
+                        raise ContentError(
+                            "skills.json: "
+                            f"{skill.name!r} has unknown evidence ref "
+                            f"{evidence.type}:{evidence.ref}"
+                        )

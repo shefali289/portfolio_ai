@@ -9,6 +9,14 @@ from __future__ import annotations
 
 from pydantic import BaseModel
 
+from app.services.content_models import (
+    EngineeringNotes,
+    Experience,
+    Profile,
+    Projects,
+    Skills,
+)
+
 
 class HealthResponse(BaseModel):
     status: str
@@ -18,3 +26,13 @@ class ErrorResponse(BaseModel):
     """Errors return a typed shape, never a bare 500 with a stack trace."""
 
     detail: str
+
+
+class ContentResponse(BaseModel):
+    """The five cached content areas consumed by the portfolio page."""
+
+    profile: Profile
+    experience: Experience
+    skills: Skills
+    projects: Projects
+    engineering_notes: EngineeringNotes

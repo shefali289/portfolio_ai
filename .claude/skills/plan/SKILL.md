@@ -1,7 +1,7 @@
 ---
 name: plan
 description: Start a feature or phase - runs Design then Planning agents, writes task.md
-when_to_use: Use when starting a phase or feature: 'start phase 1', '/plan foundation', 'add feature: X'.
+when_to_use: Use when starting a phase or feature: 'start phase 1', '/plan 01-foundation', 'add feature: X'.
 argument-hint: <phase number | feature description>
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 disable-model-invocation: true
@@ -27,7 +27,7 @@ Read, in this order, before touching anything else:
 5. `harness/learning/gotchas.md`
 6. `harness/HARNESS-RULES.md`
 
-If **$1** matches a manifest slug (`foundation`, `rag-assistant`, …) or a phase
+If **$1** matches a manifest slug (`01-foundation`, `03-rag-assistant`, …) or a phase
 number, use that row's slug, branch and description. If it matches nothing, treat
 it as a new feature: slugify it and **add a row to the manifest** so the name
 resolves next time.
@@ -102,7 +102,19 @@ Print concisely:
 - files that will change
 - anything needing a decision from the user
 
-Then stop. Wait for `/build`.
+## Step 5 — Hand off to `/build`
+
+Do not dead-stop. End by **asking whether to continue**, and continue in the
+same turn if the answer is yes:
+
+> Plan is ready and G1 passed. Continue to `/build` now, or stop here?
+
+Continue automatically **without asking** only when the user has already said to
+run the phase — or the whole lifecycle — end to end. Otherwise stop and wait if
+there is an unresolved open question, a blocked gate, or a decision the user
+still owes. A blocking question is never skipped by a handoff.
+
+See `harness/instructions/stage-handoff.md`.
 
 ## Rules
 

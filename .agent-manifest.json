@@ -308,6 +308,10 @@
     {
       "id": "design-gate",
       "file": "harness/instructions/design-gate.md"
+    },
+    {
+      "id": "stage-handoff",
+      "file": "harness/instructions/stage-handoff.md"
     }
   ],
   "context": {
@@ -350,40 +354,40 @@
   },
   "tasks": [
     {
-      "slug": "foundation",
+      "slug": "01-foundation",
       "phase": 1,
-      "status": "planned",
-      "branch": "feature/foundation"
+      "status": "done",
+      "branch": "feature/01-foundation"
     },
     {
-      "slug": "portfolio-ui",
+      "slug": "02-portfolio-ui",
       "phase": 2,
       "status": "planned",
-      "branch": "feature/portfolio-ui"
+      "branch": "feature/02-portfolio-ui"
     },
     {
-      "slug": "rag-assistant",
+      "slug": "03-rag-assistant",
       "phase": 3,
       "status": "planned",
-      "branch": "feature/rag-assistant"
+      "branch": "feature/03-rag-assistant"
     },
     {
-      "slug": "agentic-job-match",
+      "slug": "04-agentic-job-match",
       "phase": 4,
       "status": "planned",
-      "branch": "feature/agentic-job-match"
+      "branch": "feature/04-agentic-job-match"
     },
     {
-      "slug": "mcp-integration",
+      "slug": "05-mcp-integration",
       "phase": 5,
       "status": "planned",
-      "branch": "feature/mcp-integration"
+      "branch": "feature/05-mcp-integration"
     },
     {
-      "slug": "final-polish",
+      "slug": "06-final-polish",
       "phase": 6,
       "status": "planned",
-      "branch": "feature/final-polish"
+      "branch": "feature/06-final-polish"
     }
   ],
   "excluded": {

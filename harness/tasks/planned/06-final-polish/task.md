@@ -1,14 +1,14 @@
-# Task: Portfolio UI
+# Task: Final Polish + Deploy
 
 | | |
 |---|---|
-| **Slug** | `portfolio-ui` |
-| **Branch** | `feature/portfolio-ui` |
-| **Phase** | Phase 2 |
+| **Slug** | `06-final-polish` |
+| **Branch** | `feature/06-final-polish` |
+| **Phase** | Phase 6 |
 | **Status** | brief — not started |
 | **Started / Completed** | — |
 
-> **Brief only.** `/plan portfolio-ui` fills in Design, Plan and the rest. Every stage
+> **Brief only.** `/plan 06-final-polish` fills in Design, Plan and the rest. Every stage
 > writes back here, so this file ends up holding the whole story. Do not
 > implement from this file alone.
 
@@ -18,35 +18,33 @@
 
 ## Feature
 
-Every portfolio section, rendered from `content/*.json`, with no AI yet: Hero,
-Experience timeline, Projects, Skills, What I'm Building & Learning, Beyond
-Engineering, Contact.
+Engineer Mode, state coverage, mobile and accessibility passes, README,
+architecture diagram, screenshots, and deployment to Vercel.
 
 ## Goal
 
-A portfolio that stands on its own and is presentable as-is. If the day runs
-short, everything after this phase is additive rather than load-bearing.
+Reach the Definition of Done: a portfolio ready to publish and demonstrate.
 
 ## Acceptance Criteria
 
 Refined at `/plan`, checked off at `/review`.
 
-- [ ] every section renders from `content/*.json` - no hardcoded copy anywhere
-- [ ] experience items expand and collapse
-- [ ] project filters (AI / Automation / Backend / Cloud / Frontend) narrow and reset
-- [ ] clicking a skill shows where it was used; **no percentage bars**
-- [ ] loading, error and empty states exist for every data-driven section
-- [ ] no horizontal scroll at 375px; keyboard navigable throughout
+- [ ] Engineer Mode toggles and shows endpoint, chunks, retrieval ms,
+      generation ms, sources and tool used
+- [ ] a response missing metrics degrades gracefully
+- [ ] every AI surface has loading, error and empty states
+- [ ] the deployed site is reachable and AI features work against Gemini
+- [ ] every Definition of Done item in the master plan is satisfied
+- [ ] full test suite, lint and typecheck green across both sides
 
 ## User Experience
 
-Hero states the positioning with Explore Work / Ask My AI / Resume / GitHub /
-Contact. Experience is a timeline that expands rather than a wall of text.
-Projects are case-study cards - problem, solution, approach, tech, impact.
+An Engineer Mode toggle reveals, per AI response: endpoint, chunks retrieved,
+vector search ms, generation ms, sources used, and tool used where applicable.
 
 ## Out of Scope
 
-Any AI feature: Ask My Portfolio, Why Me?, GitHub, Engineer Mode.
+New AI capabilities. Custom domain, analytics.
 
 ---
 
@@ -56,8 +54,8 @@ _(seven questions — unanswered until `/plan`)_
 
 ## Existing Components Reused
 
-`ContentService` and the API client from `foundation`. New endpoints only if a
-section needs data not already served.
+Metrics already returned by the Phase 3 and 4 endpoints - this phase displays
+them, it does not add new measurement.
 
 ## Rejected Alternatives
 
@@ -77,7 +75,7 @@ _(filled at `/plan`)_
 
 ## Skills Used
 
-`react-component`, `tdd-cycle`, `a11y-responsive`
+`react-component`, `a11y-responsive`, `tdd-cycle`
 
 ---
 
@@ -85,11 +83,10 @@ _(filled at `/plan`)_
 
 ## Tests First
 
-- each section renders content from mocked API data, not hardcoded copy
-- an experience item expands and collapses
-- a project filter narrows the visible set; clearing restores it
-- a skill click reveals its evidence list
-- loading, error and empty states for every data-driven section
+- Engineer Mode toggles and renders real metrics from the response
+- metrics absent from a response degrade gracefully
+- every AI surface has loading, error and empty states
+- full suite green across backend and frontend
 
 ## TDD Evidence
 
@@ -120,7 +117,7 @@ See `harness/QUALITY-GATES.md`. `PARTIAL`/`SKIPPED` are honest; a check reported
 
 ## Final Checklist  *(`/complete`)*
 
-`python harness/scripts/final_checklist.py --slug portfolio-ui` — must exit 0.
+`python harness/scripts/final_checklist.py --slug 06-final-polish` — must exit 0.
 Paste the result table, then confirm by hand:
 
 - [ ] content traces to the resume; no invented experience
@@ -172,8 +169,7 @@ Real results only. Not run = `SKIPPED`, never `PASS`.
 | typecheck | — |
 | manual check | — |
 
-All sections render real resume content; filters and expanders work; 375px and
-desktop clean.
+Deployed site reachable; production AI features working.
 
 ## PR Summary
 

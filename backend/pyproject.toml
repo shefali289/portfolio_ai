@@ -1,0 +1,13 @@
+[tool.pytest.ini_options]
+# pythonpath lets `from app...` resolve when pytest runs from backend/,
+# without needing an editable install.
+pythonpath = ["."]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]

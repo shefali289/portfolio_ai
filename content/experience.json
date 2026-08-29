@@ -1,0 +1,88 @@
+{
+  "roles": [
+    {
+      "id": "spark-ai-engineer",
+      "title": "AI Engineer",
+      "company": "Spark New Zealand",
+      "location": "Auckland, New Zealand",
+      "start": "2025-06",
+      "end": null,
+      "current": true,
+      "highlights": [
+        "Delivered a Cisco Webex provisioning automation solution using Azure Logic Apps, Python, FastAPI, and PostgreSQL, integrating Webex with Salesforce and internal systems to cut provisioning and hardware-ordering turnaround from hours to minutes.",
+        "Extended the Webex solution for larger, more complex enterprise customers using an agentic AI-powered harness to streamline solution design, development, testing, and delivery across the SDLC.",
+        "Delivered an AI-powered call summarisation solution using Generative AI, Azure Logic Apps, and Cosmos DB, generating near-real-time customer interaction summaries that reduced manual documentation and Average Handle Time (AHT).",
+        "Built an Agentic AI call-flow generation solution (React/TypeScript frontend, Python backend) integrating with Salesforce to translate customer requirements into AI-generated call-flow designs, cutting provisioning turnaround from 10+ days to ~2 days."
+      ],
+      "technologies": [
+        "Azure Logic Apps", "Python", "FastAPI", "PostgreSQL", "Salesforce",
+        "Generative AI", "Agentic AI", "Azure Cosmos DB", "React", "TypeScript"
+      ]
+    },
+    {
+      "id": "spark-automation-engineer",
+      "title": "Automation Engineer",
+      "company": "Spark New Zealand",
+      "location": "Auckland, New Zealand",
+      "start": "2023-05",
+      "end": "2025-06",
+      "current": false,
+      "highlights": [
+        "Delivered enterprise automation across telecom billing and provisioning, partnering with stakeholders to translate complex operational requirements into scalable automation and software solutions.",
+        "Designed and developed a Stock-on-Hand dashboard for frontline staff across Spark NZ stores using ReactJS, Azure Logic Apps, SQL, and Azure Data Factory, giving near-real-time visibility of device and accessory inventory across the retail network.",
+        "Automated marketing campaign operations, enabling dynamic offer and credit assignment across multiple campaigns and significantly reducing execution effort and turnaround time.",
+        "Delivered CRM-integrated toll-free service automation, streamlining order submission and billing processes while reducing manual errors and effort."
+      ],
+      "technologies": [
+        "ReactJS", "Azure Logic Apps", "SQL", "Azure Data Factory"
+      ]
+    },
+    {
+      "id": "theta-intern",
+      "title": "Summer Intern",
+      "company": "Theta",
+      "location": "Auckland, New Zealand",
+      "start": "2022-11",
+      "end": "2023-02",
+      "current": false,
+      "highlights": [
+        "Explored practical applications of GPT-3 and Generative AI across Theta SaaS products, including EVA Check-in and FAQ Bot.",
+        "Developed a full-stack AI web application using GPT-3, OpenAI API, ReactJS, C# and ASP.NET Core to crawl website content and automatically generate FAQs."
+      ],
+      "technologies": [
+        "GPT-3", "OpenAI API", "ReactJS", "C#", "ASP.NET Core"
+      ],
+      "link": "https://wizard.faqbot.ai/"
+    },
+    {
+      "id": "uoa-gta",
+      "title": "Graduate Teaching Assistant – Marking",
+      "company": "The University of Auckland",
+      "location": "Auckland, New Zealand",
+      "start": "2022-07",
+      "end": "2022-11",
+      "current": false,
+      "highlights": [
+        "Worked as a Graduate Teaching Assistant to assist assessment and marking for the course COMPSCI 340 – Operating Systems, providing structured and constructive feedback and maintaining accurate assessment records."
+      ],
+      "technologies": []
+    },
+    {
+      "id": "maq-associate-swe",
+      "title": "Associate Software Engineer",
+      "company": "MAQ Software",
+      "location": "Hyderabad, India",
+      "start": "2020-08",
+      "end": "2021-08",
+      "current": false,
+      "highlights": [
+        "Worked within an Agile team to analyse business and technical requirements and translate them into reporting and analytics solutions.",
+        "Developed and maintained Power BI dashboards and reports using multiple enterprise datasets, supporting business decision-making and improving visibility of key metrics.",
+        "Contributed to solution validation, testing and technical documentation, ensuring reporting accuracy, usability and alignment with business requirements."
+      ],
+      "technologies": [
+        "Microsoft Power BI"
+      ]
+    }
+  ]
+}

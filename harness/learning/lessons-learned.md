@@ -22,4 +22,10 @@ digest.
 
 ---
 
-_(no features completed yet)_
+### 01-foundation - 2026-08-29
+- **Worked:** Schema-first content and RED tests produced stable seams shared by
+  the UI, future RAG ingestion, and MCP without inventing resume claims.
+- **Cost time:** Non-interactive scaffolding, interpreter selection, and package
+  peer-range mismatches created avoidable setup churn.
+- **Do differently:** Resolve tool versions first and apply privacy boundaries
+  consistently to content, documentation, and git history.

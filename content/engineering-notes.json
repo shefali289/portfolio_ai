@@ -1,0 +1,21 @@
+{
+  "_note": "Achievements are resume-backed. The 'building', 'learning' and 'beyond' sections are narrative content the resume does not supply — they are explicit TODOs rather than invented copy, and Phase 2 renders them only once filled.",
+  "achievements": [
+    { "id": "anthropic-agent-skills", "name": "Introduction to agent skills", "issuer": "Anthropic Academy" },
+    { "id": "anthropic-mcp", "name": "Introduction to Model Context Protocol", "issuer": "Anthropic Academy" },
+    { "id": "anthropic-claude-code", "name": "Claude Code in Action", "issuer": "Anthropic Academy" },
+    { "id": "ausa-blockchain-rep", "name": "Certificate of Achievement for representing 'Blockchain' course as Class Representative", "issuer": "AUSA" },
+    { "id": "uoa-software-tools", "name": "Certificate of Outstanding Achievement for 'Software Tools and Techniques' course", "issuer": "University of Auckland" },
+    { "id": "microsoft-virtual-internship", "name": "Undergraduate & Masters Virtual Internship Platform", "issuer": "Microsoft" },
+    { "id": "upgrad-fullstack", "name": "Full Stack Development course", "issuer": "UpGrad" },
+    { "id": "jpmc-virtual-experience", "name": "Software Engineering Virtual Experience", "issuer": "JP Morgan Chase & Co." }
+  ],
+  "building": [],
+  "learning": [],
+  "beyond": [],
+  "todo": [
+    "TODO: 'What I'm Building' — the resume does not describe current side projects. Supply 2-4 items, or drop the section in Phase 2.",
+    "TODO: 'What I'm Learning' — the Anthropic Academy certificates suggest a direction but the resume states no current learning goals. Supply or drop.",
+    "TODO: 'Beyond Engineering' — the resume contains no interests or non-work content. Supply or drop the section."
+  ]
+}

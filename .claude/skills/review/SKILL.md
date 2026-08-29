@@ -63,8 +63,21 @@ honest and allowed — see `harness/QUALITY-GATES.md`.
 
 ## Step 4 — Report
 
-Findings ranked most severe first, plus check results. If findings are blocking,
-say so and suggest `/build` to fix. Otherwise suggest `/complete`.
+Findings ranked most severe first, plus check results.
+
+## Step 5 — Hand off
+
+Do not dead-stop. End by **asking whether to continue**, and continue in the
+same turn if the answer is yes:
+
+> No blocking findings, G4 passed. Continue to `/complete` now, or stop here?
+
+If findings are blocking, the handoff is back to `/build` to fix them, not
+forward to `/complete` — say so and ask. Continue automatically **without
+asking** only when the user has already said to run the phase, or the whole
+lifecycle, end to end.
+
+See `harness/instructions/stage-handoff.md`.
 
 ## Rules
 

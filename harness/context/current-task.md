@@ -1,37 +1,16 @@
 # Current Task
 
-Pointer to what is in flight. Agents read **this** instead of scanning
-`harness/tasks/` — one small file rather than a directory walk.
-
-Maintained by `/plan` (on start) and `/complete` (on finish). If it disagrees
-with `harness/tasks/active/`, the directory wins and this file is stale — fix it.
+Pointer to what is in flight. Maintained by `/plan` and `/complete`.
 
 ---
 
-| | |
-|---|---|
-| **Active task** | _none_ |
-| **Slug** | — |
-| **Branch** | — |
-| **Phase** | — |
-| **Stage** | not started |
-| **Task file** | — |
-| **Started** | — |
+No task is in flight. Phase 1 (`01-foundation`) completed on 2026-08-29 and its
+pull request is open: https://github.com/shefali289/portfolio_ai/pull/1
 
 ## Next command
 
+```text
+/plan 02-portfolio-ui
 ```
-/plan foundation
-```
 
-## Handoffs written
-
-_(none)_
-
-## Gates passed
-
-_(none)_
-
-## Open questions blocking progress
-
-_(none)_
+Phase 1 is archived under `harness/tasks/completed/`; Phase 2 is ready to plan.

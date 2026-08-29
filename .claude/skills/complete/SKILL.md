@@ -83,7 +83,8 @@ Write `pull-request.md` in the task directory from
 `harness/templates/pull-request.md`, including the gate table, lessons learned
 and user overrides.
 
-Then create it:
+Then **ask before running either of these** — a push and a PR are both
+approval-gate actions:
 
 ```bash
 git push -u origin feature/<slug>
@@ -133,6 +134,21 @@ them.
 - **what the harness learned** — the specific lines added and pruned
 - PR status: created, or the commands to create it
 - suggested commit message and next task
+
+## Step 9 — Hand off to the next phase
+
+Do not dead-stop. Name the next phase explicitly — it is the lowest-numbered
+slug still outside `tasks/completed/` — and **ask whether to start it**,
+continuing in the same turn if the answer is yes:
+
+> Phase 1 complete. Next is `02-portfolio-ui`. Start `/plan 02-portfolio-ui`
+> now, or stop here?
+
+Stop and wait regardless if the PR is unmerged, a validation was `SKIPPED`, or
+a commit or push is still awaiting approval. Starting the next phase over an
+unfinished one violates rule 2 (one active feature at a time).
+
+See `harness/instructions/stage-handoff.md`.
 
 ## Rules
 

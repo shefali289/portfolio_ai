@@ -24,6 +24,11 @@ python harness/scripts/final_checklist.py --slug <slug>         # G5, must exit 
 
 Full command list: [`harness/context/execution-commands.md`](../harness/context/execution-commands.md).
 
+## Never commit or push without asking
+
+Every `git commit` and every `git push`, on every branch — the feature branch
+included. Stage the work, propose the message, and wait.
+
 ## Stop and ask
 
 [`harness/instructions/approval-gate.md`](../harness/instructions/approval-gate.md)

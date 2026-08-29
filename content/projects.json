@@ -1,0 +1,33 @@
+{
+  "projects": [
+    {
+      "id": "boardscape",
+      "name": "Boardscape",
+      "date": "2022-05",
+      "context": "COMPSCI 732, The University of Auckland — team of 5",
+      "description": "Developed a full-stack web application as part of the course COMPSCI 732 with an enthusiastic team of 5 members for tabletop board game enthusiasts, providing them with a social platform to explore and discover new games while interacting with new people and making friends.",
+      "technologies": [
+        "MongoDB", "Express", "ReactJS", "NodeJS", "JavaScript", "NextJS", "Apollo/GraphQL"
+      ],
+      "links": {
+        "demo": "https://boardscape.herokuapp.com/",
+        "repo": null
+      },
+      "todo": "TODO: confirm the demo link is still live — the resume lists a Heroku URL and Heroku retired its free tier"
+    },
+    {
+      "id": "friday",
+      "name": "F.R.I.D.A.Y. — A Virtual Desktop Voice Assistant",
+      "date": "2020-06",
+      "context": "Personal project",
+      "description": "Developed a GUI-based Virtual Desktop Voice Assistant application to make daily tasks on the desktop easier and reduce human efforts by using voice control. Multiple tasks, such as sending emails, playing music, opening applications, google searches, etc., can be performed by recognising voice commands.",
+      "technologies": [
+        "Python"
+      ],
+      "links": {
+        "demo": null,
+        "repo": "https://github.com/shefali289/F.R.I.D.A.Y."
+      }
+    }
+  ]
+}

@@ -8,7 +8,7 @@ Every phase runs the same lifecycle:
 
 ---
 
-## Phase 1 - Foundation · `feature/foundation` · ~1.5h
+## Phase 1 - Foundation · `feature/01-foundation` · ~1.5h
 
 Frontend and backend both running, content extracted, tests wired.
 
@@ -21,7 +21,7 @@ Frontend and backend both running, content extracted, tests wired.
 
 ---
 
-## Phase 2 - Portfolio UI · `feature/portfolio-ui` · ~2.5h
+## Phase 2 - Portfolio UI · `feature/02-portfolio-ui` · ~2.5h
 
 The whole site, looking excellent, with no AI in it yet.
 
@@ -34,7 +34,7 @@ The whole site, looking excellent, with no AI in it yet.
 
 ---
 
-## Phase 3 - RAG + GenAI · `feature/rag-assistant` · ~2h
+## Phase 3 - RAG + GenAI · `feature/03-rag-assistant` · ~2h
 
 - chunk `content/*.json` into `{text, source, type}` records
 - `EmbeddingProvider` abstraction: Gemini (deployable) / local MiniLM (offline)
@@ -48,7 +48,7 @@ The whole site, looking excellent, with no AI in it yet.
 
 ---
 
-## Phase 4 - Agentic Job Match · `feature/agentic-job-match` · ~1.5h
+## Phase 4 - Agentic Job Match · `feature/04-agentic-job-match` · ~1.5h
 
 - `requirement_agent` -> `portfolio_agent` -> `evidence_agent` -> `response_agent`
 - `POST /api/ai/job-match` running the workflow in sequence
@@ -59,7 +59,7 @@ The whole site, looking excellent, with no AI in it yet.
 
 ---
 
-## Phase 5 - MCP / External Context · `feature/mcp-integration` · ~1.5h
+## Phase 5 - MCP / External Context · `feature/05-mcp-integration` · ~1.5h
 
 Both halves of the MCP story, kept small:
 
@@ -73,7 +73,7 @@ Both halves of the MCP story, kept small:
 
 ---
 
-## Phase 6 - Final Polish · `feature/final-polish` · ~1.5h
+## Phase 6 - Final Polish · `feature/06-final-polish` · ~1.5h
 
 - Engineer Mode toggle: endpoint, chunks retrieved, retrieval ms, generation ms,
   sources, tool used
@@ -100,12 +100,12 @@ Both halves of the MCP story, kept small:
 One branch per phase, off `main`, several small conventional commits inside it.
 
 ```
-feature/foundation
-feature/portfolio-ui
-feature/rag-assistant
-feature/agentic-job-match
-feature/mcp-integration
-feature/final-polish
+feature/01-foundation
+feature/02-portfolio-ui
+feature/03-rag-assistant
+feature/04-agentic-job-match
+feature/05-mcp-integration
+feature/06-final-polish
 ```
 
 ```

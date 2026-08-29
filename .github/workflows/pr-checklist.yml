@@ -73,18 +73,27 @@ jobs:
             echo "::error::No task.md for '$SLUG'."; exit 1
           fi
           echo "Task: $TASK"
-          MISSING=0
-          for S in "## Gate Log" "## Decisions Taken"; do
-            grep -qF "$S" "$TASK" || { echo "::error::$TASK missing '$S'"; MISSING=1; }
+          FAILED=0
+          for S in "# 5 · Gates" "## Decisions Taken"; do
+            grep -qF "$S" "$TASK" || { echo "::error::$TASK missing '$S'"; FAILED=1; }
           done
-          # A gate reported PASS without running is the one unrecoverable failure.
-          if grep -qiE '^\s*-\s*G[0-9].*(FAIL)' "$TASK"; then
-            echo "::error::A gate is recorded FAIL in $TASK."; MISSING=1
-          fi
-          if grep -qiE '^\s*-\s*G[0-9].*(PARTIAL|SKIPPED)' "$TASK"; then
-            echo "::warning::A gate is PARTIAL/SKIPPED - allowed, but state the reason in the PR."
-          fi
-          exit $MISSING
+          for GATE in G1 G2 G3 G4 G5; do
+            ROW=$(grep -E "^\|[[:space:]]*\*\*${GATE}\*\*" "$TASK" | head -1 || true)
+            if [ -z "$ROW" ]; then
+              echo "::error::$TASK has no table row for $GATE"; FAILED=1; continue
+            fi
+            RESULT=$(printf '%s\n' "$ROW" | awk -F'|' '{gsub(/^[ \t]+|[ \t]+$/, "", $4); print toupper($4)}')
+            case "$RESULT" in
+              PASS) ;;
+              PARTIAL|SKIPPED)
+                echo "::warning::$GATE is $RESULT - allowed, but state the reason in the PR." ;;
+              FAIL)
+                echo "::error::$GATE is recorded FAIL in $TASK."; FAILED=1 ;;
+              *)
+                echo "::error::$GATE has missing or invalid result '$RESULT' in $TASK."; FAILED=1 ;;
+            esac
+          done
+          exit $FAILED
 
   # ---------------------------------------------------------------- secrets
   secrets:

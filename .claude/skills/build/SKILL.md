@@ -88,19 +88,38 @@ Append any consequential choice to the task's `## Decisions Taken`.
 Set the stage in `harness/context/current-task.md` to `building` (then
 `in review` when handing to `/review`), and list the handoffs written so far.
 
-## Step 4 — Commit
+## Step 4 — Prepare commits, then ask
 
-Small conventional commits as you go, not one large commit at the end:
+Stage logical units as you go — small conventional commits, not one large one at
+the end. **Do not run `git commit` or `git push`.** Show what is staged and the
+proposed message, then wait for approval:
 
 ```
 feat: <what>
 test: <what>
 ```
 
+See `harness/instructions/approval-gate.md`. This applies on the feature branch
+too, not only `main`.
+
 ## Step 5 — Report
 
 Steps completed, test results (real output, not a claim), deviations, what
-remains. Then stop. Suggest `/review`.
+remains.
+
+## Step 6 — Hand off to `/review`
+
+Do not dead-stop. End by **asking whether to continue**, and continue in the
+same turn if the answer is yes:
+
+> G3 passed. Continue to `/review` now, or stop here?
+
+Continue automatically **without asking** only when the user has already said to
+run the phase — or the whole lifecycle — end to end. Stop and wait regardless if
+a gate is blocked, the plan turned out wrong, or commits are staged and waiting
+for approval — **the handoff never approves a commit on the user's behalf.**
+
+See `harness/instructions/stage-handoff.md`.
 
 ## Rules
 

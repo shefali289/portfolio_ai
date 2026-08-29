@@ -1,0 +1,5 @@
+# Optional: fully offline embeddings + LLM, for local development only.
+# Pulls torch (~1 GB on Linux, ~2.5 GB on Windows) so it is deliberately
+# NOT installed in deployment. Set EMBEDDING_PROVIDER=local to use it.
+-r requirements.txt
+sentence-transformers==6.0.0

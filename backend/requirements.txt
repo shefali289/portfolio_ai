@@ -1,0 +1,23 @@
+# Core - deployment-safe. No ML dependencies, so the backend stays small
+# enough for serverless (Vercel Python limit: 500 MB) and cold-starts fast.
+# Verified to resolve together on Python 3.14 via `uv pip compile`.
+
+# --- Web framework (Phase 1) ---
+fastapi==0.141.1
+uvicorn[standard]==0.52.4
+pydantic==2.13.5
+pydantic-settings==2.15.0
+python-dotenv==1.2.3
+httpx==0.28.1
+
+# --- Vector search (Phase 3) - ~30 MB, no torch ---
+faiss-cpu==1.15.0
+numpy==2.5.2
+
+# --- MCP (Phase 5) ---
+mcp==2.1.1
+
+# --- Testing / quality ---
+pytest==9.1.1
+pytest-asyncio==1.4.0
+ruff==0.16.5

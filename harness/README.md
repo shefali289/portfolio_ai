@@ -52,6 +52,17 @@ slug, so task, branch and PR are traceable to each other.
 **PR on completion** — every feature ends in a PR body carrying the gate table,
 lessons learned and user overrides.
 
+**Executable gates** — `scripts/branch_gate.py` (G0, with safe rebase),
+`scripts/health_check.py`, and `scripts/final_checklist.py` (G5). The last one
+decides whether a task is complete: it re-runs the tests, demands real RED
+evidence for TDD, and checks the gate log, learning and completion docs.
+
+**CI** — `harness/scripts/health_check.py` runs locally via `/health` and in GitHub
+Actions. On every PR, `.github/workflows/pr-checklist.yml` re-runs the branch
+gate, harness health, gate log, secret scan, and both test suites, then renders
+the final checklist. Same script both places, so green locally means green in
+CI.
+
 ## Layout
 
 ```
@@ -61,6 +72,7 @@ harness/
 ├── HARNESS-RULES.md       non-negotiable rules
 ├── HANDOFF-PROTOCOL.md    how work passes between agents + read budgets
 ├── QUALITY-GATES.md       G0-G5
+├── scripts/               executable gates - branch, health, final checklist
 ├── agents/                the five roles
 ├── skills/                reusable procedures
 ├── learning/              what the harness knows - read before exploring

@@ -1,0 +1,259 @@
+name: PR Checklist
+
+# The final checklist. Mirrors quality gates G0-G5 (harness/QUALITY-GATES.md).
+# Application jobs skip cleanly while a phase has not built that side yet -
+# a skipped job is reported as SKIPPED, never as passed.
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  # ---------------------------------------------------------------- G0
+  branch-gate:
+    name: G0 · Branch gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+
+      - name: Branch name matches a harness convention
+        run: |
+          BRANCH="${{ github.head_ref }}"
+          echo "Branch: $BRANCH"
+          if [ "$BRANCH" = "main" ]; then
+            echo "::error::Work must never happen on main."
+            exit 1
+          fi
+          if ! echo "$BRANCH" | grep -Eq '^(feature|fix|improvement)/[a-z0-9][a-z0-9-]*$'; then
+            echo "::error::'$BRANCH' must be feature/<slug>, fix/<slug> or improvement/<slug> (lowercase, hyphenated)."
+            exit 1
+          fi
+          echo "Branch gate passed."
+
+      - name: Slug has a matching harness task
+        run: |
+          SLUG="${{ github.head_ref }}"; SLUG="${SLUG#*/}"
+          if ls -d harness/tasks/*/"$SLUG" >/dev/null 2>&1; then
+            echo "Task directory found for '$SLUG'."
+          else
+            echo "::error::No harness/tasks/*/$SLUG. Run /plan $SLUG before opening a PR."
+            exit 1
+          fi
+
+  # ---------------------------------------------------------------- harness
+  harness:
+    name: Harness health
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: python harness/scripts/health_check.py
+
+  # ---------------------------------------------------------------- gates
+  gate-log:
+    name: G1–G5 · Gate log recorded
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Task records its gate results
+        run: |
+          SLUG="${{ github.head_ref }}"; SLUG="${SLUG#*/}"
+          TASK=$(ls harness/tasks/*/"$SLUG"/task.md 2>/dev/null | head -1)
+          if [ -z "$TASK" ]; then
+            echo "::error::No task.md for '$SLUG'."; exit 1
+          fi
+          echo "Task: $TASK"
+          MISSING=0
+          for S in "## Gate Log" "## Decisions Taken"; do
+            grep -qF "$S" "$TASK" || { echo "::error::$TASK missing '$S'"; MISSING=1; }
+          done
+          # A gate reported PASS without running is the one unrecoverable failure.
+          if grep -qiE '^\s*-\s*G[0-9].*(FAIL)' "$TASK"; then
+            echo "::error::A gate is recorded FAIL in $TASK."; MISSING=1
+          fi
+          if grep -qiE '^\s*-\s*G[0-9].*(PARTIAL|SKIPPED)' "$TASK"; then
+            echo "::warning::A gate is PARTIAL/SKIPPED - allowed, but state the reason in the PR."
+          fi
+          exit $MISSING
+
+  # ---------------------------------------------------------------- secrets
+  secrets:
+    name: Secret scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+
+      - name: No committed .env or credential files
+        run: |
+          if git ls-files | grep -E '(^|/)\.env$|\.pem$|\.key$|credentials?\.json$'; then
+            echo "::error::Credential file committed."; exit 1
+          fi
+          echo "No credential files tracked."
+
+      - name: No hardcoded API keys in the diff
+        run: |
+          git fetch origin ${{ github.base_ref }} --depth=1 || true
+          DIFF=$(git diff "origin/${{ github.base_ref }}...HEAD" -- . ':(exclude).env.example' || true)
+          # Google AI, OpenAI, GitHub tokens, and generic assigned secrets.
+          if echo "$DIFF" | grep -nE '(AIza[0-9A-Za-z_-]{35}|sk-[A-Za-z0-9]{20,}|gh[pousr]_[A-Za-z0-9]{36,})'; then
+            echo "::error::Possible API key in the diff."; exit 1
+          fi
+          if echo "$DIFF" | grep -nEi '^\+.*(api[_-]?key|secret|token|password)\s*[:=]\s*["'"'"'][^"'"'"']{12,}'; then
+            echo "::error::Possible hardcoded secret. Use config.py / env vars."; exit 1
+          fi
+          echo "No secrets detected."
+
+  # ---------------------------------------------------------------- G4 backend
+  backend:
+    name: G4 · Backend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+
+      - name: Detect backend
+        id: detect
+        run: |
+          if [ -f backend/app/main.py ]; then echo "built=true" >> "$GITHUB_OUTPUT"
+          else echo "built=false" >> "$GITHUB_OUTPUT"; echo "::notice::Backend not built yet - SKIPPED."; fi
+
+      - name: Install
+        if: steps.detect.outputs.built == 'true'
+        working-directory: backend
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Lint (ruff)
+        if: steps.detect.outputs.built == 'true'
+        working-directory: backend
+        run: ruff check .
+
+      - name: Tests (pytest)
+        if: steps.detect.outputs.built == 'true'
+        working-directory: backend
+        run: pytest -q
+
+      - name: Content files parse
+        if: hashFiles('content/*.json') != ''
+        run: |
+          python - <<'PY'
+          import json, pathlib, sys
+          bad = []
+          for p in sorted(pathlib.Path("content").glob("*.json")):
+              try:
+                  json.loads(p.read_text(encoding="utf-8"))
+                  print("ok", p)
+              except Exception as e:
+                  bad.append(f"{p}: {e}")
+          if bad:
+              print("::error::Invalid JSON: " + "; ".join(bad)); sys.exit(1)
+          PY
+
+      - name: Report TODO placeholders
+        if: hashFiles('content/*.json') != ''
+        run: |
+          # Placeholders are correct behaviour - fabricated content is not.
+          COUNT=$(grep -ro 'TODO' content/ | wc -l)
+          echo "::notice::$COUNT TODO placeholders in content/ (expected where the resume is silent)."
+
+  # ---------------------------------------------------------------- G4 frontend
+  frontend:
+    name: G4 · Frontend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Detect frontend
+        id: detect
+        run: |
+          if [ -f frontend/package.json ]; then echo "built=true" >> "$GITHUB_OUTPUT"
+          else echo "built=false" >> "$GITHUB_OUTPUT"; echo "::notice::Frontend not built yet - SKIPPED."; fi
+
+      - uses: actions/setup-node@v4
+        if: steps.detect.outputs.built == 'true'
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install
+        if: steps.detect.outputs.built == 'true'
+        working-directory: frontend
+        run: npm ci
+
+      - name: Typecheck
+        if: steps.detect.outputs.built == 'true'
+        working-directory: frontend
+        run: npx tsc --noEmit
+
+      - name: Lint
+        if: steps.detect.outputs.built == 'true'
+        working-directory: frontend
+        run: npm run lint
+
+      - name: Tests
+        if: steps.detect.outputs.built == 'true'
+        working-directory: frontend
+        run: npm test -- --run
+
+      - name: Build
+        if: steps.detect.outputs.built == 'true'
+        working-directory: frontend
+        run: npm run build
+
+  # ---------------------------------------------------------------- summary
+  checklist:
+    name: Final checklist
+    runs-on: ubuntu-latest
+    needs: [branch-gate, harness, gate-log, secrets, backend, frontend]
+    if: always()
+    steps:
+      - name: Render checklist
+        run: |
+          mark() { [ "$1" = "success" ] && echo "PASS" || { [ "$1" = "skipped" ] && echo "SKIPPED" || echo "FAIL"; }; }
+          {
+            echo "## Final Checklist"
+            echo ""
+            echo "| Gate | Check | Result |"
+            echo "|---|---|---|"
+            echo "| G0 | Branch gate — off main, slug matches task | $(mark '${{ needs.branch-gate.result }}') |"
+            echo "| — | Harness health — caps, index, links | $(mark '${{ needs.harness.result }}') |"
+            echo "| G1–G5 | Gate log recorded in task.md | $(mark '${{ needs.gate-log.result }}') |"
+            echo "| — | Secret scan | $(mark '${{ needs.secrets.result }}') |"
+            echo "| G4 | Backend — ruff, pytest, content JSON | $(mark '${{ needs.backend.result }}') |"
+            echo "| G4 | Frontend — tsc, lint, vitest, build | $(mark '${{ needs.frontend.result }}') |"
+            echo ""
+            echo "Manual, not automatable — confirm in the PR body:"
+            echo ""
+            echo "- [ ] Content traces to the resume; no invented experience"
+            echo "- [ ] AI answers cite sources; out-of-scope questions refused"
+            echo "- [ ] Works at 375px and desktop"
+            echo "- [ ] Loading, error and empty states reachable"
+            echo "- [ ] Keyboard navigable; images have alt text"
+            echo "- [ ] Lessons learned and user overrides recorded in learning/"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Fail if any required check failed
+        run: |
+          for r in "${{ needs.branch-gate.result }}" "${{ needs.harness.result }}" \
+                   "${{ needs.gate-log.result }}" "${{ needs.secrets.result }}" \
+                   "${{ needs.backend.result }}" "${{ needs.frontend.result }}"; do
+            case "$r" in
+              success|skipped) ;;
+              *) echo "::error::A required check did not pass. See the checklist summary."; exit 1 ;;
+            esac
+          done
+          echo "All required checks passed or were legitimately skipped."

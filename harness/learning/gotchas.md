@@ -10,7 +10,13 @@ Things that cost time. Symptom -> cause -> fix.
   resolves (`uv pip compile --python-version 3.14`) before pinning it. A pin
   recalled from memory produced a version that does not exist.
 - **No Ollama, no Docker, no `gh` CLI installed.** The GitHub integration must
-  use the public REST API, which needs no auth for public repos.
+  use the public REST API, which needs no auth for public repos. Without `gh`,
+  `/complete` cannot open the PR — it writes the body and hands over the compare
+  URL instead. Remote `origin` is `github.com/shefali289/portfolio_ai`.
+- **OneDrive locks directories during `git checkout`/`stash`.** Switching
+  branches with untracked dirs present can fail with "Permission denied" and
+  leave work stashed. Commit before switching branches; if a pop half-fails, the
+  work is still in `git stash list`.
 - **Windows + Git Bash.** venv activation is `.venv/Scripts/activate`, not
   `bin/activate`. Avoid `-o /dev/null` with `uv` - it fails to persist on Windows.
 - **Long chained heredocs in one Bash call are fragile here.** A single
@@ -25,6 +31,15 @@ Things that cost time. Symptom -> cause -> fix.
 - **Index vectors are provider-specific.** Gemini and MiniLM have different
   dimensions. Switching `EMBEDDING_PROVIDER` requires a re-ingest; the index
   stores its provider + dim and must refuse to load a mismatch.
+
+## CI
+
+- **CI runs Python 3.12, local is 3.14.** Pin nothing that only resolves on one.
+- **App jobs skip until built.** `backend` keys off `backend/app/main.py`,
+  `frontend` off `frontend/package.json`. A skipped job reports `SKIPPED`, never
+  passed — never relax that to make a pipeline green.
+- **The branch gate blocks a PR whose slug has no task directory.** Run
+  `/plan <slug>` before opening the PR.
 
 ## AI behaviour
 

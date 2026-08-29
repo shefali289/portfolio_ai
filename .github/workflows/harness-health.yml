@@ -1,0 +1,40 @@
+name: Harness Health
+
+# Is the development harness itself still healthy? Structural checks only -
+# learning caps, handoff sizes, task briefs, index consistency, links.
+# Same script as the local `/health` command.
+
+on:
+  push:
+    branches: [main]
+    paths: ['harness/**', '.claude/**', '**.md']
+  pull_request:
+    paths: ['harness/**', '.claude/**', '**.md']
+  workflow_dispatch:
+
+jobs:
+  health:
+    name: Harness health
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Run harness health check
+        id: health
+        run: |
+          python harness/scripts/health_check.py | tee health.txt
+
+      - name: Publish summary
+        if: always()
+        run: |
+          {
+            echo "## Harness Health"
+            echo ""
+            echo '```'
+            cat health.txt || echo "check did not produce output"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"

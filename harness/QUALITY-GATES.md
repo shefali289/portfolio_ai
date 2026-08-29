@@ -8,14 +8,36 @@ Every gate result is recorded in the task's `## Gate Log`.
 
 ---
 
+## Scripts
+
+Three gates are executable. Run them; do not eyeball them.
+
+```bash
+python harness/scripts/branch_gate.py --slug <slug> --rebase   # G0
+python harness/scripts/health_check.py                          # structural
+python harness/scripts/final_checklist.py --slug <slug>         # G5
+```
+
+`final_checklist.py` is the one that decides whether a task is complete — it
+re-runs the tests, checks TDD evidence (real RED output), lint, typecheck, the
+gate log, learning updates and the completion docs. **A task is not done until
+it exits 0.** See [`scripts/README.md`](scripts/README.md).
+
 ## G0 - Branch Gate  (before `/build` writes anything)
+
+`python harness/scripts/branch_gate.py --slug <slug> --rebase`
 
 | Check | Fail action |
 |---|---|
 | Not on `main` | create `feature/<slug>` and switch |
 | Branch name matches the task slug exactly | rename, or stop and ask |
-| Working tree clean, or changes belong to this task | stop, report |
-| Exactly one task in `tasks/active/` | stop, ask which to continue |
+| A task directory exists for the slug | run `/plan <slug>` first |
+| Working tree clean | commit or stash before rebasing |
+| Not behind `origin/main` | `--rebase` brings it current |
+
+The rebase refuses on a dirty tree, aborts cleanly on conflict, and never
+force-pushes — after rewriting an already-pushed branch, push with
+`--force-with-lease`.
 
 **Never commit to `main`.** Slug and branch suffix are always identical, so the
 task, the branch and the PR are trivially traceable to each other.
@@ -70,6 +92,11 @@ Not-yet-configured checks are recorded as `SKIPPED`, never as `PASS`.
 
 ## G5 - Completion Gate  (before archiving + PR)
 
+`python harness/scripts/final_checklist.py --slug <slug>` — **must exit 0.**
+It re-runs the tests rather than trusting an earlier run, and verifies TDD
+evidence: `3-test.md` must contain real failure output, or the tests were
+written after the code.
+
 - Every requirement in `task.md` met
 - No unresolved blocking findings in `5-review.md`
 - `completion.md` written with **real** validation results
@@ -78,6 +105,28 @@ Not-yet-configured checks are recorded as `SKIPPED`, never as `PASS`.
 - PR description written from `templates/pull-request.md`
 
 ---
+
+## Enforced in CI
+
+`.github/workflows/pr-checklist.yml` runs the mechanical half of these gates on
+every PR into `main`:
+
+| Job | Gate | Enforces |
+|---|---|---|
+| `branch-gate` | G0 | not `main`; branch matches `feature\|fix\|improvement/<slug>`; a task directory exists for the slug |
+| `harness` | — | `harness/scripts/health_check.py` |
+| `gate-log` | G1–G5 | task records a Gate Log and Decisions Taken; no gate left `FAIL` |
+| `secrets` | G4 | no committed credential files; no API keys or hardcoded secrets in the diff |
+| `backend` | G4 | `ruff`, `pytest`, `content/*.json` parses |
+| `frontend` | G4 | `tsc --noEmit`, lint, `vitest`, `build` |
+| `checklist` | — | renders the full checklist and fails if any required job failed |
+
+Application jobs **skip cleanly** until that side is built, and a skipped job is
+reported `SKIPPED` — never as passed. The remaining checks (content traces to
+the resume, 375px, keyboard, states reachable) are not automatable and are
+confirmed in the PR body.
+
+`harness-health.yml` runs the same health check on pushes to `main`.
 
 ## Recording
 

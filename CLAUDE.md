@@ -51,6 +51,21 @@ task's `## Gate Log`. See `harness/QUALITY-GATES.md`.
   abstraction, one embedding abstraction.
 - Content renders from `content/*.json`, never hardcoded into components.
 
+## Gates are executable — run them, do not eyeball them
+
+```bash
+python harness/scripts/branch_gate.py --slug <slug> --rebase   # G0, before /build
+python harness/scripts/health_check.py                          # /health
+python harness/scripts/final_checklist.py --slug <slug>         # G5, at /complete
+```
+
+**A task is not complete until `final_checklist.py` exits 0.** It re-runs the
+tests itself and demands real RED evidence in `3-test.md`.
+
+Same scripts run in CI, so green locally means green in the pipeline. Every PR
+also runs the secret scan and both suites
+(`.github/workflows/pr-checklist.yml`).
+
 ## Learning
 
 At `/complete`, promote each handoff's `New learnings` into `harness/learning/`

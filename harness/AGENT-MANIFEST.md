@@ -19,6 +19,8 @@ on — and every task name usable as `/plan <name>`.
 | `/health` | — | — | nothing |
 
 Gates: [`QUALITY-GATES.md`](QUALITY-GATES.md).
+Scripts: `harness/scripts/` — `branch_gate.py` (G0), `health_check.py`,
+`final_checklist.py` (G5, decides completion). Same scripts run in CI.
 
 ---
 

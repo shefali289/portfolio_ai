@@ -28,18 +28,22 @@ If no active task exists, stop and say `/plan` must run first.
 
 ## Step 1 — Gate G0: Branch Gate  (before writing anything)
 
-From `harness/QUALITY-GATES.md`:
-
 ```bash
-git branch --show-current     # must NOT be main
-git status --short            # clean, or only this task's changes
+python harness/scripts/branch_gate.py --slug <slug> --rebase
 ```
 
-- On `main` → `git checkout -b feature/<slug>` and switch.
-- On a branch whose name does not match the task slug → stop and ask.
-- Uncommitted changes unrelated to this task → stop and report.
+Checks: not on `main` · branch matches the task slug · task directory exists ·
+tree clean · not behind `origin/main` (rebasing if so).
 
-**Never write to `main`.** Record the result in the task's `## Gate Log`.
+If it blocks:
+
+- on `main` → `git checkout -b feature/<slug>`, then rerun
+- branch name mismatch → stop and ask
+- unrelated uncommitted changes → stop and report
+- rebase conflict → it aborted cleanly; resolve by hand, do not force anything
+
+**Never write to `main`.** Record the result in the task's `## Gate Log`. If the
+rebase rewrote an already-pushed branch, push with `--force-with-lease`.
 
 ## Step 2 — Test Agent (RED)
 

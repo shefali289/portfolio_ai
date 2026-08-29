@@ -172,6 +172,31 @@ A check that did not run is recorded `SKIPPED`, never `PASS`.
 Every feature ends in a PR body carrying the gate table, lessons learned and
 user overrides — see [`templates/pull-request.md`](harness/templates/pull-request.md).
 
+### Executable gates
+
+```bash
+python harness/scripts/branch_gate.py --slug <slug> --rebase   # G0
+python harness/scripts/health_check.py                          # structural
+python harness/scripts/final_checklist.py --slug <slug>         # G5
+```
+
+`final_checklist.py` decides whether a task is complete. It re-runs both test
+suites, demands **real RED evidence** in the test handoff (so tests written
+after the code fail the gate), and checks lint, typecheck, content parsing, the
+gate log, learning updates and the completion docs. A task is not done until it
+exits 0 — then it prints the checks that cannot be automated for confirmation by
+hand.
+
+### Continuous integration
+
+| Workflow | Runs on | Does |
+|---|---|---|
+| `harness-health.yml` | push to `main`, PRs touching docs | `harness/scripts/health_check.py` — 13 structural checks |
+| `pr-checklist.yml` | every PR into `main` | branch gate, harness health, gate log, secret scan, backend (`ruff`/`pytest`), frontend (`tsc`/lint/`vitest`/build), then the rendered final checklist |
+
+Application jobs skip cleanly until that side exists, and report `SKIPPED`
+rather than passing. `python harness/scripts/health_check.py` is the same check CI runs.
+
 ### Adding a feature later
 
 The harness does not change; only a new task directory is added.

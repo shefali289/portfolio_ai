@@ -1,5 +1,5 @@
 ---
-description: Harness health check - learning size, gate history, drift, unused skills
+description: Harness health check - learning caps, gates, drift, unused skills
 allowed-tools: Read, Glob, Grep, Bash
 ---
 
@@ -8,74 +8,46 @@ allowed-tools: Read, Glob, Grep, Bash
 Is the harness still working, or has it rotted? Reads state, changes nothing.
 Cheap — run it between features.
 
-## Read
-
-`harness/learning/*.md`, `harness/AGENT-MANIFEST.md`, the task directories, and
-recent `completion.md` files. **No source files.**
-
-## Measure
+## Step 1 — Run the check
 
 ```bash
-wc -l harness/learning/*.md
-ls harness/tasks/planned harness/tasks/active harness/tasks/completed
-grep -rc "" harness/tasks/*/*/handoffs/*.md 2>/dev/null
+python harness/scripts/health_check.py
 ```
 
-### 1. Learning size vs cap
+This is the **same script CI runs** (`.github/workflows/harness-health.yml`), so
+a green local run means a green pipeline. It covers, mechanically:
 
-| File | Cap |
+| Check | Fails when |
 |---|---|
-| `architecture-map` / `conventions` / `decisions` / `gotchas` | 150 |
-| `lessons-learned` | 100 |
-| `user-overrides` | 80 |
+| layout · agents | a core harness file or agent role is missing |
+| learning caps | a `learning/` file is over cap — unpruned means unread |
+| handoff caps | a handoff exceeds 60 lines — transcribing, not briefing |
+| active tasks | more than one feature in flight |
+| task briefs | a manifest slug has no task directory to start from |
+| task sections | a task lacks Gate Log / Decisions Taken / PR |
+| skills index | a skill is on disk but unindexed, or indexed but missing |
+| links · file refs | a relative link or backticked harness path is broken |
+| overrides | an override is recorded but never promoted to a rule |
+| velocity | features completed without lessons recorded (WARN) |
+| drift | `(planned)` markers left behind after the thing exists (WARN) |
 
-Over cap = not pruned = **not read**. That is the failure this whole design
-exists to prevent.
+Exit 0 = healthy. Exit 1 = at least one FAIL. WARNs do not fail.
 
-### 2. Handoff size
+## Step 2 — Judge what the script cannot
 
-Any handoff over 60 lines means a feature was too big, or an agent transcribed
-instead of briefing.
+Read `harness/learning/` and recent `completion.md` files. **No source files.**
 
-### 3. Gate history
+- **Gate history** — across recent completions, how many `SKIPPED`/`PARTIAL`?
+  A pattern of skipping the same gate means it is unenforceable. Fix the gate or
+  drop it honestly.
+- **Learning quality** — are entries genuinely non-obvious, or restating what the
+  code already shows? Under cap but useless is still failure.
+- **Skill accuracy** — did any completed feature deviate from a skill it used?
+  A stale skill gets copied blindly by the next feature.
 
-Across recent completions: gates recorded, and how many `SKIPPED`/`PARTIAL`.
-A pattern of skipping the same gate means it is unenforceable — fix the gate or
-drop it honestly.
+## Step 3 — Report
 
-### 4. Drift
+Under 25 lines: the script's table, then anything Step 2 surfaced, then the
+single smallest fix to make next.
 
-- `(planned)` entries in `architecture-map.md` for things that now exist
-- manifest task statuses not matching the task directories
-- skills indexed but never used by any completed task
-- skills used but not indexed
-- tasks in `active/` numbering anything other than 0 or 1
-
-### 5. Learning velocity
-
-Entries added per completed feature. **Zero learnings from a real feature is a
-red flag** — either `/complete` was skipped or the handoffs were empty.
-
-### 6. Override follow-through
-
-Every entry in `user-overrides.md` must end in a promoted rule. An override
-recorded but not promoted will be repeated.
-
-## Report
-
-Under 25 lines:
-
-```
-Harness Health
-
-Learning     4/6 files within cap  (gotchas 158/150 — prune)
-Handoffs     avg 41 lines, max 58  OK
-Gates        2 features, 12/12 recorded, 1 SKIPPED (frontend lint, Phase 1)
-Drift        2 (planned) entries now real; manifest status stale for foundation
-Velocity     6 learnings / feature
-Overrides    2 recorded, 2 promoted  OK
-
-Fix next: prune gotchas.md, refresh architecture-map.md
-```
-
-State what is wrong and the smallest fix. Do not fix it here.
+State what is wrong. Do not fix it here — that is a task.

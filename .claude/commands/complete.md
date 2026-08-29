@@ -13,12 +13,25 @@ makes every later feature more expensive, not just less documented.
 Read exactly: the active task's `handoffs/*.md` (all five — small by design),
 its `task.md`, and `harness/learning/*.md`. Nothing else.
 
-## Step 1 — Gate G5
+## Step 1 — Gate G5: the final checklist
 
-From `harness/QUALITY-GATES.md`: every requirement in `task.md` met, no
-unresolved blocking findings in `5-review.md`. **Re-run both test suites** — do
-not trust an earlier run. If anything is outstanding, stop and say what. Never
-close a feature to tidy up.
+```bash
+python harness/scripts/final_checklist.py --slug <slug>
+```
+
+**A task is not complete until this exits 0.** It re-runs the tests itself — do
+not trust an earlier run — and checks TDD evidence (real RED output in
+`3-test.md`), lint, typecheck, content parsing, the gate log, learning updates
+and the completion docs.
+
+Run it, fix what it reports, run it again. If anything is still outstanding,
+stop and say what. Never close a feature to tidy up.
+
+Steps 2–5 below fill in the pieces it will demand — so expect to run it once
+early to see the gaps, and again at the end to confirm they are closed.
+
+Finally, confirm by hand the checks it prints that cannot be automated: content
+traces to the resume, sources cited, 375px, states reachable, keyboard.
 
 ## Step 2 — Completion report
 
@@ -69,10 +82,27 @@ git push -u origin feature/<slug>
 gh pr create --title "<type>: <description>" --body-file <task-dir>/pull-request.md
 ```
 
-**If `gh` is not installed or there is no git remote** (both currently true —
-see `learning/gotchas.md`): write the file, commit it, and report the exact
-commands for the user to run. Say plainly that the PR was not created. Never
-claim a PR exists when it does not.
+The remote is `origin` → `github.com/shefali289/portfolio_ai`.
+
+**`gh` is not installed** (see `learning/gotchas.md`), so `gh pr create` will
+fail. Until it is: push the branch, write the PR body, and give the user the
+compare URL plus the body to paste —
+
+```
+https://github.com/shefali289/portfolio_ai/compare/main...feature/<slug>
+```
+
+Say plainly that the PR was not created. **Never claim a PR exists when it does
+not.**
+
+## Step 5b — Re-run the final checklist
+
+```bash
+python harness/scripts/final_checklist.py --slug <slug>
+```
+
+It must exit 0 — with `completion.md`, `pull-request.md` and the learning
+entries now in place. **Do not archive until it does.**
 
 ## Step 6 — Archive
 

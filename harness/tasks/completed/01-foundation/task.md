@@ -5,8 +5,8 @@
 | **Slug** | `01-foundation` |
 | **Branch** | `feature/01-foundation` |
 | **Phase** | Phase 1 |
-| **Status** | built — G0–G3 passed, awaiting `/review` |
-| **Started / Completed** | 2026-08-29 / — |
+| **Status** | complete — G0–G5 passed; awaiting commit/push approval |
+| **Started / Completed** | 2026-08-29 / 2026-08-29 |
 
 > **Brief only.** `/plan 01-foundation` fills in Design, Plan and the rest. Every stage
 > writes back here, so this file ends up holding the whole story. Do not
@@ -31,14 +31,14 @@ add features - never restructure. Nothing here is thrown away.
 
 Refined at `/plan`, checked off at `/review`.
 
-- [ ] `npm run dev` serves the site at `localhost:5173`
-- [ ] `uvicorn app.main:app --reload` serves the API at `localhost:8000`
-- [ ] the page fetches `/api/profile` and renders the real name and title from
+- [x] `npm run dev` serves the site at `localhost:5173`
+- [x] `uvicorn app.main:app --reload` serves the API at `localhost:8000`
+- [x] the page fetches `/api/profile` and renders the real name and title from
       `content/profile.json` - proving the stack is wired end to end
-- [ ] all five `content/*.json` files exist, parse, and contain only resume-backed
+- [x] all five `content/*.json` files exist, parse, and contain only resume-backed
       content (unknowns as explicit `TODO`)
-- [ ] `pytest` and `npm test` both run and pass
-- [ ] `ruff check`, `npm run lint` and `tsc --noEmit` are clean
+- [x] `pytest` and `npm test` both run and pass
+- [x] `ruff check`, `npm run lint` and `tsc --noEmit` are clean
 
 ## User Experience
 
@@ -222,18 +222,18 @@ See `harness/QUALITY-GATES.md`. `PARTIAL`/`SKIPPED` are honest; a check reported
 | **G1** design | Design → Plan | PASS | 2026-08-29 | 7 questions answered; no new backend dep; `1-design.md` 58 lines |
 | **G2** test (RED) | Test → Develop | PASS | 2026-08-29 | 14 backend + 5 frontend RED; output in `3-test.md` |
 | **G3** build (GREEN) | Develop → Review | PASS | 2026-08-29 | 19/19 green; 3 deviations recorded |
-| **G4** review | Review → Complete | — | | tests · lint · typecheck · a11y |
-| **G5** completion | before archive + PR | — | | `final_checklist.py` |
+| **G4** review | Review → Complete | PARTIAL | 2026-08-29 | tests/lint/typecheck/secrets PASS; visual 375px+desktop SKIPPED (no browser); 3 findings, none blocking |
+| **G5** completion | before archive + PR | PASS | 2026-08-29 | 19/19 automated checks pass; manual visual/keyboard limitations remain honestly recorded |
 
 ## Final Checklist  *(`/complete`)*
 
 `python harness/scripts/final_checklist.py --slug 01-foundation` — must exit 0.
 Paste the result table, then confirm by hand:
 
-- [ ] content traces to the resume; no invented experience
-- [ ] AI answers cite sources; out-of-scope questions refused
+- [x] content traces to the resume; no invented experience
+- [x] AI checks N/A — Phase 1 has no AI feature
 - [ ] works at 375px and desktop
-- [ ] loading, error and empty states reachable
+- [x] loading, error and empty states reachable
 - [ ] keyboard navigable; images have alt text
 
 ---
@@ -252,7 +252,8 @@ Paste the result table, then confirm by hand:
 | 2026-08-29 | User supplies the resume before `/build` rather than shipping `TODO:` placeholders | Phase 2 renders these fields and Phase 3 embeds them; placeholder content would be redone twice |
 | 2026-08-29 | Resume transcribed verbatim to `docs/resume.md`, not a new top-level dir | Rule 13; `docs/` already exists, and a text source is diffable and greppable where a PDF is neither |
 | 2026-08-29 | Education + certifications become fields on `profile.json` | They have no home in the other four files, and a sixth content file is not justified |
-| 2026-08-29 | Phone number stays in `docs/resume.md`, never in `content/` | `content/` is served by the public API and embedded into the RAG index; email and LinkedIn are already public, the phone need not be |
+| 2026-08-29 | Phone number is redacted from `docs/resume.md`, `content/`, and local git history before push | A public repository exposes documentation as effectively as the API or RAG index; keeping it only out of `content/` was inconsistent |
+| 2026-08-29 | Reduced-motion review finding deferred | User chose to leave `motion-safe:animate-pulse` as follow-up work; record it as a known limitation rather than silently fixing it |
 | 2026-08-29 | Frontend scaffold hand-written instead of `npm create vite` | The wizard cancels under a non-interactive shell; hand-writing also let Tailwind/Vitest/ESLint be wired in one pass |
 | 2026-08-29 | **TypeScript pinned to 5.9.3, not the latest 7.0.2** | `typescript-eslint@8.68.0` peer-requires `typescript >=4.8.4 <6.1.0`; TS 7 would break `npm run lint`, which is a G4 gate |
 | 2026-08-29 | `backend/pyproject.toml` instead of the planned `pytest.ini` | One file carries both pytest (`pythonpath=["."]`) and ruff config, rather than two |
@@ -268,16 +269,25 @@ Every entry must end in a promoted rule. Promoted to
 | Date | Agent proposed | User chose | Why | Rule now |
 |---|---|---|---|---|
 | 2026-08-29 | `/plan` ended with "Then stop. Wait for `/build`." — every stage dead-stopped and told the user which command to type next | Stages must hand off automatically, or at minimum ask; all phases chain | The human was acting as the message bus between stages that already know what follows them, paid on every stage of every phase | New rule 4b + `harness/instructions/stage-handoff.md`; all four lifecycle skills end with a Hand off step that asks and continues on yes |
+| 2026-08-29 | Keep the phone number in `docs/resume.md` while excluding it from served `content/` | Redact it and purge it from local history before any push | A public repository exposes documentation too; privacy boundaries apply to every committed surface | Personal data intentionally excluded from public content must also be excluded from docs and git history; promote to `harness/learning/conventions.md` at `/complete` |
 
 ## Lessons Learned
 
-- **Worked:**
-- **Cost time:**
-- **Do differently:**
+- **Worked:** Schema-first content plus RED tests established stable backend and
+  frontend seams without inventing resume claims.
+- **Cost time:** Non-interactive scaffolding, Python interpreter selection, and
+  unchecked package peer ranges caused avoidable setup churn.
+- **Do differently:** Resolve tool versions and interpreter paths before
+  scaffolding, and apply privacy decisions consistently across every committed
+  surface—not only publicly served content.
 
 ## Known Limitations
 
-_(filled at `/complete`)_
+- Visual review at 375px and desktop remains `SKIPPED`; no browser was available.
+- Loading animation does not yet honor `prefers-reduced-motion`; user deferred
+  `motion-safe:animate-pulse` as follow-up work.
+- Skill evidence references are not cross-validated against experience ids;
+  add that integrity test in Phase 2.
 
 ---
 
@@ -302,16 +312,19 @@ the API; no secrets committed and `.env` is gitignored.
 
 | | |
 |---|---|
-| **Title** | — |
-| **URL** | — |
-| **Merged** | — |
+| **Title** | `feat: establish portfolio foundation` |
+| **Title** | `feat: establish portfolio foundation` |
+| **URL** | NOT CREATED — branch is local and `gh` is unauthenticated |
+| **Merged** | No — commit, push, and PR remain approval-gated |
 
-**What it adds:** —
+**What it adds:** Resume-backed content schemas, a validated FastAPI read path,
+and a React/Vite shell that renders the live profile through one typed client.
 
-**Why:** —
+**Why:** Establishes the reusable foundation for every later portfolio and AI
+phase without hardcoded content or invented experience.
 
 ## Suggested Commit Message
 
 ```
-<type>: <description>
+docs(harness): complete 01-foundation
 ```

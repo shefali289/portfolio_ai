@@ -47,9 +47,8 @@ not re-inspect the empty `backend/app/` or `frontend/` trees.
 Resolved. The resume was supplied and transcribed to `docs/resume.md` — that is
 the source of truth for step 1, and every content value must trace to a line in
 it. Two calls step 1 makes, neither of which justifies a sixth content file:
-education + certifications become fields on `profile.json`; the phone number
-stays in `docs/resume.md` and never enters `content/`, which is publicly served
-and embedded into the RAG index.
+education + certifications become fields on `profile.json`; contact data not
+intended for publication is redacted from both content and repository history.
 
 ## New learnings
 None yet — Phase 1 establishes the patterns the rest of the project copies, so

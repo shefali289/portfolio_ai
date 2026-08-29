@@ -24,6 +24,14 @@ Things that cost time. Symptom -> cause -> fix.
 - **Long chained heredocs in one Bash call are fragile here.** A single
   mismatched terminator silently swallows the rest and the whole command fails.
   Write files one at a time.
+- **Bare `uv venv` selected uv-managed Python 3.11 here.** Use
+  `uv venv --python 3.14`; otherwise the pinned numpy build does not resolve.
+- **`npm create vite` cancels in a non-interactive shell.** Hand-write the small
+  scaffold or run the wizard interactively.
+- **Package “latest” can violate peer ranges.** TypeScript 7 was incompatible
+  with `typescript-eslint@8`; check peer dependencies before pinning a major.
+- **ruff B008 flags FastAPI `Depends()` defaults.** Use an `Annotated` dependency
+  alias instead of suppressing the rule.
 
 ## Deployment
 
@@ -42,6 +50,8 @@ Things that cost time. Symptom -> cause -> fix.
   passed — never relax that to make a pipeline green.
 - **The branch gate blocks a PR whose slug has no task directory.** Run
   `/plan <slug>` before opening the PR.
+- **Tree scans must exclude dependency and cache directories.** Harness health
+  walked into `backend/.venv`; skip generated trees before reading Markdown.
 
 ## AI behaviour
 

@@ -32,3 +32,12 @@ One line each: the choice, and the reason. Rejected options included.
   maintained digest. Feature N+1 is cheaper than feature N, not more expensive.
 - **Slash commands as the entry points** - `/plan`, `/build`, `/review`,
   `/complete` map to lifecycle stages so a phase always starts the same way.
+
+## 2026-08-29 - Foundation
+
+- **Eager validated content loading** - malformed JSON fails application startup
+  instead of surfacing during a live request.
+- **One typed frontend API client** - components never call `fetch`, keeping the
+  backend seam reusable and mockable.
+- **Strict content models (`extra="forbid"`)** - typoed keys fail validation
+  rather than silently rendering incomplete portfolio sections.

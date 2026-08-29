@@ -11,6 +11,8 @@ Patterns to copy. Written as "do X", not as prose.
 - Every content field has a Pydantic model (backend) and a TS type (frontend),
   hand-written to match. No codegen.
 - Missing information is an explicit `TODO` placeholder, never an invented value.
+- Personal data intentionally excluded from public content is also excluded
+  from documentation and reachable git history before any push.
 
 ## Backend
 

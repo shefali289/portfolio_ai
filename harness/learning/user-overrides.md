@@ -59,3 +59,14 @@ made again.
 - **Rule now:** `HARNESS-RULES.md` rule 10, `instructions/approval-gate.md`
   (moved from "decide without asking" to "always ask"), and the commit steps in
   `/build` and `/complete` now stage and propose rather than execute.
+
+### 2026-08-29 - Foundation privacy boundary
+
+- **Agent proposed:** keep the resume phone number in `docs/resume.md` while
+  excluding it only from publicly served `content/`.
+- **User chose:** redact it and rewrite local history before any push.
+- **Why:** a public repository exposes documentation as effectively as an API;
+  excluding data from one surface does not make it private.
+- **Rule now:** personal data intentionally excluded from public content must
+  also be excluded from docs and reachable git history. Promoted to
+  `harness/learning/conventions.md`.

@@ -2,8 +2,8 @@
 
 Where things live, and where to extend. Updated when a new area appears.
 
-> Seeded before Phase 1. Entries marked `(planned)` are not built yet - the
-> Design Agent must verify before relying on them.
+> Phase 1 established the content, backend API/service, frontend component, and
+> typed-client seams. Later AI and integration areas remain planned.
 
 ## Areas
 
@@ -21,13 +21,15 @@ Where things live, and where to extend. Updated when a new area appears.
 
 ## Key seams
 
-- `ContentService` (planned) is the **only** reader of `content/`. RAG ingestion,
+- `ContentService` is the **only** reader of `content/`. RAG ingestion,
   API routes and MCP tools all go through it. Never open the JSON directly.
-- `AIProvider` and `EmbeddingProvider` (planned) are separate abstractions on
-  purpose - they have different deployment constraints. See `decisions.md`.
-- `frontend/src/lib/api.ts` (planned) is the only place `fetch` is called.
+- `AIProvider` and `EmbeddingProvider` are not yet built; keep them as separate
+  abstractions because they have different deployment constraints. See
+  `decisions.md`.
+- `frontend/src/lib/api.ts` is the only place `fetch` is called.
 
-## Not yet established
+## Test layout
 
-Phase 1 has not run. After it completes, this file should name the real modules,
-their entry points, and the actual test layout.
+- Backend behaviour lives in `backend/tests/`, with fixture content isolated
+  from the real portfolio except for one validation test.
+- Frontend component behaviour is colocated as `*.test.tsx` under `frontend/src/`.

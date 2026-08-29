@@ -56,3 +56,44 @@ describe('SkillsExplorer', () => {
     expect(screen.getByText(/no skills to show/i)).toBeInTheDocument()
   })
 })
+
+describe('SkillsExplorer — evidence explorer', () => {
+  it('labels a skill that has no evidence as unproven', () => {
+    render(<SkillsExplorer content={content} />)
+
+    // Honesty is the design statement: unproven skills are shown, not hidden.
+    expect(screen.getByRole('button', { name: /java/i })).toHaveAttribute(
+      'data-proven',
+      'false',
+    )
+    expect(screen.getByRole('button', { name: /python/i })).toHaveAttribute(
+      'data-proven',
+      'true',
+    )
+  })
+
+  it('summarises how much of the skill set is evidence-backed', () => {
+    render(<SkillsExplorer content={content} />)
+
+    expect(screen.getByText(/1 of 2 skills evidenced/i)).toBeInTheDocument()
+  })
+
+  it('selecting a second skill closes the first', async () => {
+    const user = userEvent.setup()
+    render(<SkillsExplorer content={content} />)
+
+    await user.click(screen.getByRole('button', { name: 'Python' }))
+    expect(screen.getByText(/ai engineer at test company/i)).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'Java' }))
+    expect(screen.queryByText(/ai engineer at test company/i)).not.toBeInTheDocument()
+  })
+
+  it('names the source file the evidence comes from', async () => {
+    const user = userEvent.setup()
+    render(<SkillsExplorer content={content} />)
+
+    await user.click(screen.getByRole('button', { name: 'Python' }))
+    expect(screen.getByText(/content\/experience\.json/i)).toBeInTheDocument()
+  })
+})

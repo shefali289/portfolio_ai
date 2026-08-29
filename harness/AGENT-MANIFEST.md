@@ -107,6 +107,14 @@ Every task below has a brief in `tasks/planned/<slug>/task.md`, so
 
 Detail: [`docs/plan.md`](../docs/plan.md).
 
+### Improvements
+
+Non-phase work. Unnumbered, on `improvement/` or `fix/` branches.
+
+| Slug | Description | Status |
+|---|---|---|
+| `visual-design` | Art direction + Evidence Explorer; re-skins Phase 2 before the AI phases build on it | **active** — planned 2026-08-30 |
+
 ### Future candidates
 
 Named so `/plan <slug>` resolves. No brief yet — `/plan` writes one.

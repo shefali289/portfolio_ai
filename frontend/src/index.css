@@ -1,5 +1,91 @@
 @import 'tailwindcss';
 
+/* ---------------------------------------------------------------------------
+   Design tokens — the whole identity lives here.
+
+   Concept: "Evidence". This portfolio's claim is that everything traces to a
+   source, so the design makes provenance visible: monospace for metadata,
+   ink-dark ground, one signal colour reserved for proof and interaction.
+
+   Dark is the designed default and light is a first-class alternate; both are
+   driven by prefers-color-scheme. There is no toggle — Phase 6 owns Engineer
+   Mode and should own that control.
+--------------------------------------------------------------------------- */
+
+@theme {
+  --font-display: 'Space Grotesk', 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+
+  /* Ink — the dark ground, cool and slightly blue so the signal reads warm. */
+  --color-ink-950: #070a0f;
+  --color-ink-900: #0b1017;
+  --color-ink-850: #101722;
+  --color-ink-800: #16202e;
+  --color-ink-700: #1f2c3d;
+  --color-ink-600: #2b3a4f;
+
+  /* Signal — reserved for proof, focus and interaction. Used sparingly. */
+  --color-signal-300: #7ff3d5;
+  --color-signal-400: #37e0b0;
+  --color-signal-500: #12c295;
+  --color-signal-600: #0a9a77;
+  --color-signal-700: #08765c;
+
+  /* Paper — the light alternate. */
+  --color-paper-50: #fbfbf9;
+  --color-paper-100: #f4f4f0;
+  --color-paper-200: #e7e7e1;
+
+  --radius-card: 1rem;
+  --radius-pill: 999px;
+
+  --shadow-lift: 0 1px 2px rgb(0 0 0 / 0.04), 0 8px 24px -12px rgb(0 0 0 / 0.18);
+}
+
+/* ---------------------------------------------------------------------------
+   Semantic surface variables. Components reference these, never raw palette
+   values, so the two schemes stay in step and a third would be cheap.
+--------------------------------------------------------------------------- */
+
+:root {
+  color-scheme: light dark;
+
+  --surface-base: var(--color-paper-50);
+  --surface-raised: #ffffff;
+  --surface-sunken: var(--color-paper-100);
+  --border-subtle: var(--color-paper-200);
+  --border-strong: #d2d2ca;
+
+  --text-primary: #10151c;
+  --text-secondary: #444e5c;
+  --text-muted: #6b7480;
+  --text-signal: var(--color-signal-700);
+
+  --accent: var(--color-signal-600);
+  --accent-contrast: #ffffff;
+  --accent-wash: rgb(18 194 149 / 0.10);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --surface-base: var(--color-ink-950);
+    --surface-raised: var(--color-ink-850);
+    --surface-sunken: var(--color-ink-900);
+    --border-subtle: var(--color-ink-700);
+    --border-strong: var(--color-ink-600);
+
+    --text-primary: #eef2f6;
+    --text-secondary: #a9b6c5;
+    --text-muted: #77869a;
+    --text-signal: var(--color-signal-300);
+
+    --accent: var(--color-signal-400);
+    --accent-contrast: var(--color-ink-950);
+    --accent-wash: rgb(55 224 176 / 0.12);
+  }
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;
@@ -8,54 +94,187 @@
   body {
     margin: 0;
     min-width: 320px;
-    font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+    background-color: var(--surface-base);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    letter-spacing: -0.022em;
   }
 
   a, button {
     -webkit-tap-highlight-color: transparent;
   }
 
+  /* One focus treatment everywhere, so nothing is reachable but invisible. */
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     html {
       scroll-behavior: auto;
+    }
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
     }
   }
 }
 
 @layer components {
+  /* --- type ------------------------------------------------------------- */
   .section-heading {
-    @apply mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl;
+    @apply mt-2 text-3xl font-bold tracking-tight sm:text-4xl;
+    color: var(--text-primary);
   }
 
-  .section-card {
-    @apply rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6;
-  }
-
+  /* Metadata reads as data: mono, spaced, signal-coloured. */
   .eyebrow {
-    @apply text-sm font-semibold uppercase tracking-[0.2em] text-cyan-700;
+    @apply text-xs font-medium uppercase;
+    font-family: var(--font-mono);
+    letter-spacing: 0.18em;
+    color: var(--text-signal);
   }
 
-  .tag {
-    @apply rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600;
+  .lede {
+    @apply text-base leading-8 sm:text-lg;
+    color: var(--text-secondary);
   }
 
-  .button-primary {
-    @apply inline-flex min-h-11 items-center rounded-full bg-slate-950 px-5 text-sm font-semibold text-white hover:bg-cyan-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-700;
+  .card-title {
+    @apply text-lg font-semibold;
+    font-family: var(--font-display);
+    color: var(--text-primary);
   }
 
-  .button-secondary {
-    @apply inline-flex min-h-11 items-center rounded-full border border-slate-300 bg-white px-5 text-sm font-semibold text-slate-800 hover:border-cyan-600 hover:text-cyan-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-700;
+  /* Dates, locations, counts — anything that is data about the content. */
+  .meta {
+    @apply text-xs;
+    font-family: var(--font-mono);
+    color: var(--text-muted);
   }
 
-  .filter-button, .skill-button {
-    @apply min-h-11 rounded-full border border-slate-300 bg-white px-4 text-sm font-medium text-slate-700 hover:border-cyan-600 hover:text-cyan-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-700 aria-pressed:border-cyan-700 aria-pressed:bg-cyan-50 aria-pressed:text-cyan-900;
+  .body-text {
+    @apply leading-7;
+    color: var(--text-secondary);
   }
 
-  .text-link, .nav-link {
-    @apply font-semibold text-cyan-800 underline-offset-4 hover:underline focus-visible:rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-700;
+  /* Large index numerals on project cards. */
+  .numeral {
+    @apply text-5xl font-bold leading-none;
+    font-family: var(--font-display);
+    color: var(--border-strong);
+  }
+
+  /* --- surfaces --------------------------------------------------------- */
+  .section-card {
+    @apply rounded-2xl p-5 sm:p-6;
+    background-color: var(--surface-raised);
+    border: 1px solid var(--border-subtle);
+    box-shadow: var(--shadow-lift);
   }
 
   .empty-state {
-    @apply rounded-2xl border border-dashed border-slate-300 bg-white p-6 text-slate-600;
+    @apply rounded-2xl p-6;
+    border: 1px dashed var(--border-strong);
+    background-color: var(--surface-sunken);
+    color: var(--text-muted);
+  }
+
+  /* --- tags ------------------------------------------------------------- */
+  .tag {
+    @apply rounded-full px-3 py-1 text-xs;
+    font-family: var(--font-mono);
+    background-color: var(--surface-sunken);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+  }
+
+  /* --- controls --------------------------------------------------------- */
+  .button-primary {
+    @apply inline-flex min-h-11 items-center rounded-full px-5 text-sm font-semibold transition-colors;
+    background-color: var(--accent);
+    color: var(--accent-contrast);
+  }
+  .button-primary:hover {
+    filter: brightness(1.08);
+  }
+
+  .button-secondary {
+    @apply inline-flex min-h-11 items-center rounded-full px-5 text-sm font-semibold transition-colors;
+    background-color: transparent;
+    border: 1px solid var(--border-strong);
+    color: var(--text-primary);
+  }
+  .button-secondary:hover {
+    border-color: var(--accent);
+    color: var(--text-signal);
+  }
+
+  .filter-button, .skill-button {
+    @apply min-h-11 rounded-full px-4 text-sm font-medium transition-colors;
+    background-color: transparent;
+    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary);
+  }
+  .filter-button:hover, .skill-button:hover {
+    border-color: var(--accent);
+    color: var(--text-signal);
+  }
+  .filter-button[aria-pressed='true'],
+  .skill-button[aria-expanded='true'] {
+    background-color: var(--accent-wash);
+    border-color: var(--accent);
+    color: var(--text-signal);
+  }
+
+  .text-link, .nav-link {
+    @apply font-medium underline-offset-4 hover:underline;
+    color: var(--text-signal);
+  }
+
+  .nav-link {
+    font-family: var(--font-mono);
+    @apply text-xs uppercase tracking-widest;
+  }
+
+  /* --- provenance ------------------------------------------------------- */
+  /* The signature motif: a small mono label saying where a claim comes from. */
+  .provenance {
+    @apply inline-flex items-center gap-1.5 text-xs;
+    font-family: var(--font-mono);
+    color: var(--text-muted);
+  }
+
+  .rule {
+    height: 1px;
+    background: linear-gradient(90deg, var(--border-strong), transparent);
+  }
+}
+
+@layer utilities {
+  /* Scroll reveal. Content is visible by default and animation is *added* —
+     never content hidden behind an observer that might not run. */
+  .reveal {
+    opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal-armed {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    .reveal-in {
+      opacity: 1;
+      transform: none;
+      transition: opacity 520ms ease-out, transform 520ms ease-out;
+    }
   }
 }

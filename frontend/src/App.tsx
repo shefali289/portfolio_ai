@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { Contact } from './components/Contact'
 import { Credentials } from './components/Credentials'
@@ -7,6 +7,7 @@ import { ExperienceTimeline } from './components/ExperienceTimeline'
 import { Profile } from './components/Profile'
 import { ProjectGallery } from './components/ProjectGallery'
 import { SkillsExplorer } from './components/SkillsExplorer'
+import { Reveal } from './components/Reveal'
 import { getContent } from './lib/api'
 import type { PortfolioContent } from './types/content'
 
@@ -15,13 +16,40 @@ type State =
   | { status: 'error'; message: string }
   | { status: 'ready'; content: PortfolioContent }
 
-const navigation = [
-  ['Experience', '#experience'],
-  ['Projects', '#projects'],
-  ['Skills', '#skills'],
-  ['Credentials', '#credentials'],
-  ['Contact', '#contact'],
+const sections = [
+  { id: 'experience', label: 'Experience', eyebrow: 'Career' },
+  { id: 'projects', label: 'Projects', eyebrow: 'Selected work' },
+  { id: 'skills', label: 'Skills', eyebrow: 'Evidence over ratings' },
+  { id: 'credentials', label: 'Credentials', eyebrow: 'Learning and recognition' },
+  { id: 'contact', label: 'Contact', eyebrow: 'Get in touch' },
 ] as const
+
+/** Highlights the section currently in view, for the sticky rail. */
+function useActiveSection(enabled: boolean): string {
+  const [active, setActive] = useState<string>(sections[0].id)
+
+  useEffect(() => {
+    if (!enabled || typeof IntersectionObserver !== 'function') return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0]
+        if (visible) setActive(visible.target.id)
+      },
+      { rootMargin: '-20% 0px -60% 0px', threshold: [0.1, 0.5] },
+    )
+
+    for (const section of sections) {
+      const node = document.getElementById(section.id)
+      if (node) observer.observe(node)
+    }
+    return () => observer.disconnect()
+  }, [enabled])
+
+  return active
+}
 
 export default function App() {
   const [state, setState] = useState<State>({ status: 'loading' })
@@ -39,7 +67,9 @@ export default function App() {
           message: error instanceof Error ? error.message : 'Something went wrong',
         })
       })
-    return () => { cancelled = true }
+    return () => {
+      cancelled = true
+    }
   }, [])
 
   useEffect(() => load(), [load])
@@ -49,76 +79,149 @@ export default function App() {
     load()
   }
 
+  const ready = state.status === 'ready'
+  const active = useActiveSection(ready)
+
+  const evidence = useMemo(() => {
+    if (state.status !== 'ready') return undefined
+    return {
+      roles: state.content.experience.roles.length,
+      projects: state.content.projects.projects.length,
+      skills: state.content.skills.groups.flatMap((group) => group.skills).length,
+    }
+  }, [state])
+
   return (
-    <div className="min-h-screen overflow-x-hidden bg-[#f7f8fa] text-slate-900">
-      <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-slate-950 focus:px-4 focus:py-3 focus:text-white">
+    <div className="min-h-screen overflow-x-hidden">
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:px-4 focus:py-3"
+        style={{ backgroundColor: 'var(--accent)', color: 'var(--accent-contrast)' }}
+      >
         Skip to content
       </a>
-      <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-[#f7f8fa]/95 backdrop-blur">
+
+      <header
+        className="sticky top-0 z-40 backdrop-blur"
+        style={{
+          borderBottom: '1px solid var(--border-subtle)',
+          backgroundColor: 'color-mix(in srgb, var(--surface-base) 88%, transparent)',
+        }}
+      >
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
-          <a href="#main" className="font-bold tracking-tight text-slate-950">Engineer portfolio</a>
+          <a href="#main" className="eyebrow" style={{ textDecoration: 'none' }}>
+            ◆ Evidence-backed portfolio
+          </a>
           <nav aria-label="Portfolio sections" className="hidden md:block">
-            <ul className="flex items-center gap-5 text-sm font-medium text-slate-600">
-              {navigation.map(([label, href]) => <li key={href}><a className="nav-link" href={href}>{label}</a></li>)}
+            <ul className="flex items-center gap-6">
+              {sections.map((section) => (
+                <li key={section.id}>
+                  <a
+                    className="nav-link"
+                    href={`#${section.id}`}
+                    aria-current={active === section.id ? 'true' : undefined}
+                    style={
+                      active === section.id
+                        ? { color: 'var(--text-signal)' }
+                        : { color: 'var(--text-muted)' }
+                    }
+                  >
+                    {section.label}
+                  </a>
+                </li>
+              ))}
             </ul>
           </nav>
         </div>
       </header>
 
-      <main id="main" className="mx-auto w-full max-w-6xl px-4 pb-20 sm:px-6">
+      <main id="main" className="mx-auto w-full max-w-6xl px-4 pb-24 sm:px-6">
         {state.status === 'loading' && (
-          <div role="status" aria-live="polite" className="space-y-4 py-20">
+          <div role="status" aria-live="polite" className="space-y-4 py-24">
             <span className="sr-only">Loading portfolio…</span>
-            <div aria-hidden className="h-12 w-3/4 max-w-xl motion-safe:animate-pulse rounded-2xl bg-slate-200" />
-            <div aria-hidden className="h-6 w-1/2 max-w-sm motion-safe:animate-pulse rounded-xl bg-slate-200" />
+            <div
+              aria-hidden
+              className="h-14 w-3/4 max-w-xl rounded-2xl motion-safe:animate-pulse"
+              style={{ backgroundColor: 'var(--surface-sunken)' }}
+            />
+            <div
+              aria-hidden
+              className="h-6 w-1/2 max-w-sm rounded-xl motion-safe:animate-pulse"
+              style={{ backgroundColor: 'var(--surface-sunken)' }}
+            />
           </div>
         )}
 
         {state.status === 'error' && (
-          <div role="alert" className="my-16 rounded-3xl border border-red-200 bg-red-50 p-6">
-            <h1 className="text-xl font-semibold text-red-900">Could not load the portfolio.</h1>
-            <p className="mt-2 text-red-800">{state.message}</p>
-            <button type="button" onClick={retry} className="mt-5 inline-flex min-h-11 items-center rounded-full bg-red-900 px-5 font-semibold text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-red-900">Try again</button>
+          <div
+            role="alert"
+            className="my-16 rounded-3xl p-6"
+            style={{
+              border: '1px solid var(--border-strong)',
+              backgroundColor: 'var(--surface-raised)',
+            }}
+          >
+            <h1 className="card-title text-xl">Could not load the portfolio.</h1>
+            <p className="body-text mt-2">{state.message}</p>
+            <button type="button" onClick={retry} className="button-primary mt-5">
+              Try again
+            </button>
           </div>
         )}
 
         {state.status === 'ready' && (
-          <div className="space-y-24">
-            <Profile profile={state.content.profile} />
+          <div className="space-y-28">
+            <Profile profile={state.content.profile} evidence={evidence} />
 
-            <section id="experience" aria-labelledby="experience-heading" className="scroll-mt-24">
-              <p className="eyebrow">Career</p>
-              <h2 id="experience-heading" className="section-heading">Experience</h2>
-              <div className="mt-8"><ExperienceTimeline roles={state.content.experience.roles} /></div>
-            </section>
-
-            <section id="projects" aria-labelledby="projects-heading" className="scroll-mt-24">
-              <p className="eyebrow">Selected work</p>
-              <h2 id="projects-heading" className="section-heading">Projects</h2>
-              <div className="mt-8"><ProjectGallery projects={state.content.projects.projects} /></div>
-            </section>
-
-            <section id="skills" aria-labelledby="skills-heading" className="scroll-mt-24">
-              <p className="eyebrow">Evidence over ratings</p>
-              <h2 id="skills-heading" className="section-heading">Skills</h2>
-              <div className="mt-8"><SkillsExplorer content={state.content} /></div>
-            </section>
-
-            <section id="credentials" aria-labelledby="credentials-heading" className="scroll-mt-24">
-              <p className="eyebrow">Learning and recognition</p>
-              <h2 id="credentials-heading" className="section-heading">Credentials</h2>
-              <div className="mt-8"><Credentials profile={state.content.profile} achievements={state.content.engineering_notes.achievements} /></div>
-            </section>
+            {sections
+              .filter((section) => section.id !== 'contact')
+              .map((section) => (
+                <Reveal key={section.id}>
+                  <section
+                    id={section.id}
+                    aria-labelledby={`${section.id}-heading`}
+                    className="scroll-mt-24"
+                  >
+                    <p className="eyebrow">{section.eyebrow}</p>
+                    <h2 id={`${section.id}-heading`} className="section-heading">
+                      {section.label}
+                    </h2>
+                    <div className="rule mt-5" />
+                    <div className="mt-8">
+                      {section.id === 'experience' && (
+                        <ExperienceTimeline roles={state.content.experience.roles} />
+                      )}
+                      {section.id === 'projects' && (
+                        <ProjectGallery projects={state.content.projects.projects} />
+                      )}
+                      {section.id === 'skills' && (
+                        <SkillsExplorer content={state.content} />
+                      )}
+                      {section.id === 'credentials' && (
+                        <Credentials
+                          profile={state.content.profile}
+                          achievements={state.content.engineering_notes.achievements}
+                        />
+                      )}
+                    </div>
+                  </section>
+                </Reveal>
+              ))}
 
             <EngineeringNotes notes={state.content.engineering_notes} />
-            <Contact profile={state.content.profile} />
+
+            <Reveal>
+              <Contact profile={state.content.profile} />
+            </Reveal>
           </div>
         )}
       </main>
 
-      <footer className="border-t border-slate-200">
-        <div className="mx-auto w-full max-w-6xl px-4 py-8 text-sm text-slate-500 sm:px-6">
-          Built with React, FastAPI, and resume-backed structured content.
+      <footer style={{ borderTop: '1px solid var(--border-subtle)' }}>
+        <div className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6">
+          <p className="meta">
+            React · FastAPI · every claim rendered from content/*.json
+          </p>
         </div>
       </footer>
     </div>

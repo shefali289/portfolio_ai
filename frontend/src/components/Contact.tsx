@@ -12,13 +12,39 @@ export function Contact({ profile }: ContactProps) {
   ].filter((item) => item.href)
 
   return (
-    <section id="contact" aria-labelledby="contact-heading" className="rounded-3xl bg-slate-950 px-6 py-10 text-white sm:px-10">
-      <p className="text-sm font-semibold uppercase tracking-[0.25em] text-cyan-300">Contact</p>
-      <h2 id="contact-heading" className="mt-3 text-3xl font-bold">Let’s build something useful.</h2>
-      <p className="mt-3 max-w-2xl text-slate-300">Connect through the channels provided in the portfolio.</p>
-      <div className="mt-6 flex flex-wrap gap-3">
-        {links.map((item) => <a key={item.label} href={item.href} className="inline-flex min-h-11 items-center rounded-full border border-slate-600 px-4 text-sm font-semibold hover:border-cyan-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-300">{item.label}</a>)}
+    <section
+      id="contact"
+      aria-labelledby="contact-heading"
+      className="rounded-3xl px-6 py-12 sm:px-12 sm:py-16"
+      style={{
+        backgroundColor: 'var(--surface-raised)',
+        border: '1px solid var(--border-subtle)',
+      }}
+    >
+      <p className="eyebrow">Contact</p>
+
+      <h2
+        id="contact-heading"
+        className="mt-4 max-w-2xl text-3xl font-bold leading-tight sm:text-5xl"
+        style={{ color: 'var(--text-primary)' }}
+      >
+        Let’s build something useful.
+      </h2>
+
+      <p className="lede mt-4 max-w-2xl">
+        Every claim on this page links back to the work behind it. Happy to talk
+        through any of it.
+      </p>
+
+      <div className="mt-8 flex flex-wrap gap-3">
+        {links.map((item) => (
+          <a key={item.label} href={item.href} className="button-secondary">
+            {item.label}
+          </a>
+        ))}
       </div>
+
+      <p className="meta mt-8">content/profile.json · links only, no contact form</p>
     </section>
   )
 }

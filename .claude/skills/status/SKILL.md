@@ -1,6 +1,9 @@
 ---
+name: status
 description: Where the active feature stands - completed steps, remaining steps, test state
+when_to_use: Use when asked where the active harness feature stands.
 allowed-tools: Read, Glob, Grep, Bash
+disable-model-invocation: true
 ---
 
 # /status — Feature State

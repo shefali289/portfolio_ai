@@ -1,6 +1,9 @@
 ---
+name: complete
 description: Close the active feature - gates, learning, PR, archive
+when_to_use: Use when closing out the active harness task: report, learning, PR, archive.
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
+disable-model-invocation: true
 ---
 
 # /complete — Completion, Learning, PR

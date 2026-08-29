@@ -25,7 +25,11 @@ LEARNING_CAPS = {
     "user-overrides.md": 80,
 }
 HANDOFF_CAP = 60
-TASK_SECTIONS = ["## Gate Log", "## Decisions Taken", "## PR"]
+TASK_SECTIONS = [
+    "## Acceptance Criteria", "## Tests First", "## TDD Evidence",
+    "## Decisions Taken", "## User Overrides", "## Lessons Learned",
+    "## Validation", "## PR Summary",
+]
 
 results: list[tuple[str, str, str]] = []
 
@@ -145,12 +149,14 @@ def check_task_sections() -> None:
         n += 1
         text = t.read_text(encoding="utf-8")
         miss = [s for s in TASK_SECTIONS if s not in text]
+        if "| **G0** branch" not in text and "G0" not in text:
+            miss.append("## Gates")
         if miss:
-            bad.append(f"{d.name} missing {','.join(s[3:] for s in miss)}")
+            bad.append(f"{d.name} missing {', '.join(s.lstrip('# ') for s in miss)}")
     if bad:
         record("FAIL", "task sections", "; ".join(bad))
     else:
-        record("PASS", "task sections", f"{n} tasks have Gate Log/Decisions/PR")
+        record("PASS", "task sections", f"{n} tasks carry all {len(TASK_SECTIONS)} lifecycle sections")
 
 
 def check_skills_index() -> None:

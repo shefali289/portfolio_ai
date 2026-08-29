@@ -1,6 +1,9 @@
 ---
+name: health
 description: Harness health check - learning caps, gates, drift, unused skills
+when_to_use: Use when asked whether the development harness itself is still healthy.
 allowed-tools: Read, Glob, Grep, Bash
+disable-model-invocation: true
 ---
 
 # /health — Harness Health

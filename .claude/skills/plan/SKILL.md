@@ -1,7 +1,10 @@
 ---
+name: plan
 description: Start a feature or phase - runs Design then Planning agents, writes task.md
+when_to_use: Use when starting a phase or feature: 'start phase 1', '/plan foundation', 'add feature: X'.
 argument-hint: <phase number | feature description>
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
+disable-model-invocation: true
 ---
 
 # /plan — Design + Planning

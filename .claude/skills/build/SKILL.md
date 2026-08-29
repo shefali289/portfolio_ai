@@ -1,7 +1,10 @@
 ---
+name: build
 description: Implement the active feature - runs Test agent (RED) then Developer agent (GREEN)
+when_to_use: Use when implementing the active harness task after /plan has run.
 argument-hint: [step number to resume from]
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
+disable-model-invocation: true
 ---
 
 # /build — Test + Develop

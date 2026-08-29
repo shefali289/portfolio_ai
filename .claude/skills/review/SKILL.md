@@ -1,6 +1,9 @@
 ---
+name: review
 description: Review the active feature - checklist, tests, lint, typecheck. Verifies only.
+when_to_use: Use when verifying the active harness task before completing it.
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
+disable-model-invocation: true
 ---
 
 # /review — Review Agent

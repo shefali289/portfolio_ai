@@ -28,6 +28,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 SCRIPTS = ROOT / "harness" / "scripts"
 
+SEC = chr(10) + "## "
+TOP = chr(10) + "# "
+DASH = chr(8212)
+
 results: list[tuple[str, str, str]] = []
 
 
@@ -145,44 +149,108 @@ def check_content() -> None:
 
 
 def check_gate_log(task: Path) -> None:
-    t = (task / "task.md")
+    """Every gate must carry a real result. FAIL blocks; PARTIAL/SKIPPED do not."""
+    t = task / "task.md"
     if not t.exists():
         record("FAIL", "gate log", "task.md missing")
         return
     text = t.read_text(encoding="utf-8")
-    if "## Gate Log" not in text:
-        record("FAIL", "gate log", "task.md has no ## Gate Log")
+
+    rows = re.findall(r"^\|\s*\*\*(G[0-5])\*\*[^|]*\|[^|]*\|([^|]*)\|",
+                      text, re.M)
+    if not rows:
+        record("FAIL", "gate log", "no G0-G5 results table in task.md")
         return
-    section = text.split("## Gate Log", 1)[1].split("\n## ", 1)[0]
-    recorded = set(re.findall(r"\bG([0-5])\b.*?\b(PASS|FAIL|PARTIAL|SKIPPED)\b",
-                              section, re.I))
-    gates = {g for g, _ in recorded}
-    failed = [g for g, r in recorded if r.upper() == "FAIL"]
+
+    blank, failed, recorded = [], [], []
+    for gate, result in rows:
+        r = result.strip().strip("*` ")
+        if not r or r == DASH:
+            blank.append(gate)
+        elif r.upper() == "FAIL":
+            failed.append(gate)
+        else:
+            recorded.append(gate + "=" + r.upper())
+
     if failed:
-        record("FAIL", "gate log", f"gate(s) recorded FAIL: G{', G'.join(sorted(failed))}")
-    elif len(gates) < 5:
-        missing = sorted({"0", "1", "2", "3", "4"} - gates)
-        record("FAIL", "gate log", "no result recorded for G" + ", G".join(missing))
+        record("FAIL", "gate log", "recorded FAIL: " + ", ".join(failed))
+    elif blank:
+        record("FAIL", "gate log", "no result for " + ", ".join(blank))
     else:
-        record("PASS", "gate log", f"{len(gates)} gates recorded, none failing")
+        record("PASS", "gate log", ", ".join(recorded))
+
+
+def check_task_record(task: Path) -> None:
+    """The task doc is the durable artefact - it must hold the whole story."""
+    t = task / "task.md"
+    if not t.exists():
+        record("FAIL", "task record", "task.md missing")
+        return
+    text = t.read_text(encoding="utf-8")
+
+    ac = text.split("## Acceptance Criteria", 1)
+    if len(ac) < 2:
+        record("FAIL", "acceptance criteria", "no ## Acceptance Criteria section")
+    else:
+        block = ac[1].split(SEC, 1)[0]
+        done = len(re.findall(r"- \[x\]", block, re.I))
+        todo = len(re.findall(r"- \[ \]", block))
+        if done + todo == 0:
+            record("FAIL", "acceptance criteria", "section is empty")
+        elif todo:
+            record("FAIL", "acceptance criteria", f"{todo} of {done + todo} unticked")
+        else:
+            record("PASS", "acceptance criteria", f"all {done} ticked")
+
+    for head, label in (("## TDD Evidence", "TDD evidence in task"),
+                        ("## PR Summary", "PR summary in task")):
+        if head not in text:
+            record("FAIL", label, "no " + head + " section")
+            continue
+        block = text.split(head, 1)[1].split(SEC, 1)[0].split(TOP, 1)[0]
+        cells = re.findall(r"^\|\s*\*\*([^*]+)\*\*\s*\|([^|]*)\|", block, re.M)
+        if not cells:
+            record("FAIL", label, "no filled table rows")
+            continue
+        empty = [k.strip() for k, v in cells
+                 if not v.strip().strip("*` ") or v.strip().strip("*` ") == DASH]
+        if empty:
+            record("FAIL", label, "not filled in: " + ", ".join(empty))
+        else:
+            record("PASS", label, str(len(cells)) + " rows recorded")
+
+    lessons = text.split("## Lessons Learned", 1)
+    if len(lessons) < 2:
+        record("FAIL", "lessons in task", "no ## Lessons Learned section")
+    else:
+        block = lessons[1].split(SEC, 1)[0].split(TOP, 1)[0]
+        bullets = [l for l in block.splitlines()
+                   if l.strip().startswith("- **") and len(l.split(":**", 1)[-1].strip()) > 3]
+        if len(bullets) < 3:
+            record("FAIL", "lessons in task",
+                   str(len(bullets)) + "/3 filled (Worked / Cost time / Do differently)")
+        else:
+            record("PASS", "lessons in task", "all 3 recorded")
 
 
 def check_learning(slug: str) -> None:
+    """Learning is what makes the next feature cheaper - it is not optional."""
     lp = ROOT / "harness" / "learning"
     lessons = (lp / "lessons-learned.md").read_text(encoding="utf-8")
     if slug in lessons:
-        record("PASS", "learning updated", f"lessons-learned has an entry for '{slug}'")
+        record("PASS", "learning updated", "lessons-learned has an entry for " + slug)
     else:
         record("FAIL", "learning updated",
-               f"no '{slug}' entry in lessons-learned.md - /complete step 3")
+               "no " + slug + " entry in lessons-learned.md - /complete step 3")
+
     overrides = (lp / "user-overrides.md").read_text(encoding="utf-8")
     entries = len(re.findall(r"^### ", overrides, re.M))
     promoted = overrides.count("**Rule now:**")
     if promoted < entries:
         record("FAIL", "overrides promoted",
-               f"{entries} recorded, {promoted} promoted - each needs a rule")
+               str(entries) + " recorded, " + str(promoted) + " promoted - each needs a rule")
     else:
-        record("PASS", "overrides promoted", f"{entries} recorded, all promoted")
+        record("PASS", "overrides promoted", str(entries) + " recorded, all promoted")
 
 
 def check_completion_docs(task: Path) -> None:
@@ -217,6 +285,7 @@ def main() -> int:
     check_frontend()
     check_content()
     check_gate_log(task)
+    check_task_record(task)
     check_learning(slug)
     check_completion_docs(task)
 

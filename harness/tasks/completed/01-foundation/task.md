@@ -5,7 +5,7 @@
 | **Slug** | `01-foundation` |
 | **Branch** | `feature/01-foundation` |
 | **Phase** | Phase 1 |
-| **Status** | complete — G0–G5 passed; awaiting commit/push approval |
+| **Status** | complete — G0–G5 passed; PR #1 open |
 | **Started / Completed** | 2026-08-29 / 2026-08-29 |
 
 > **Brief only.** `/plan 01-foundation` fills in Design, Plan and the rest. Every stage
@@ -314,8 +314,8 @@ the API; no secrets committed and `.env` is gitignored.
 |---|---|
 | **Title** | `feat: establish portfolio foundation` |
 | **Title** | `feat: establish portfolio foundation` |
-| **URL** | NOT CREATED — branch is local and `gh` is unauthenticated |
-| **Merged** | No — commit, push, and PR remain approval-gated |
+| **URL** | https://github.com/shefali289/portfolio_ai/pull/1 |
+| **Merged** | No — PR is open |
 
 **What it adds:** Resume-backed content schemas, a validated FastAPI read path,
 and a React/Vite shell that renders the live profile through one typed client.

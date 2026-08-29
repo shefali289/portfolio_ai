@@ -71,7 +71,7 @@ overrides. Removed Phase 1 “planned/not established” markers now made obsole
 
 ## PR
 
-Not created. Commit, push, and PR creation remain separately approval-gated.
+Created and open: https://github.com/shefali289/portfolio_ai/pull/1
 
 ## Suggested Commit Message
 

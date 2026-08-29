@@ -4,45 +4,35 @@ Pointer to what is in flight. Maintained by `/plan` and `/complete`.
 
 ---
 
-| | |
-|---|---|
-| **Active task** | Visual Design |
-| **Slug** | `visual-design` |
-| **Branch** | `improvement/visual-design` (from `main`) |
-| **Phase** | improvement, between Phase 2 and Phase 3 |
-| **Stage** | built — G0–G3 passed, awaiting `/review` |
-| **Task file** | `harness/tasks/active/visual-design/task.md` |
-| **Started** | 2026-08-30 |
+No task is in flight. `visual-design` completed 2026-08-30 and is archived in
+`harness/tasks/completed/visual-design/`.
 
-## Next command
+## Next action
 
-```
-/review
+The PR for `improvement/visual-design` is **not open** — GitHub CLI is still
+unauthenticated:
+
+```text
+gh auth login -h github.com
 ```
 
-All 8 steps done. 23/23 tests, lint + tsc clean. Commits staged, unapproved.
+Body is ready at `harness/tasks/completed/visual-design/pull-request.md`.
+Compare URL:
+https://github.com/shefali289/portfolio_ai/compare/main...improvement/visual-design
 
-## Handoffs written
+## Next lifecycle command
 
-- `handoffs/1-design.md` — Design → Planning
-- `handoffs/2-plan.md` — Planning → Test
-- `handoffs/4-develop.md` — Developer → Review
+```
+/plan 03-rag-assistant
+```
 
-## Gates passed
+Phase 3: chunking, embeddings, FAISS, the provider abstractions, `/api/ai/chat`
+and Ask My Portfolio. It builds on the design system this task established — the
+`@layer components` seam and the `.provenance` motif are the hooks the AI
+surfaces should reuse rather than restyle.
 
-- **G0** branch — PASS, 2026-08-30
-- **G1** design — PASS, 2026-08-30
-- **G2** test RED — **PARTIAL**, 2026-08-30 (one test was not truly RED)
-- **G3** build GREEN — PASS, 2026-08-30
+## Owed from this task
 
-## Open questions blocking progress
-
-None.
-
-## Phase 2 status
-
-Merged as **PR #2**; `origin/main` carries it. `improvement/visual-design`
-branches from `main` — an earlier plan assumed a stack off the unmerged Phase 2
-branch, which G0 disproved.
-
-After this task, the next lifecycle command is `/plan 03-rag-assistant`.
+- A real 375px and device-contrast check in a browser (recorded SKIPPED at G4).
+- Render tests for Credentials, Contact and Engineering Notes — carried over
+  from Phase 2's LOW finding and still outstanding.

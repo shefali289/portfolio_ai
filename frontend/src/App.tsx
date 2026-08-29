@@ -119,7 +119,7 @@ export default function App() {
                   <a
                     className="nav-link"
                     href={`#${section.id}`}
-                    aria-current={active === section.id ? 'true' : undefined}
+                    aria-current={active === section.id ? 'location' : undefined}
                     style={
                       active === section.id
                         ? { color: 'var(--text-signal)' }

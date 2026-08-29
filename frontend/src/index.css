@@ -62,7 +62,9 @@
   --text-muted: #6b7480;
   --text-signal: var(--color-signal-700);
 
-  --accent: var(--color-signal-600);
+  /* signal-700, not -600: white on -600 measures 3.56:1, under WCAG AA.
+     -700 gives 5.59:1. Dark mode uses a bright accent with dark text instead. */
+  --accent: var(--color-signal-700);
   --accent-contrast: #ffffff;
   --accent-wash: rgb(18 194 149 / 0.10);
 }

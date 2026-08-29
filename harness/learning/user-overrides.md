@@ -9,19 +9,10 @@ agent's decision, choice of approach, or output.
 
 ## Format
 
-```markdown
-### <date> - <feature>
-- **Agent proposed:** ...
-- **User chose:** ...
-- **Why:** ...
-- **Rule now:** the durable change (and where it was promoted to)
-```
-
-Every entry must end in a promoted rule - into `conventions.md`, `decisions.md`,
-a skill, or `HARNESS-RULES.md`. An override recorded but not promoted will be
-made again.
-
-**Cap: 80 lines.**
+`### <date> - <feature>`, then **Agent proposed** / **User chose** / **Why** /
+**Rule now**. Every entry must end in a rule promoted somewhere durable
+(`conventions.md`, `decisions.md`, a skill, `HARNESS-RULES.md`) — an override
+recorded but not promoted will be made again. **Cap: 80 lines.**
 
 ---
 
@@ -70,3 +61,15 @@ made again.
 - **Rule now:** personal data intentionally excluded from public content must
   also be excluded from docs and reachable git history. Promoted to
   `harness/learning/conventions.md`.
+
+### 2026-08-30 - Design quality is a deliverable
+
+- **Agent proposed:** four options, including leaving the plain Phase 2 layout
+  as-is, and treating visual design as optional polish.
+- **User chose:** redesign now, before the AI phases, and make the UI/UX
+  genuinely distinctive.
+- **Why:** a default-looking portfolio undercuts the work it presents, and
+  Phases 3-5 build UI on top of whatever exists.
+- **Rule now:** a phase that ships UI must state its **art direction**, not only
+  its structure. "Renders correctly" is not "designed", and no phase plan should
+  leave visual design unowned.

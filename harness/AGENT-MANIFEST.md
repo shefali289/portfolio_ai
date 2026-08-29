@@ -113,7 +113,7 @@ Non-phase work. Unnumbered, on `improvement/` or `fix/` branches.
 
 | Slug | Description | Status |
 |---|---|---|
-| `visual-design` | Art direction + Evidence Explorer; re-skins Phase 2 before the AI phases build on it | **active** — planned 2026-08-30 |
+| `visual-design` | Art direction + Evidence Explorer; re-skins Phase 2 before the AI phases build on it | done 2026-08-30 |
 
 ### Future candidates
 

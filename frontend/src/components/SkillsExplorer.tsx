@@ -65,9 +65,18 @@ export function SkillsExplorer({ content }: SkillsExplorerProps) {
 
                 return (
                   <div key={skill.name}>
+                    {/* Described, not renamed: the accessible name stays the
+                        skill itself, and the evidence state is announced after
+                        it. The visible badge is decorative. */}
+                    <span id={`${key}-state`} className="sr-only">
+                      {isProven
+                        ? `${skill.evidence.length} ${skill.evidence.length === 1 ? 'source' : 'sources'} of evidence`
+                        : 'no evidence documented'}
+                    </span>
                     <button
                       type="button"
                       aria-expanded={open}
+                      aria-describedby={`${key}-state`}
                       data-proven={isProven}
                       onClick={() => setSelected(open ? null : key)}
                       className="skill-button w-full text-left"

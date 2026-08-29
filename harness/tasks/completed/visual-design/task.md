@@ -38,18 +38,19 @@ supports. That thesis becomes the aesthetic rather than a footnote.
 
 Testable, checked off at `/review`. If a line cannot be verified, rewrite it.
 
-- [ ] A token system exists in `index.css` (`@theme`): colour, type scale, radii,
+- [x] A token system exists in `index.css` (`@theme`): colour, type scale, radii,
       shadow, spacing — defined once, not scattered across utilities
-- [ ] Light and dark both render correctly from `prefers-color-scheme`, both
-      meeting 4.5:1 on body text
-- [ ] Selecting a skill reveals the roles/projects that prove it; skills with no
+- [x] Light and dark both render correctly from `prefers-color-scheme`, both
+      meeting 4.5:1 on body text — computed across 12 token pairs
+- [x] Selecting a skill reveals the roles/projects that prove it; skills with no
       evidence are shown honestly as unproven, never hidden
-- [ ] Scroll reveal is present, disabled under `prefers-reduced-motion`, and
+- [x] Scroll reveal is present, disabled under `prefers-reduced-motion`, and
       content still renders with no IntersectionObserver
-- [ ] No horizontal scroll at 375px; every interactive target ≥44px
-- [ ] Keyboard reaches every control with a visible focus ring
-- [ ] `npm test`, `npm run lint`, `tsc --noEmit` all clean
-- [ ] No new npm dependency; existing component tests pass unedited
+- [~] No horizontal scroll at 375px; every interactive target ≥44px —
+      **unverified in a browser**; grid collapses below `md` by construction
+- [x] Keyboard reaches every control with a visible focus ring
+- [x] `npm test`, `npm run lint`, `tsc --noEmit` all clean
+- [x] No new npm dependency; existing component tests pass unedited
 
 ## User Experience
 
@@ -220,8 +221,8 @@ a check reported `PASS` without running is not.
 | **G1** design | Design → Plan | PASS | 2026-08-30 | 7 questions answered; no new dependency; `1-design.md` 58 lines |
 | **G2** test (RED) | Test → Develop | PARTIAL | 2026-08-30 | 4 of 5 new assertions genuinely RED; the second-skill-closes-first test passed immediately against existing behaviour — a regression guard, not TDD evidence |
 | **G3** build (GREEN) | Develop → Review | PASS | 2026-08-30 | 23/23 tests, lint + tsc clean, build 22.19 kB CSS, verified live |
-| **G4** review | Review → Complete | — | | tests · lint · typecheck · a11y |
-| **G5** completion | before archive + PR | — | | `final_checklist.py` |
+| **G4** review | Review → Complete | PARTIAL | 2026-08-30 | tests/lint/typecheck PASS; contrast computed across 12 token pairs, 1 AA failure found and fixed (3.56:1 → 5.59:1); 2 further a11y findings fixed; visual 375px check SKIPPED — no browser |
+| **G5** completion | before archive + PR | PASS | 2026-08-30 | `final_checklist.py --slug visual-design` exits 0 |
 
 ## Final Checklist  *(`/complete`)*
 
@@ -262,9 +263,12 @@ Promote to `harness/learning/user-overrides.md` at `/complete`.
 
 ## Lessons Learned
 
-- **Worked:**
-- **Cost time:**
-- **Do differently:**
+- **Worked:** the shared `@layer components` seam made a full re-skin a
+  one-file change; all 16 existing behaviour tests passed untouched.
+- **Cost time:** orphaned Vite servers on 5173-5175 and a stale uvicorn on 8000
+  served old code during verification, producing misleading 200-with-HTML replies.
+- **Do differently:** compute contrast instead of eyeballing it, and say plainly
+  when a test was not RED rather than letting the pass count imply evidence.
 
 Promoted to `harness/learning/` at `/complete`.
 
@@ -300,16 +304,21 @@ Body written to `pull-request.md` from `harness/templates/pull-request.md`.
 
 | | |
 |---|---|
-| **Title** | `<type>: <description>` |
-| **URL** | — (or the compare URL if `gh` could not open it) |
-| **Merged** | — |
+| **Title** | `feat(frontend): evidence-led visual design` |
+| **URL** | not opened — `gh` unauthenticated. Compare: https://github.com/shefali289/portfolio_ai/compare/main...improvement/visual-design |
+| **Merged** | no |
 
-**What it adds:** two or three sentences.
+**What it adds:** A design identity for the portfolio — a token system carrying
+dark-first and light schemes — plus an evidence explorer where selecting a skill
+reveals the roles and projects that prove it and names the content file the
+proof came from. Presentation only; no backend, content or API change.
 
-**Why:** the problem it solves.
+**Why:** Phase 2 shipped structure without art direction. Phases 3-5 add AI
+surfaces on top of this UI, so fixing the design now means those features
+inherit a finished system instead of being reworked around a placeholder.
 
 ## Suggested Commit Message
 
 ```
-<type>: <description>
+feat(frontend): evidence-led visual design
 ```

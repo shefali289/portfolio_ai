@@ -10,6 +10,9 @@ purpose.
 from __future__ import annotations
 
 import json
+import math
+import re
+import zlib
 from pathlib import Path
 
 import pytest
@@ -67,10 +70,7 @@ def _valid_content() -> dict[str, dict]:
                 {
                     "id": "group-1",
                     "name": "Test Group",
-                    "skills": [
-                        {"name": "Python", "evidence": [{"type": "role", "ref": "role-1"}]},
-                        {"name": "Unproven", "evidence": [], "todo": "TODO: link evidence"},
-                    ],
+                    "skills": [{"name": "Python"}, {"name": "SQL"}],
                 }
             ]
         },
@@ -135,3 +135,48 @@ def make_content_dir(tmp_path: Path):
 def real_content_dir() -> Path:
     """The actual `content/` directory — used only to prove it validates."""
     return REAL_CONTENT_DIR
+
+
+# ---------------------------------------------------------------------------
+# RAG stubs. Tests never call a real embedding or generation API: no network,
+# no key, and deterministic results.
+# ---------------------------------------------------------------------------
+# Words that appear in any English sentence carry no topical signal; leaving
+# them in makes an unrelated question look similar to everything.
+STOPWORDS = frozenset(
+    "a an the is are was were do does did what which who whom whose when where "
+    "why how of in on at to for with and or but from by as it its this that "
+    "these those i you he she they we her his their have has had can could".split()
+)
+
+
+class StubEmbeddingProvider:
+    """Hashing vectoriser — similar text shares tokens, so cosine works.
+
+    Deterministic and dependency-free, which is what makes retrieval assertions
+    meaningful without a model or an API key.
+
+    Uses `zlib.crc32`, not `hash()`: Python randomises string hashing per
+    process, so `hash()` would make these fixtures non-reproducible across runs.
+    """
+
+    def __init__(self, name: str = "stub", dim: int = 256) -> None:
+        self.name = name
+        self.dim = dim
+
+    def embed(self, texts: list[str]) -> list[list[float]]:
+        return [self._one(t) for t in texts]
+
+    def _one(self, text: str) -> list[float]:
+        vec = [0.0] * self.dim
+        for token in re.findall(r"[a-z0-9]+", text.lower()):
+            if token in STOPWORDS or len(token) < 3:
+                continue
+            vec[zlib.crc32(token.encode()) % self.dim] += 1.0
+        norm = math.sqrt(sum(v * v for v in vec)) or 1.0
+        return [v / norm for v in vec]
+
+
+@pytest.fixture
+def stub_embeddings() -> StubEmbeddingProvider:
+    return StubEmbeddingProvider()

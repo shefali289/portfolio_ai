@@ -37,10 +37,6 @@ export function ProjectGallery({ projects }: ProjectGalleryProps) {
         </button>
       </div>
 
-      <p className="meta">
-        showing {visible.length} of {projects.length} · content/projects.json
-      </p>
-
       <div className="grid gap-5 md:grid-cols-2">
         {visible.map((project, index) => (
           <article key={project.id} className="section-card flex flex-col">

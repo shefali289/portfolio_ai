@@ -84,17 +84,11 @@ class Experience(ContentModel):
 # --------------------------------------------------------------------------
 # skills.json
 # --------------------------------------------------------------------------
-class SkillEvidence(ContentModel):
-    """Where a skill was used. `type` names which content file `ref` points into."""
-
-    type: str
-    ref: str
-
-
 class Skill(ContentModel):
+    """Just the name. The resume lists skills; it does not say where each was
+    used, and the portfolio does not infer what the resume does not state."""
+
     name: str
-    evidence: list[SkillEvidence] = Field(default_factory=list)
-    todo: str | None = None
 
 
 class SkillGroup(ContentModel):

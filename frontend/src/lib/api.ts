@@ -6,7 +6,7 @@
  * live in exactly one place.
  */
 
-import type { PortfolioContent, Profile } from '../types/content'
+import type { ChatAnswer, PortfolioContent, Profile } from '../types/content'
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? ''
 
@@ -21,10 +21,10 @@ export class ApiError extends Error {
   }
 }
 
-async function request<T>(path: string): Promise<T> {
+async function request<T>(path: string, init?: RequestInit): Promise<T> {
   let response: Response
   try {
-    response = await fetch(`${BASE_URL}${path}`)
+    response = await fetch(`${BASE_URL}${path}`, init)
   } catch (cause) {
     // Network-level failure: the API is unreachable rather than unhappy.
     // Keep the original error as `cause` so the real reason is not lost.
@@ -48,4 +48,12 @@ export function getContent(): Promise<PortfolioContent> {
 
 export function getHealth(): Promise<{ status: string }> {
   return request<{ status: string }>('/api/health')
+}
+
+export function askPortfolio(question: string): Promise<ChatAnswer> {
+  return request<ChatAnswer>('/api/ai/chat', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ question }),
+  })
 }

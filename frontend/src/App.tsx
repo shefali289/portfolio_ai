@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
+import { AskPortfolio } from './components/AskPortfolio'
 import { Contact } from './components/Contact'
 import { Credentials } from './components/Credentials'
 import { EngineeringNotes } from './components/EngineeringNotes'
@@ -17,9 +18,10 @@ type State =
   | { status: 'ready'; content: PortfolioContent }
 
 const sections = [
+  { id: 'ask', label: 'Ask', eyebrow: 'Grounded in this portfolio' },
   { id: 'experience', label: 'Experience', eyebrow: 'Career' },
   { id: 'projects', label: 'Projects', eyebrow: 'Selected work' },
-  { id: 'skills', label: 'Skills', eyebrow: 'Evidence over ratings' },
+  { id: 'skills', label: 'Skills', eyebrow: 'Technical' },
   { id: 'credentials', label: 'Credentials', eyebrow: 'Learning and recognition' },
   { id: 'contact', label: 'Contact', eyebrow: 'Get in touch' },
 ] as const
@@ -82,15 +84,6 @@ export default function App() {
   const ready = state.status === 'ready'
   const active = useActiveSection(ready)
 
-  const evidence = useMemo(() => {
-    if (state.status !== 'ready') return undefined
-    return {
-      roles: state.content.experience.roles.length,
-      projects: state.content.projects.projects.length,
-      skills: state.content.skills.groups.flatMap((group) => group.skills).length,
-    }
-  }, [state])
-
   return (
     <div className="min-h-screen overflow-x-hidden">
       <a
@@ -110,7 +103,7 @@ export default function App() {
       >
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
           <a href="#main" className="eyebrow" style={{ textDecoration: 'none' }}>
-            ◆ Evidence-backed portfolio
+            {state.status === 'ready' ? state.content.profile.name : ''}
           </a>
           <nav aria-label="Portfolio sections" className="hidden md:block">
             <ul className="flex items-center gap-6">
@@ -171,7 +164,7 @@ export default function App() {
 
         {state.status === 'ready' && (
           <div className="space-y-28">
-            <Profile profile={state.content.profile} evidence={evidence} />
+            <Profile profile={state.content.profile} />
 
             {sections
               .filter((section) => section.id !== 'contact')
@@ -188,6 +181,7 @@ export default function App() {
                     </h2>
                     <div className="rule mt-5" />
                     <div className="mt-8">
+                      {section.id === 'ask' && <AskPortfolio />}
                       {section.id === 'experience' && (
                         <ExperienceTimeline roles={state.content.experience.roles} />
                       )}
@@ -219,9 +213,7 @@ export default function App() {
 
       <footer style={{ borderTop: '1px solid var(--border-subtle)' }}>
         <div className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6">
-          <p className="meta">
-            React · FastAPI · every claim rendered from content/*.json
-          </p>
+          <p className="meta">React · FastAPI</p>
         </div>
       </footer>
     </div>

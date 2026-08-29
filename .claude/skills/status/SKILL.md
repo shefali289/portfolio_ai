@@ -12,6 +12,7 @@ Cheap orientation. Reads state, changes nothing.
 
 ## Read
 
+0. `harness/context/current-task.md` — the pointer; usually all you need
 1. `harness/tasks/active/*/task.md` — the plan
 2. `harness/tasks/active/*/handoffs/` — which exist tells you the stage
 3. `git status --short` and `git branch --show-current`

@@ -68,7 +68,12 @@ Mark `(planned)` entries in `architecture-map.md` as real now they exist.
 
 ## Step 4 — Update the manifest
 
-In `harness/AGENT-MANIFEST.md`: set this task's status to `done` with the date.
+In `harness/AGENT-MANIFEST.md` **and `.agent-manifest.json`**: set this task's
+status to `done` with the date. The JSON is what CI reads — leaving it stale
+fails `health_check.py`.
+
+Reset `harness/context/current-task.md` to "none in flight", with the next
+suggested command.
 Add any new skill and name it in the agent's row. **Correct any skill whose
 procedure turned out wrong** — a stale skill is copied blindly next time.
 

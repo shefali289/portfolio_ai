@@ -17,6 +17,8 @@ Entry point for every feature and every phase. Nothing is implemented here.
 
 Read, in this order, before touching anything else:
 
+0. `harness/context/current-task.md` — if something is already in flight, say so
+   and stop rather than starting a second feature
 1. `harness/AGENT-MANIFEST.md` — resolves **$1** to a task slug, branch and
    description, and lists the skills available
 2. `harness/learning/architecture-map.md`
@@ -76,6 +78,15 @@ Write `handoffs/2-plan.md` and fill the `## Implementation Steps`,
 `## Files Likely To Change`, `## Tests First` and `## Out of Scope` sections of
 `task.md`.
 
+## Step 3b — Update the current-task pointer
+
+Rewrite `harness/context/current-task.md` with the slug, branch, phase, stage
+(`planned`), task file path and start date. Agents read that one file instead of
+walking `harness/tasks/`, so a stale pointer costs everyone tokens.
+
+Add the task to `.agent-manifest.json` if it is a new feature, and set its
+status to `active`.
+
 ## Step 4 — Gate G1
 
 Check `harness/QUALITY-GATES.md` G1: seven questions answered, no unjustified
@@ -96,5 +107,7 @@ Then stop. Wait for `/build`.
 ## Rules
 
 - No implementation files are created or edited by this command.
+- Stop and ask when `harness/instructions/approval-gate.md` says to — a new
+  dependency, a new top-level system, or content not backed by the resume.
 - Prefer extending existing architecture over new systems.
 - Never invent portfolio content — unknowns become explicit `TODO` placeholders.

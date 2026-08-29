@@ -50,27 +50,28 @@ cd backend  && uv venv && uv pip install -r requirements.txt && uvicorn app.main
 cd frontend && npm install && npm run dev
 ```
 
-Full detail: [docs/setup.md](docs/setup.md).
+Full detail: [docs/setup.md](docs/setup.md) · canonical commands:
+[harness/context/execution-commands.md](harness/context/execution-commands.md)
 
 ---
 
 ## Part 2 — The Harness
 
-Every line of this project was built through a lightweight AI development
-harness in [`harness/`](harness/). It is deliberately small: six roles operating
-over one repository, plus the files that let them hand work to each other
-without re-reading it.
+Every line of this project is built through a lightweight AI development harness
+in [`harness/`](harness/): five specialised roles over one repository, six
+quality gates, and the files that let agents hand work to each other without
+re-reading the codebase.
 
 ```
 Design ──> Plan ──> Test ──> Develop ──> Review ──> Complete
-  G1        G1      G0,G2      G3          G4         G5
+  G1        G1     G0,G2      G3          G4         G5
 ```
 
 ### Commands
 
 | Command | Does | Writes |
 |---|---|---|
-| `/plan <task>` | Design + Planning | `task.md`, handoffs 1–2 |
+| `/plan <slug>` | Design + Planning | `task.md`, handoffs 1–2 |
 | `/build` | Test (RED) → Develop (GREEN) | handoffs 3–4 |
 | `/review` | Verifies — never extends | handoff 5 |
 | `/complete` | Report, learn, PR, archive | `completion.md`, `pull-request.md` |
@@ -80,39 +81,42 @@ Design ──> Plan ──> Test ──> Develop ──> Review ──> Complete
 `/plan foundation`, `/plan rag-assistant` — every task name has a brief already
 waiting in `harness/tasks/planned/`.
 
+### Entry points
+
+| File | For |
+|---|---|
+| [`AGENTS.md`](AGENTS.md) | **any coding agent** — lifecycle, commands, gates, rules |
+| [`.agent-manifest.json`](.agent-manifest.json) | machine-readable index; CI validates every path in it |
+| [`CLAUDE.md`](CLAUDE.md) | Claude Code specifics |
+| [`.github/copilot-instructions.md`](.github/copilot-instructions.md) | GitHub Copilot specifics |
+| [`harness/AGENT-MANIFEST.md`](harness/AGENT-MANIFEST.md) | the human index — agent × skill × handoff × task |
+
+`AGENTS.md` states the rules once; the others point at it rather than restating
+them.
+
 ### How it ties together
 
 ```
-              AGENT-MANIFEST.md
-         the index: agents · skills · tasks
-                      │
-   ┌──────────────────┼──────────────────┐
-   ▼                  ▼                  ▼
-agents/            skills/           tasks/
-five roles      reusable how-to    planned → active → completed
-   │                  │                  │
-   └────── handoffs 1..5 between ────────┘
-                      │
-                      ▼
-                 learning/
-        read at /plan · written at /complete
+              AGENTS.md  +  .agent-manifest.json
+              rules & entry      machine index
+                          │
+   ┌──────────────┬───────┴───────┬──────────────┐
+   ▼              ▼               ▼              ▼
+agents/       skills/       instructions/     tasks/
+five roles   how-to packs   gate policy    planned→active→completed
+   │              │               │              │
+   └────── handoffs 1..5 between stages ─────────┘
+                          │
+              ┌───────────┴───────────┐
+              ▼                       ▼
+          learning/               scripts/
+   read at /plan, written      executable gates,
+      at /complete             same locally and in CI
 ```
-
-- **[`AGENT-MANIFEST.md`](harness/AGENT-MANIFEST.md)** — the index. Which agent
-  reads what, uses which skills, writes which handoff; every task name.
-- **[`agents/`](harness/agents/)** — five roles. Design decides, Planning
-  sequences, Test writes failing tests, Developer makes them pass, Review
-  verifies.
-- **[`skills/`](harness/skills/)** — reusable procedures (add an endpoint, add a
-  component, ingest content). Agents follow them instead of improvising.
-- **[`HANDOFF-PROTOCOL.md`](harness/HANDOFF-PROTOCOL.md)** — how work passes
-  between agents, and each agent's read budget.
-- **[`learning/`](harness/learning/)** — what the harness knows.
-- **[`QUALITY-GATES.md`](harness/QUALITY-GATES.md)** — G0–G5.
 
 ### How learning works
 
-This is the mechanism that matters most.
+The mechanism that matters most.
 
 ```
 during a feature   each handoff carries "New learnings"
@@ -136,11 +140,11 @@ size, per agent, per feature, forever. Reading a pruned digest is flat — and i
 *improves* as the project grows.
 
 **Why the caps are enforced:** learning that is not pruned is learning that is
-not read. `/health` reports any file over cap.
+not read. `/health` fails any file over cap.
 
 **Why `user-overrides.md` matters most:** an override means an agent's default
-was wrong for this project. Unrecorded, it gets repeated on the next feature.
-Every entry must end in a promoted rule.
+was wrong for this project. Unrecorded, it gets repeated. Every entry must end
+in a promoted rule.
 
 ### How context stays small
 
@@ -152,50 +156,56 @@ Every entry must end in a promoted rule.
 | Developer | handoffs 2–3, only files the plan names | anything unplanned |
 | Review | handoff 4, the diff | untouched files |
 
-Each handoff is capped at **60 lines** and carries a `Do NOT re-read` section —
-explicit permission to skip settled ground. Without it, agents re-open files
-"to be safe" and the budget leaks silently.
+Handoffs are capped at **60 lines** and carry a `Do NOT re-read` section —
+explicit permission to skip settled ground. `harness/context/current-task.md` is
+a one-file pointer to what is in flight, so no agent walks the task tree.
 
 ### How quality is enforced
 
-| Gate | When | Blocks on |
+| Gate | Blocks on | Enforced by |
 |---|---|---|
-| **G0 branch** | before any write | on `main`, or branch ≠ task slug |
-| **G1 design** | Design → Plan | unanswered questions, unjustified dependency |
-| **G2 test** | Test → Develop | tests that did not fail for the right reason |
-| **G3 build** | Develop → Review | unplanned file changes, hardcoded content |
-| **G4 review** | Review → Complete | failing tests, lint, typecheck, a11y |
-| **G5 done** | before archive + PR | unmet requirements, unpruned learning |
+| **G0** branch | on `main`, or branch ≠ task slug | `scripts/branch_gate.py` |
+| **G1** design | unanswered questions, untestable criteria | `instructions/design-gate.md` |
+| **G2** test | tests that did not fail for the right reason | RED output in `3-test.md` |
+| **G3** build | unplanned changes, hardcoded content | tests green |
+| **G4** review | failing tests, lint, typecheck, a11y, secrets | `pr-checklist.yml` |
+| **G5** done | unmet criteria, unpruned learning, missing PR | `scripts/final_checklist.py` |
+
+Plus a standing **approval gate** ([`instructions/approval-gate.md`](harness/instructions/approval-gate.md)):
+destructive git, anything outward-facing, new dependencies, or content not
+backed by the resume — stop and ask.
 
 A check that did not run is recorded `SKIPPED`, never `PASS`.
 
-Every feature ends in a PR body carrying the gate table, lessons learned and
-user overrides — see [`templates/pull-request.md`](harness/templates/pull-request.md).
-
-### Executable gates
-
 ```bash
 python harness/scripts/branch_gate.py --slug <slug> --rebase   # G0
-python harness/scripts/health_check.py                          # structural
-python harness/scripts/final_checklist.py --slug <slug>         # G5
+python harness/scripts/health_check.py                          # 14 structural checks
+python harness/scripts/final_checklist.py --slug <slug>         # G5, must exit 0
 ```
 
-`final_checklist.py` decides whether a task is complete. It re-runs both test
-suites, demands **real RED evidence** in the test handoff (so tests written
-after the code fail the gate), and checks lint, typecheck, content parsing, the
-gate log, learning updates and the completion docs. A task is not done until it
-exits 0 — then it prints the checks that cannot be automated for confirmation by
-hand.
+`final_checklist.py` decides whether a task is complete. It re-runs both suites
+rather than trusting an earlier claim, and demands **real RED evidence** — tests
+written after the code fail the gate.
+
+### One task, one record
+
+`harness/tasks/<slug>/task.md` accumulates the whole story in seven sections:
+intent with testable acceptance criteria · design · plan · tests with RED/GREEN
+evidence · gates G0–G5 · decisions, user overrides and lessons learned ·
+validation and PR summary.
+
+Handoffs are small and disposable. The task doc is the durable artefact, and it
+archives to `harness/tasks/completed/` as the development history.
 
 ### Continuous integration
 
 | Workflow | Runs on | Does |
 |---|---|---|
-| `harness-health.yml` | push to `main`, PRs touching docs | `harness/scripts/health_check.py` — 13 structural checks |
-| `pr-checklist.yml` | every PR into `main` | branch gate, harness health, gate log, secret scan, backend (`ruff`/`pytest`), frontend (`tsc`/lint/`vitest`/build), then the rendered final checklist |
+| `harness-health.yml` | push to `main`, docs PRs | 14 structural checks |
+| `pr-checklist.yml` | every PR into `main` | branch gate, harness health, gate log, secret scan, backend, frontend, rendered checklist |
 
-Application jobs skip cleanly until that side exists, and report `SKIPPED`
-rather than passing. `python harness/scripts/health_check.py` is the same check CI runs.
+Application jobs skip cleanly until that side exists and report `SKIPPED` rather
+than passing.
 
 ### Adding a feature later
 
@@ -218,7 +228,7 @@ The harness does not change; only a new task directory is added.
 | [Architecture](docs/architecture.md) | system design and request flows |
 | [Plan](docs/plan.md) | the six phases |
 | [Deployment](docs/deployment.md) | hosting, and why it shapes the AI providers |
-| [Harness](harness/README.md) | the development workflow |
+| [Harness](harness/README.md) | how the development workflow is built |
 
 ## Contact
 

@@ -15,6 +15,7 @@ Implements the active feature. Requires `/plan` to have run.
 
 Read exactly:
 
+0. `harness/context/current-task.md` — which task is in flight
 1. `harness/tasks/active/*/handoffs/2-plan.md` — the steps and file list
 2. `harness/tasks/active/*/handoffs/3-test.md` — if it exists (resuming)
 3. `harness/learning/conventions.md` — the patterns to copy
@@ -81,6 +82,11 @@ outside the plan (or the deviation is recorded), no unapproved dependency, no
 hardcoded portfolio content. Record in `## Gate Log`.
 
 Append any consequential choice to the task's `## Decisions Taken`.
+
+## Step 3b — Update the pointer
+
+Set the stage in `harness/context/current-task.md` to `building` (then
+`in review` when handing to `/review`), and list the handoffs written so far.
 
 ## Step 4 — Commit
 

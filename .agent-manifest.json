@@ -1,0 +1,396 @@
+{
+  "$comment": "Machine-readable harness index. AGENT-MANIFEST.md is the human view; this is what scripts and CI read. harness/scripts/health_check.py validates every path here against the filesystem, so a drifting manifest fails the build.",
+  "name": "portfolio-ai-harness",
+  "version": "1.0.0",
+  "project": "AI-Powered Engineer Portfolio",
+  "repository": "https://github.com/shefali289/portfolio_ai",
+  "lifecycle": [
+    "design",
+    "plan",
+    "test",
+    "develop",
+    "review",
+    "complete"
+  ],
+  "entryPoints": {
+    "human": "harness/AGENT-MANIFEST.md",
+    "claude": "CLAUDE.md",
+    "copilot": ".github/copilot-instructions.md",
+    "standard": "AGENTS.md"
+  },
+  "paths": {
+    "agents": "harness/agents",
+    "skills": "harness/skills",
+    "learning": "harness/learning",
+    "instructions": "harness/instructions",
+    "context": "harness/context",
+    "templates": "harness/templates",
+    "scripts": "harness/scripts",
+    "tasksPlanned": "harness/tasks/planned",
+    "tasksActive": "harness/tasks/active",
+    "tasksCompleted": "harness/tasks/completed",
+    "content": "content",
+    "backend": "backend",
+    "frontend": "frontend"
+  },
+  "commands": [
+    {
+      "name": "plan",
+      "file": ".claude/skills/plan/SKILL.md",
+      "stages": [
+        "design",
+        "plan"
+      ],
+      "gates": [
+        "G1"
+      ]
+    },
+    {
+      "name": "build",
+      "file": ".claude/skills/build/SKILL.md",
+      "stages": [
+        "test",
+        "develop"
+      ],
+      "gates": [
+        "G0",
+        "G2",
+        "G3"
+      ]
+    },
+    {
+      "name": "review",
+      "file": ".claude/skills/review/SKILL.md",
+      "stages": [
+        "review"
+      ],
+      "gates": [
+        "G4"
+      ]
+    },
+    {
+      "name": "complete",
+      "file": ".claude/skills/complete/SKILL.md",
+      "stages": [
+        "complete"
+      ],
+      "gates": [
+        "G5"
+      ]
+    },
+    {
+      "name": "status",
+      "file": ".claude/skills/status/SKILL.md",
+      "stages": [],
+      "gates": []
+    },
+    {
+      "name": "health",
+      "file": ".claude/skills/health/SKILL.md",
+      "stages": [],
+      "gates": []
+    }
+  ],
+  "agents": [
+    {
+      "id": "design",
+      "file": "harness/agents/design-agent.md",
+      "reads": [
+        "harness/learning/*",
+        "task.md"
+      ],
+      "writes": [
+        "handoffs/1-design.md"
+      ],
+      "skills": [],
+      "mayExplore": true
+    },
+    {
+      "id": "planning",
+      "file": "harness/agents/planning-agent.md",
+      "reads": [
+        "handoffs/1-design.md",
+        "harness/learning/architecture-map.md"
+      ],
+      "writes": [
+        "handoffs/2-plan.md"
+      ],
+      "skills": [],
+      "mayExplore": false
+    },
+    {
+      "id": "test",
+      "file": "harness/agents/test-agent.md",
+      "reads": [
+        "handoffs/2-plan.md",
+        "harness/learning/conventions.md"
+      ],
+      "writes": [
+        "handoffs/3-test.md"
+      ],
+      "skills": [
+        "tdd-cycle"
+      ],
+      "mayExplore": false
+    },
+    {
+      "id": "developer",
+      "file": "harness/agents/developer-agent.md",
+      "reads": [
+        "handoffs/2-plan.md",
+        "handoffs/3-test.md",
+        "harness/learning/conventions.md"
+      ],
+      "writes": [
+        "handoffs/4-develop.md"
+      ],
+      "skills": [
+        "tdd-cycle",
+        "api-endpoint",
+        "react-component",
+        "content-extraction",
+        "rag-ingestion",
+        "ai-provider",
+        "agent-workflow",
+        "a11y-responsive"
+      ],
+      "mayExplore": false
+    },
+    {
+      "id": "review",
+      "file": "harness/agents/review-agent.md",
+      "reads": [
+        "handoffs/4-develop.md",
+        "task.md",
+        "git diff"
+      ],
+      "writes": [
+        "handoffs/5-review.md"
+      ],
+      "skills": [
+        "a11y-responsive"
+      ],
+      "mayExplore": false
+    }
+  ],
+  "skills": [
+    {
+      "id": "tdd-cycle",
+      "file": "harness/skills/tdd-cycle.md",
+      "usedBy": [
+        "test",
+        "developer"
+      ]
+    },
+    {
+      "id": "api-endpoint",
+      "file": "harness/skills/api-endpoint.md",
+      "usedBy": [
+        "developer"
+      ]
+    },
+    {
+      "id": "react-component",
+      "file": "harness/skills/react-component.md",
+      "usedBy": [
+        "developer"
+      ]
+    },
+    {
+      "id": "content-extraction",
+      "file": "harness/skills/content-extraction.md",
+      "usedBy": [
+        "developer"
+      ]
+    },
+    {
+      "id": "rag-ingestion",
+      "file": "harness/skills/rag-ingestion.md",
+      "usedBy": [
+        "developer"
+      ]
+    },
+    {
+      "id": "ai-provider",
+      "file": "harness/skills/ai-provider.md",
+      "usedBy": [
+        "developer"
+      ]
+    },
+    {
+      "id": "agent-workflow",
+      "file": "harness/skills/agent-workflow.md",
+      "usedBy": [
+        "developer"
+      ]
+    },
+    {
+      "id": "a11y-responsive",
+      "file": "harness/skills/a11y-responsive.md",
+      "usedBy": [
+        "developer",
+        "review"
+      ]
+    }
+  ],
+  "gates": [
+    {
+      "id": "G0",
+      "name": "branch",
+      "enforcedBy": "harness/scripts/branch_gate.py",
+      "blocking": true
+    },
+    {
+      "id": "G1",
+      "name": "design",
+      "enforcedBy": "harness/instructions/design-gate.md",
+      "blocking": true
+    },
+    {
+      "id": "G2",
+      "name": "test-red",
+      "enforcedBy": "harness/skills/tdd-cycle.md",
+      "blocking": true
+    },
+    {
+      "id": "G3",
+      "name": "build-green",
+      "enforcedBy": "harness/skills/tdd-cycle.md",
+      "blocking": true
+    },
+    {
+      "id": "G4",
+      "name": "review",
+      "enforcedBy": ".github/workflows/pr-checklist.yml",
+      "blocking": true
+    },
+    {
+      "id": "G5",
+      "name": "completion",
+      "enforcedBy": "harness/scripts/final_checklist.py",
+      "blocking": true
+    }
+  ],
+  "scripts": [
+    {
+      "file": "harness/scripts/branch_gate.py",
+      "gate": "G0",
+      "runsIn": [
+        "local",
+        "ci"
+      ]
+    },
+    {
+      "file": "harness/scripts/health_check.py",
+      "gate": null,
+      "runsIn": [
+        "local",
+        "ci"
+      ]
+    },
+    {
+      "file": "harness/scripts/final_checklist.py",
+      "gate": "G5",
+      "runsIn": [
+        "local"
+      ]
+    }
+  ],
+  "instructions": [
+    {
+      "id": "approval-gate",
+      "file": "harness/instructions/approval-gate.md"
+    },
+    {
+      "id": "branch-gate",
+      "file": "harness/instructions/branch-gate.md"
+    },
+    {
+      "id": "design-gate",
+      "file": "harness/instructions/design-gate.md"
+    }
+  ],
+  "context": {
+    "currentTask": "harness/context/current-task.md",
+    "executionCommands": "harness/context/execution-commands.md"
+  },
+  "learning": [
+    {
+      "file": "harness/learning/architecture-map.md",
+      "cap": 150
+    },
+    {
+      "file": "harness/learning/conventions.md",
+      "cap": 150
+    },
+    {
+      "file": "harness/learning/decisions.md",
+      "cap": 150
+    },
+    {
+      "file": "harness/learning/gotchas.md",
+      "cap": 150
+    },
+    {
+      "file": "harness/learning/lessons-learned.md",
+      "cap": 100
+    },
+    {
+      "file": "harness/learning/user-overrides.md",
+      "cap": 80
+    }
+  ],
+  "limits": {
+    "handoffLines": 60,
+    "planSteps": [
+      4,
+      10
+    ],
+    "activeTasks": 1
+  },
+  "tasks": [
+    {
+      "slug": "foundation",
+      "phase": 1,
+      "status": "planned",
+      "branch": "feature/foundation"
+    },
+    {
+      "slug": "portfolio-ui",
+      "phase": 2,
+      "status": "planned",
+      "branch": "feature/portfolio-ui"
+    },
+    {
+      "slug": "rag-assistant",
+      "phase": 3,
+      "status": "planned",
+      "branch": "feature/rag-assistant"
+    },
+    {
+      "slug": "agentic-job-match",
+      "phase": 4,
+      "status": "planned",
+      "branch": "feature/agentic-job-match"
+    },
+    {
+      "slug": "mcp-integration",
+      "phase": 5,
+      "status": "planned",
+      "branch": "feature/mcp-integration"
+    },
+    {
+      "slug": "final-polish",
+      "phase": 6,
+      "status": "planned",
+      "branch": "feature/final-polish"
+    }
+  ],
+  "excluded": {
+    "$comment": "Deliberately not adopted from the production reference. Recorded so the omission reads as a decision, not an oversight.",
+    "pbi": "The brief forbids PBIs and enterprise backlog documentation.",
+    "workItemIds": "No Azure DevOps here; the task slug is the identifier and ties task, branch and PR together.",
+    "adrDirectory": "Superseded by harness/learning/decisions.md - one line per decision, pruned at /complete.",
+    "defectTemplate": "Findings become the next task; a defect template would be ceremony at this size."
+  }
+}

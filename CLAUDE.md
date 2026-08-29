@@ -3,79 +3,41 @@
 React + TypeScript + Vite frontend, FastAPI backend, RAG/agents/MCP AI features.
 `content/*.json` grounds both the UI and the AI.
 
-## Work through the harness
+## Read AGENTS.md first
 
-No implementation without an active task.
+**[`AGENTS.md`](AGENTS.md) is the entry point** — lifecycle, commands, gates and
+the non-negotiable rules. It applies to every agent working here, Claude
+included. This file adds only what is specific to Claude Code.
+
+## Commands
+
+Slash commands live in `.claude/skills/`, each `disable-model-invocation` — they
+run only when you type them:
 
 ```
-/plan <task>   Design + Planning          G1
-/build         Test RED -> Develop GREEN  G0, G2, G3
-/review        Verify only, never extend  G4
-/complete      Report, learn, PR, archive G5
-/status        Where the active feature stands
-/health        Whether the harness itself has rotted
+/plan <slug>   /build   /review   /complete   /status   /health
 ```
 
-Task names live in `harness/AGENT-MANIFEST.md`; each has a brief in
-`harness/tasks/planned/`. `/plan foundation`, `/plan rag-assistant`.
+Task slugs and their briefs: `harness/AGENT-MANIFEST.md`.
 
-## Read in this order — stop when answered
+## Reading order — stop when answered
 
-1. `harness/AGENT-MANIFEST.md` — **your row only**, not the whole file
-2. `harness/learning/` — how this codebase works. **Read this instead of
-   exploring the repo.** Explore only what it does not cover.
-3. Your stage's handoff in `harness/tasks/active/<slug>/handoffs/`
-4. Only the files and skills that handoff names
+1. `harness/context/current-task.md` — what is in flight, one small file
+2. `harness/AGENT-MANIFEST.md` — **your row only**, not the whole file
+3. `harness/learning/` — how this codebase works; **read this instead of
+   exploring the repo**
+4. Your stage's handoff, plus only the files and skills it names
 
-Honour each handoff's `Do NOT re-read`. Re-opening settled files "to be safe" is
-the failure mode the protocol exists to prevent. Read budgets:
-`harness/HANDOFF-PROTOCOL.md`.
-
-## Gates
-
-G0 branch · G1 design · G2 test (RED) · G3 build (GREEN) · G4 review · G5 done.
-A stage cannot start until the previous gate passes. Record every result in the
-task's `## Gate Log`. See `harness/QUALITY-GATES.md`.
-
-## Non-negotiables
-
-- **Never write to `main`.** Branch `feature/<slug>`, slug matching the task.
-- **The resume is the source of truth.** Never invent experience, employers,
-  dates, metrics or skills. Unknowns are explicit `TODO` placeholders.
-- **The AI must never claim experience absent from `content/`.** "No evidence in
-  the portfolio" is a correct answer, and a test enforces it.
-- **RED first** — write the test, run it, confirm it fails for the right reason.
-- **Never report a check as passing without running it.** Not run = `SKIPPED`.
-- **Never claim a PR was created when it was not.**
-- **Extend, do not duplicate.** One RAG implementation, one generation
-  abstraction, one embedding abstraction.
-- Content renders from `content/*.json`, never hardcoded into components.
-
-## Gates are executable — run them, do not eyeball them
-
-```bash
-python harness/scripts/branch_gate.py --slug <slug> --rebase   # G0, before /build
-python harness/scripts/health_check.py                          # /health
-python harness/scripts/final_checklist.py --slug <slug>         # G5, at /complete
-```
-
-**A task is not complete until `final_checklist.py` exits 0.** It re-runs the
-tests itself and demands real RED evidence in `3-test.md`.
-
-Same scripts run in CI, so green locally means green in the pipeline. Every PR
-also runs the secret scan and both suites
-(`.github/workflows/pr-checklist.yml`).
-
-## Learning
-
-At `/complete`, promote each handoff's `New learnings` into `harness/learning/`
-and prune. User overrides matter most — an override means a default was wrong
-for this project, and unrecorded it gets repeated.
+Honour each handoff's `Do NOT re-read`. Budgets: `harness/HANDOFF-PROTOCOL.md`.
 
 ## Environment
 
-Windows + Git Bash. Python 3.14.7 (verify wheels resolve before pinning), Node
-24, `uv` for Python envs. No Ollama, Docker or `gh` installed; no git remote yet.
-Long chained heredocs fail here — write files one at a time.
+Windows + Git Bash. Python 3.14.7 (CI uses 3.12 — verify wheels resolve before
+pinning), Node 24, `uv` for Python envs. `gh` is installed but needs a one-off
+`gh auth login`. No Ollama, no Docker.
 
-Full rules: `harness/HARNESS-RULES.md`.
+**Long chained heredocs fail in this shell** — one mismatched terminator
+swallows the rest and the whole command dies. Write files one at a time, or
+generate them from a script file.
+
+Full gotchas: `harness/learning/gotchas.md`.

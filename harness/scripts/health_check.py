@@ -43,6 +43,76 @@ def lines(p: Path) -> int:
 
 
 # --------------------------------------------------------------------------
+def check_agent_manifest() -> None:
+    """.agent-manifest.json is what CI and tooling read - it must match reality."""
+    import json
+    mp = ROOT / ".agent-manifest.json"
+    if not mp.exists():
+        record("FAIL", "agent manifest", ".agent-manifest.json missing")
+        return
+    try:
+        m = json.loads(mp.read_text(encoding="utf-8"))
+    except Exception as exc:
+        record("FAIL", "agent manifest", "invalid JSON: " + str(exc))
+        return
+
+    missing = []
+    for key in ("paths",):
+        for name, rel in m.get(key, {}).items():
+            if not (ROOT / rel).exists():
+                missing.append(name + "=" + rel)
+    for section in ("commands", "agents", "skills", "scripts", "instructions", "learning"):
+        for item in m.get(section, []):
+            rel = item.get("file")
+            if rel and not (ROOT / rel).exists():
+                missing.append(section + ":" + rel)
+    for name, rel in m.get("context", {}).items():
+        if not (ROOT / rel).exists():
+            missing.append("context:" + rel)
+    for g in m.get("gates", []):
+        rel = g.get("enforcedBy")
+        if rel and not (ROOT / rel).exists():
+            missing.append("gate " + g["id"] + ":" + rel)
+
+    if missing:
+        record("FAIL", "agent manifest",
+               str(len(missing)) + " path(s) do not exist: " + ", ".join(missing[:4]))
+        return
+
+    # Manifest and filesystem must agree on the skill set.
+    listed = {sk["id"] for sk in m.get("skills", [])}
+    on_disk = {p.stem for p in (H / "skills").glob("*.md")} - {"README"}
+    if listed != on_disk:
+        record("FAIL", "agent manifest",
+               "skills differ: manifest-only=" + str(sorted(listed - on_disk))
+               + " disk-only=" + str(sorted(on_disk - listed)))
+        return
+
+    # Manifest tasks must have a real task directory.
+    slugs = {t["slug"] for t in m.get("tasks", [])}
+    have = set()
+    for sub in ("planned", "active", "completed"):
+        d = H / "tasks" / sub
+        if d.exists():
+            have |= {x.name for x in d.iterdir() if x.is_dir()}
+    if slugs - have:
+        record("FAIL", "agent manifest",
+               "task(s) with no directory: " + ", ".join(sorted(slugs - have)))
+        return
+
+    # Learning caps must not contradict this script.
+    for entry in m.get("learning", []):
+        name = Path(entry["file"]).name
+        if name in LEARNING_CAPS and LEARNING_CAPS[name] != entry.get("cap"):
+            record("FAIL", "agent manifest",
+                   name + " cap " + str(entry.get("cap")) + " != " + str(LEARNING_CAPS[name]))
+            return
+
+    n = (len(m.get("agents", [])) + len(m.get("skills", []))
+         + len(m.get("gates", [])) + len(m.get("commands", [])))
+    record("PASS", "agent manifest", str(n) + " entries, all paths resolve")
+
+
 def check_layout() -> None:
     """The files the harness cannot run without."""
     required = [
@@ -251,7 +321,7 @@ def check_drift() -> None:
 
 # --------------------------------------------------------------------------
 def main() -> int:
-    for fn in (check_layout, check_learning_caps, check_handoff_caps,
+    for fn in (check_agent_manifest, check_layout, check_learning_caps, check_handoff_caps,
                check_active_tasks, check_manifest_tasks, check_task_sections,
                check_skills_index, check_links, check_referenced_files,
                check_override_followthrough, check_learning_velocity,

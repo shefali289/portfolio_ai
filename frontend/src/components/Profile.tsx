@@ -1,93 +1,37 @@
-/**
- * Renders the profile fetched from `/api/profile`.
- *
- * Proves the stack end to end: content/profile.json -> ContentService ->
- * FastAPI -> api.ts -> here. Nothing on this page is hardcoded copy.
- *
- * Handles all three states explicitly: loading, error, empty.
- */
-
-import { useCallback, useEffect, useState } from 'react'
-
-import { getProfile } from '../lib/api'
 import type { Profile as ProfileData } from '../types/content'
 
-type State =
-  | { status: 'loading' }
-  | { status: 'error'; message: string }
-  | { status: 'ready'; profile: ProfileData }
+interface ProfileProps {
+  profile: ProfileData
+}
 
-export function Profile() {
-  const [state, setState] = useState<State>({ status: 'loading' })
-
-  // Note: no synchronous setState in here. The component already starts in
-  // 'loading', and setting it again in the effect body triggers a cascading
-  // render (react-hooks/set-state-in-effect). Retry sets it from its handler.
-  const load = useCallback(() => {
-    let cancelled = false
-
-    getProfile()
-      .then((profile) => {
-        if (!cancelled) setState({ status: 'ready', profile })
-      })
-      .catch((error: unknown) => {
-        if (cancelled) return
-        const message = error instanceof Error ? error.message : 'Something went wrong'
-        setState({ status: 'error', message })
-      })
-
-    return () => {
-      cancelled = true
-    }
-  }, [])
-
-  useEffect(() => load(), [load])
-
-  const retry = () => {
-    setState({ status: 'loading' })
-    load()
-  }
-
-  if (state.status === 'loading') {
-    return (
-      <div role="status" aria-live="polite" className="space-y-3">
-        <span className="sr-only">Loading profile…</span>
-        <div aria-hidden className="h-9 w-64 animate-pulse rounded bg-slate-200" />
-        <div aria-hidden className="h-5 w-40 animate-pulse rounded bg-slate-200" />
-      </div>
-    )
-  }
-
-  if (state.status === 'error') {
-    return (
-      <div role="alert" className="rounded border border-red-300 bg-red-50 p-4">
-        <p className="font-medium text-red-800">Could not load the profile.</p>
-        <p className="mt-1 text-sm text-red-700">{state.message}</p>
-        <button
-          type="button"
-          onClick={retry}
-          className="mt-3 rounded border border-red-300 px-3 py-1.5 text-sm font-medium text-red-800 hover:bg-red-100"
-        >
-          Try again
-        </button>
-      </div>
-    )
-  }
-
-  const { profile } = state
-
+export function Profile({ profile }: ProfileProps) {
   if (!profile.name && !profile.title) {
     return <p className="text-slate-600">No profile content yet.</p>
   }
 
   return (
-    <section aria-labelledby="profile-name" className="space-y-3">
-      <h1 id="profile-name" className="text-3xl font-semibold tracking-tight text-slate-900">
-        {profile.name}
-      </h1>
-      <p className="text-lg text-slate-700">{profile.title}</p>
-      {profile.location && <p className="text-sm text-slate-500">{profile.location}</p>}
-      {profile.summary && <p className="max-w-2xl leading-relaxed text-slate-700">{profile.summary}</p>}
+    <section aria-labelledby="profile-name" className="grid gap-8 py-10 md:grid-cols-[1fr_auto] md:items-end">
+      <div className="min-w-0 space-y-5">
+        <p className="text-sm font-semibold uppercase tracking-[0.25em] text-cyan-700">Portfolio</p>
+        <h1 id="profile-name" className="max-w-3xl text-4xl font-bold tracking-tight text-slate-950 sm:text-6xl">
+          {profile.name}
+        </h1>
+        <p className="text-xl font-medium text-cyan-800 sm:text-2xl">{profile.title}</p>
+        {profile.summary && <p className="max-w-3xl break-words text-base leading-8 text-slate-700 sm:text-lg">{profile.summary}</p>}
+        <div className="flex flex-wrap gap-3">
+          <a className="button-primary" href="#projects">Explore work</a>
+          {profile.links.github && <a className="button-secondary" href={profile.links.github}>GitHub</a>}
+          {profile.links.email && <a className="button-secondary" href={`mailto:${profile.links.email}`}>Contact</a>}
+          <span className="inline-flex min-h-11 items-center rounded-full border border-dashed border-slate-300 px-4 text-sm text-slate-500">
+            Ask my AI · coming later
+          </span>
+        </div>
+      </div>
+      {profile.location && (
+        <p className="rounded-full bg-slate-100 px-4 py-2 text-sm font-medium text-slate-600">
+          {profile.location}
+        </p>
+      )}
     </section>
   )
 }

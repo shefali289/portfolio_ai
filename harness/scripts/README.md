@@ -14,7 +14,7 @@ so a green local run means a green pipeline.
 ```bash
 python harness/scripts/branch_gate.py                 # check only
 python harness/scripts/branch_gate.py --rebase        # also rebase onto main
-python harness/scripts/branch_gate.py --slug foundation
+python harness/scripts/branch_gate.py --slug 01-foundation
 ```
 
 Checks: not on `main` · branch matches `feature|fix|improvement/<slug>` · a task
@@ -38,7 +38,7 @@ Exit 0 healthy, 1 unhealthy. WARNs do not fail.
 
 ```bash
 python harness/scripts/final_checklist.py             # the active task
-python harness/scripts/final_checklist.py --slug foundation
+python harness/scripts/final_checklist.py --slug 01-foundation
 ```
 
 Every box must tick before a task is complete:

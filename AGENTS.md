@@ -22,8 +22,8 @@ Design -> Plan -> Test -> Develop -> Review -> Complete
 | `/complete` | Report, learn, PR, archive |
 | `/status` · `/health` | Where things stand · whether the harness has rotted |
 
-Task slugs: `foundation`, `portfolio-ui`, `rag-assistant`, `agentic-job-match`,
-`mcp-integration`, `final-polish`. Each has a brief in `harness/tasks/planned/`.
+Task slugs: `01-foundation`, `02-portfolio-ui`, `03-rag-assistant`, `04-agentic-job-match`,
+`05-mcp-integration`, `06-final-polish`. Each has a brief in `harness/tasks/planned/`.
 
 ## Before you explore
 
@@ -54,6 +54,9 @@ paths, limits and tasks. CI validates every path in it against the filesystem.
 ## Non-negotiables
 
 - **Never write to `main`.** Branch `feature/<slug>` matching the task.
+- **Never commit or push without asking.** Every commit and every push, on every
+  branch. Stage the work, propose the message, wait. Editing files is free;
+  recording history is not.
 - **The resume is the source of truth.** Never invent experience, employers,
   dates, metrics or skills. Unknowns are explicit `TODO` placeholders.
 - **The AI must never claim experience absent from `content/`.**

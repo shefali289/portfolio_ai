@@ -48,3 +48,14 @@ made again.
   rather than implied.
 - **Rule now:** top-level harness docs use uppercase self-describing names; every
   feature passes G0-G5 and ends in a PR. See `QUALITY-GATES.md`.
+
+### 2026-08-29 - Commit and push approval
+
+- **Agent proposed:** treating local commits on a feature branch as safe to make
+  without asking, and pushing once the user had approved a push earlier.
+- **User chose:** ask every time, before every commit and every push.
+- **Why:** approval for one push is not approval for the next. History is shared
+  and hard to undo once pulled; a file edit is not.
+- **Rule now:** `HARNESS-RULES.md` rule 10, `instructions/approval-gate.md`
+  (moved from "decide without asking" to "always ask"), and the commit steps in
+  `/build` and `/complete` now stage and propose rather than execute.

@@ -98,12 +98,12 @@ Every task below has a brief in `tasks/planned/<slug>/task.md`, so
 
 | Slug | Phase | Description | Status |
 |---|---|---|---|
-| `foundation` | 1 | React + FastAPI running, resume extracted to `content/*.json`, tests wired | brief ready |
-| `portfolio-ui` | 2 | All portfolio sections rendered from content — no AI yet | brief ready |
-| `rag-assistant` | 3 | Chunking, embeddings, FAISS, providers, `/api/ai/chat`, Ask My Portfolio | brief ready |
-| `agentic-job-match` | 4 | Four-agent chain, `/api/ai/job-match`, Why Me? with live progress | brief ready |
-| `mcp-integration` | 5 | GitHub API + MCP server, From My GitHub, tool-sourced answers | brief ready |
-| `final-polish` | 6 | Engineer Mode, a11y, mobile, README, deploy to Vercel | brief ready |
+| `01-foundation` | 1 | React + FastAPI running, resume extracted to `content/*.json`, tests wired | **active** — planned 2026-08-29 |
+| `02-portfolio-ui` | 2 | All portfolio sections rendered from content — no AI yet | brief ready |
+| `03-rag-assistant` | 3 | Chunking, embeddings, FAISS, providers, `/api/ai/chat`, Ask My Portfolio | brief ready |
+| `04-agentic-job-match` | 4 | Four-agent chain, `/api/ai/job-match`, Why Me? with live progress | brief ready |
+| `05-mcp-integration` | 5 | GitHub API + MCP server, From My GitHub, tool-sourced answers | brief ready |
+| `06-final-polish` | 6 | Engineer Mode, a11y, mobile, README, deploy to Vercel | brief ready |
 
 Detail: [`docs/plan.md`](../docs/plan.md).
 
@@ -119,6 +119,12 @@ Named so `/plan <slug>` resolves. No brief yet — `/plan` writes one.
 
 `feature/<slug>` · `fix/<slug>` · `improvement/<slug>`. Task slug and branch
 suffix are always identical, so task, branch and PR are traceable to each other.
+
+**Phase tasks carry their phase number:** `01-foundation` … `06-final-polish`.
+The number *is* the run order — the next phase to run is the lowest-numbered slug
+not yet in `tasks/completed/`, and `ls harness/tasks/planned/` shows it sorted.
+Non-phase work (the future candidates above, fixes, improvements) stays
+unnumbered, so a leading number always means "this is a v1.0 phase".
 
 ---
 

@@ -1,14 +1,14 @@
-# Task: RAG Assistant — Ask My Portfolio
+# Task: MCP + GitHub Context
 
 | | |
 |---|---|
-| **Slug** | `rag-assistant` |
-| **Branch** | `feature/rag-assistant` |
-| **Phase** | Phase 3 |
+| **Slug** | `05-mcp-integration` |
+| **Branch** | `feature/05-mcp-integration` |
+| **Phase** | Phase 5 |
 | **Status** | brief — not started |
 | **Started / Completed** | — |
 
-> **Brief only.** `/plan rag-assistant` fills in Design, Plan and the rest. Every stage
+> **Brief only.** `/plan 05-mcp-integration` fills in Design, Plan and the rest. Every stage
 > writes back here, so this file ends up holding the whole story. Do not
 > implement from this file alone.
 
@@ -18,36 +18,34 @@
 
 ## Feature
 
-Grounded Q&A over portfolio content: chunking, embeddings, FAISS retrieval, the
-generation and embedding provider abstractions, `POST /api/ai/chat`, and the Ask
-My Portfolio UI with source citations.
+GitHub public API integration, a small portfolio MCP server, a From My GitHub
+section, and answers combining stored knowledge with live tool data.
 
 ## Goal
 
-Answer real questions about Shefali's experience using only portfolio content,
-with visible sources - so the AI is part of the product, not a demo.
+Show the distinction between RAG (stored knowledge) and MCP/tools (external,
+live capability) - and that they can answer one question together.
 
 ## Acceptance Criteria
 
 Refined at `/plan`, checked off at `/review`.
 
-- [ ] "What AI experience does she have?" returns a grounded answer citing the
-      AI Engineer role
-- [ ] every answer renders source chips naming the projects or roles used
-- [ ] **an out-of-scope question is refused, not answered** (grounding test)
-- [ ] the index refuses to load when provider or dimension mismatches
-- [ ] works end to end with `AI_PROVIDER=template` and no API key
-- [ ] the endpoint returns retrieval and generation timings for Engineer Mode
+- [ ] the From My GitHub section renders live public repositories
+- [ ] it degrades gracefully when the GitHub API is rate-limited or unreachable
+- [ ] the MCP server exposes and answers its tools
+- [ ] one question returns both portfolio and GitHub evidence, **attributed
+      separately**
+- [ ] the RAG implementation is unchanged by this phase
 
 ## User Experience
 
-Ask a question, see the answer arrive with source chips beneath. An unsupported
-question is answered honestly: "I don't have evidence of that in the portfolio."
+A From My GitHub section shows selected repositories. Asking "What Python
+projects has she built?" returns portfolio evidence and live repositories,
+attributed separately.
 
 ## Out of Scope
 
-Job matching (Phase 4). GitHub or MCP (Phase 5). The Engineer Mode UI (Phase 6),
-though the endpoint returns the metrics it will display.
+Authenticated GitHub features, write operations, other MCP servers.
 
 ---
 
@@ -57,8 +55,8 @@ _(seven questions — unanswered until `/plan`)_
 
 ## Existing Components Reused
 
-`ContentService` for content. This phase creates the RAG service and both
-provider abstractions that Phases 4-6 reuse.
+RAG service unchanged - adding a tool must not reshape retrieval.
+`ContentService` backs the MCP tools.
 
 ## Rejected Alternatives
 
@@ -78,7 +76,7 @@ _(filled at `/plan`)_
 
 ## Skills Used
 
-`rag-ingestion`, `ai-provider`, `api-endpoint`, `react-component`, `tdd-cycle`
+`api-endpoint`, `react-component`, `tdd-cycle`, `a11y-responsive`
 
 ---
 
@@ -86,13 +84,10 @@ _(filled at `/plan`)_
 
 ## Tests First
 
-- chunking produces `{text, source, type}` records covering every content file
-- a known query retrieves the expected source
-- **grounding: an out-of-scope question is refused** (mandatory)
-- index refuses to load on provider/dimension mismatch
-- endpoint returns answer + sources + timings
-- provider falls back to `template` when the LLM is unavailable
-- UI renders loading, error and empty states, and shows citations
+- GitHub client parses repo data; handles rate limit and network failure
+- the section renders repos and degrades when the API is unavailable
+- MCP server exposes the tools and returns valid results
+- a combined answer attributes stored vs live evidence separately
 
 ## TDD Evidence
 
@@ -123,7 +118,7 @@ See `harness/QUALITY-GATES.md`. `PARTIAL`/`SKIPPED` are honest; a check reported
 
 ## Final Checklist  *(`/complete`)*
 
-`python harness/scripts/final_checklist.py --slug rag-assistant` — must exit 0.
+`python harness/scripts/final_checklist.py --slug 05-mcp-integration` — must exit 0.
 Paste the result table, then confirm by hand:
 
 - [ ] content traces to the resume; no invented experience
@@ -175,7 +170,7 @@ Real results only. Not run = `SKIPPED`, never `PASS`.
 | typecheck | — |
 | manual check | — |
 
-Re-ingest succeeds after a content change; answers cite real sources.
+Repos render live; MCP tools callable and listed.
 
 ## PR Summary
 

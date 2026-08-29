@@ -14,6 +14,10 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+
+# Directories that are never ours to lint: dependencies, build output and caches.
+# .venv in particular ships vendored Markdown with broken relative links.
+SKIP_DIRS = {".git", "node_modules", ".venv", "venv", "dist", ".pytest_cache", ".ruff_cache"}
 H = ROOT / "harness"
 
 LEARNING_CAPS = {
@@ -246,7 +250,7 @@ def check_links() -> None:
     """Broken links make the harness unnavigable."""
     bad = []
     for p in ROOT.rglob("*.md"):
-        if ".git" in p.parts or "node_modules" in p.parts:
+        if SKIP_DIRS & set(p.parts):
             continue
         for m in re.finditer(r"\[[^\]]+\]\(([^)#]+)\)", p.read_text(encoding="utf-8")):
             link = m.group(1).strip()
@@ -265,7 +269,7 @@ def check_referenced_files() -> None:
     pat = re.compile(r"`((?:harness|\.claude)/[A-Za-z0-9_./-]+\.(?:md|py))`")
     missing = set()
     for p in ROOT.rglob("*.md"):
-        if ".git" in p.parts or "node_modules" in p.parts:
+        if SKIP_DIRS & set(p.parts):
             continue
         for m in pat.finditer(p.read_text(encoding="utf-8")):
             if not (ROOT / m.group(1)).exists():

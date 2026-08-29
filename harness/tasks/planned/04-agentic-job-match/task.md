@@ -1,14 +1,14 @@
-# Task: Final Polish + Deploy
+# Task: Agentic Job Match — Why Me?
 
 | | |
 |---|---|
-| **Slug** | `final-polish` |
-| **Branch** | `feature/final-polish` |
-| **Phase** | Phase 6 |
+| **Slug** | `04-agentic-job-match` |
+| **Branch** | `feature/04-agentic-job-match` |
+| **Phase** | Phase 4 |
 | **Status** | brief — not started |
 | **Started / Completed** | — |
 
-> **Brief only.** `/plan final-polish` fills in Design, Plan and the rest. Every stage
+> **Brief only.** `/plan 04-agentic-job-match` fills in Design, Plan and the rest. Every stage
 > writes back here, so this file ends up holding the whole story. Do not
 > implement from this file alone.
 
@@ -18,33 +18,34 @@
 
 ## Feature
 
-Engineer Mode, state coverage, mobile and accessibility passes, README,
-architecture diagram, screenshots, and deployment to Vercel.
+A four-agent sequential workflow - requirement, portfolio, evidence, response -
+behind `POST /api/ai/job-match`, with a UI showing each step as it runs.
 
 ## Goal
 
-Reach the Definition of Done: a portfolio ready to publish and demonstrate.
+Demonstrate decomposed agent responsibilities rather than one giant prompt, and
+produce an honest match report a recruiter would find useful.
 
 ## Acceptance Criteria
 
 Refined at `/plan`, checked off at `/review`.
 
-- [ ] Engineer Mode toggles and shows endpoint, chunks, retrieval ms,
-      generation ms, sources and tool used
-- [ ] a response missing metrics degrades gracefully
-- [ ] every AI surface has loading, error and empty states
-- [ ] the deployed site is reachable and AI features work against Gemini
-- [ ] every Definition of Done item in the master plan is satisfied
-- [ ] full test suite, lint and typecheck green across both sides
+- [ ] a pasted job description yields matches, evidence and gaps
+- [ ] the four steps appear in the UI as they run
+- [ ] **a requirement with no evidence is reported as a gap, never softened**
+- [ ] a JD demanding an absent skill (e.g. Kubernetes) reports it as a gap
+- [ ] the chain reuses the existing RAG retrieval - no second search path
+- [ ] a failing step propagates rather than returning a partial result
 
 ## User Experience
 
-An Engineer Mode toggle reveals, per AI response: endpoint, chunks retrieved,
-vector search ms, generation ms, sources used, and tool used where applicable.
+Paste a job description. Four steps tick over live: Understanding role,
+Searching portfolio, Finding evidence, Preparing response. Output lists strong
+matches with evidence, and gaps stated plainly as gaps.
 
 ## Out of Scope
 
-New AI capabilities. Custom domain, analytics.
+Parallel agents, an agent framework, persistence of past matches.
 
 ---
 
@@ -54,8 +55,7 @@ _(seven questions — unanswered until `/plan`)_
 
 ## Existing Components Reused
 
-Metrics already returned by the Phase 3 and 4 endpoints - this phase displays
-them, it does not add new measurement.
+The RAG retrieval service from `03-rag-assistant`. `AIProvider` unchanged.
 
 ## Rejected Alternatives
 
@@ -75,7 +75,7 @@ _(filled at `/plan`)_
 
 ## Skills Used
 
-`react-component`, `a11y-responsive`, `tdd-cycle`
+`agent-workflow`, `api-endpoint`, `react-component`, `tdd-cycle`
 
 ---
 
@@ -83,10 +83,12 @@ _(filled at `/plan`)_
 
 ## Tests First
 
-- Engineer Mode toggles and renders real metrics from the response
-- metrics absent from a response degrade gracefully
-- every AI surface has loading, error and empty states
-- full suite green across backend and frontend
+- requirement agent extracts skills from a sample JD
+- portfolio agent returns evidence per requirement via existing retrieval
+- **evidence agent reports a gap when there is no evidence**
+- response agent composes from evidence only, inventing nothing
+- chain runs in order; a failing step propagates
+- UI shows progress and the final report
 
 ## TDD Evidence
 
@@ -117,7 +119,7 @@ See `harness/QUALITY-GATES.md`. `PARTIAL`/`SKIPPED` are honest; a check reported
 
 ## Final Checklist  *(`/complete`)*
 
-`python harness/scripts/final_checklist.py --slug final-polish` — must exit 0.
+`python harness/scripts/final_checklist.py --slug 04-agentic-job-match` — must exit 0.
 Paste the result table, then confirm by hand:
 
 - [ ] content traces to the resume; no invented experience
@@ -169,7 +171,7 @@ Real results only. Not run = `SKIPPED`, never `PASS`.
 | typecheck | — |
 | manual check | — |
 
-Deployed site reachable; production AI features working.
+A real job description produces a defensible match report.
 
 ## PR Summary
 

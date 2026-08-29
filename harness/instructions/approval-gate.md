@@ -7,10 +7,13 @@ dangerous. This is the line.
 
 ## Always stop and ask
 
+- **Any `git commit`.** Every commit, on every branch, including the feature
+  branch. Stage the work, show what changed and the proposed message, then wait.
+- **Any `git push`.** Every push, to every branch.
 - **Destructive or irreversible git**: force-push, history rewrite, `reset
-  --hard` on shared work, deleting a branch with unmerged commits, `git clean`.
-- **Anything outward-facing**: opening or merging a PR, pushing to `main`,
-  deploying, publishing, or sending data to an external service.
+  --hard`, deleting a branch with unmerged commits, `git clean`.
+- **Anything outward-facing**: opening or merging a PR, deploying, publishing,
+  or sending data to an external service.
 - **A new dependency, framework, database or AI library** not approved in the
   design. Default answer is no — see `HARNESS-RULES.md` rule 19.
 - **A new top-level directory or parallel system.** Almost always a design
@@ -27,8 +30,13 @@ dangerous. This is the line.
 - Anything the approved `task.md` already describes.
 - Ordinary edits inside the plan's file list.
 - Running tests, lint, typecheck, the gate scripts.
-- Local commits on the feature branch.
+- Writing and editing files inside the plan's file list.
+- `git add` / staging, and showing a proposed commit message.
 - Naming, structure and style choices inside an approved step.
+
+Note the asymmetry: **editing files is free, recording history is not.** A bad
+edit is undone with another edit; a commit or push enters history that someone
+else may already have pulled.
 
 ## How to ask
 

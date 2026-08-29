@@ -4,7 +4,7 @@ A personal portfolio where AI features are part of the product, not demos bolted
 onto the side — built with an AI development harness that is itself part of the
 portfolio.
 
-**Status:** scaffolded. Phase 1 not started. Run `/plan foundation` to begin.
+**Status:** scaffolded. Phase 1 not started. Run `/plan 01-foundation` to begin.
 
 ---
 
@@ -78,7 +78,7 @@ Design ──> Plan ──> Test ──> Develop ──> Review ──> Complete
 | `/status` | Where the active feature stands | — |
 | `/health` | Whether the harness itself has rotted | — |
 
-`/plan foundation`, `/plan rag-assistant` — every task name has a brief already
+`/plan 01-foundation`, `/plan 03-rag-assistant` — every task name has a brief already
 waiting in `harness/tasks/planned/`.
 
 ### Entry points

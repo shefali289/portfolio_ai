@@ -1,15 +1,8 @@
 import { render, screen } from '@testing-library/react'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it } from 'vitest'
 
 import { Profile } from './Profile'
-import { getProfile } from '../lib/api'
 import type { Profile as ProfileData } from '../types/content'
-
-vi.mock('../lib/api', () => ({
-  getProfile: vi.fn(),
-}))
-
-const mockedGetProfile = vi.mocked(getProfile)
 
 const profileFixture: ProfileData = {
   name: 'Test Person',
@@ -26,52 +19,23 @@ const profileFixture: ProfileData = {
   languages: [],
 }
 
-/** A promise that never settles, so the loading state stays on screen. */
-const pending = <T,>() => new Promise<T>(() => {})
-
 describe('Profile', () => {
-  beforeEach(() => {
-    vi.clearAllMocks()
-  })
+  it('renders passed profile content without fetching', () => {
+    render(<Profile profile={profileFixture} />)
 
-  it('renders the name and title returned by the API', async () => {
-    mockedGetProfile.mockResolvedValue(profileFixture)
-
-    render(<Profile />)
-
-    expect(await screen.findByRole('heading', { name: 'Test Person' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Test Person' })).toBeInTheDocument()
     expect(screen.getByText('Test Engineer')).toBeInTheDocument()
   })
 
-  it('renders the loading state while the request is in flight', () => {
-    mockedGetProfile.mockReturnValue(pending<ProfileData>())
+  it('renders an empty state when the profile has no name or title', () => {
+    render(<Profile profile={{ ...profileFixture, name: '', title: '' }} />)
 
-    render(<Profile />)
-
-    expect(screen.getByRole('status')).toBeInTheDocument()
+    expect(screen.getByText(/no profile content/i)).toBeInTheDocument()
   })
 
-  it('renders the error state when the API rejects', async () => {
-    mockedGetProfile.mockRejectedValue(new Error('network down'))
+  it('does not render a phone number', () => {
+    const { container } = render(<Profile profile={profileFixture} />)
 
-    render(<Profile />)
-
-    expect(await screen.findByRole('alert')).toBeInTheDocument()
-  })
-
-  it('renders the empty state when the profile has no name', async () => {
-    mockedGetProfile.mockResolvedValue({ ...profileFixture, name: '', title: '' })
-
-    render(<Profile />)
-
-    expect(await screen.findByText(/no profile content/i)).toBeInTheDocument()
-  })
-
-  it('does not render a phone number', async () => {
-    mockedGetProfile.mockResolvedValue(profileFixture)
-    const { container } = render(<Profile />)
-
-    await screen.findByRole('heading', { name: 'Test Person' })
     expect(container.textContent).not.toMatch(/\+?\d{2,}[\d\s-]{6,}/)
   })
 })

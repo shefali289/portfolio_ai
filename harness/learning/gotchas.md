@@ -32,6 +32,11 @@ Things that cost time. Symptom -> cause -> fix.
   with `typescript-eslint@8`; check peer dependencies before pinning a major.
 - **ruff B008 flags FastAPI `Depends()` defaults.** Use an `Annotated` dependency
   alias instead of suppressing the rule.
+- **PowerShell may block `npm.ps1`/`npx.ps1`.** Use `npm.cmd` and `npx.cmd` so
+  Node scripts run without changing machine execution policy.
+- **Headless Edge enforces a minimum normal-window width on Windows.** A requested
+  375px bitmap may crop a ~492px CSS viewport; use DevTools device metrics and
+  verify `innerWidth`, `clientWidth`, and `scrollWidth` before judging layout.
 
 ## Deployment
 

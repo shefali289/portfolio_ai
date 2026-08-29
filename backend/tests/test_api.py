@@ -56,6 +56,25 @@ def test_profile_does_not_expose_a_phone_number(client: TestClient) -> None:
     assert "phone" not in body["links"]
 
 
+def test_content_returns_all_five_validated_content_areas(client: TestClient) -> None:
+    response = client.get("/api/content")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert set(body) == {
+        "profile",
+        "experience",
+        "skills",
+        "projects",
+        "engineering_notes",
+    }
+    assert body["profile"]["name"] == "Test Person"
+    assert body["experience"]["roles"][0]["company"] == "Test Company"
+    assert body["skills"]["groups"][0]["name"] == "Test Group"
+    assert body["projects"]["projects"][0]["name"] == "Test Project"
+    assert body["engineering_notes"]["achievements"][0]["name"] == "Test Achievement"
+
+
 def test_unknown_route_returns_404(client: TestClient) -> None:
     assert client.get("/api/nope").status_code == 404
 

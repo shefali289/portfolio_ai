@@ -43,3 +43,85 @@ export interface Profile {
   certifications: Certification[]
   languages: Language[]
 }
+
+export interface Role {
+  id: string
+  title: string
+  company: string
+  location: string
+  start: string
+  end: string | null
+  current: boolean
+  highlights: string[]
+  technologies: string[]
+  link: string | null
+}
+
+export interface Experience {
+  roles: Role[]
+}
+
+export interface SkillEvidence {
+  type: string
+  ref: string
+}
+
+export interface Skill {
+  name: string
+  evidence: SkillEvidence[]
+  todo: string | null
+}
+
+export interface SkillGroup {
+  id: string
+  name: string
+  skills: Skill[]
+}
+
+export interface Skills {
+  _note: string | null
+  groups: SkillGroup[]
+}
+
+export interface ProjectLinks {
+  demo: string | null
+  repo: string | null
+}
+
+export interface Project {
+  id: string
+  name: string
+  date: string
+  context: string
+  description: string
+  technologies: string[]
+  links: ProjectLinks
+  todo: string | null
+}
+
+export interface Projects {
+  projects: Project[]
+}
+
+export interface Achievement {
+  id: string
+  name: string
+  issuer: string
+}
+
+export interface EngineeringNotes {
+  _note: string | null
+  achievements: Achievement[]
+  building: string[]
+  learning: string[]
+  beyond: string[]
+  todo: string[]
+}
+
+export interface PortfolioContent {
+  profile: Profile
+  experience: Experience
+  skills: Skills
+  projects: Projects
+  engineering_notes: EngineeringNotes
+}

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 import pytest
@@ -70,6 +71,23 @@ def test_skills_carry_evidence_or_an_explicit_todo(content_dir: Path) -> None:
     for group in service.skills.groups:
         for skill in group.skills:
             assert skill.evidence or skill.todo, f"{skill.name} has neither evidence nor a TODO"
+
+
+def test_invalid_skill_evidence_reference_raises_a_clear_error(make_content_dir) -> None:
+    directory = make_content_dir()
+    skills_path = directory / "skills.json"
+    skills = json.loads(skills_path.read_text(encoding="utf-8"))
+    skills["groups"][0]["skills"][0]["evidence"] = [
+        {"type": "role", "ref": "missing-role"}
+    ]
+    skills_path.write_text(json.dumps(skills), encoding="utf-8")
+
+    with pytest.raises(ContentError) as excinfo:
+        ContentService(directory)
+
+    message = str(excinfo.value)
+    assert "missing-role" in message
+    assert "skills.json" in message
 
 
 def test_the_real_content_directory_validates(real_content_dir: Path) -> None:

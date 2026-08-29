@@ -4,13 +4,16 @@ Pointer to what is in flight. Maintained by `/plan` and `/complete`.
 
 ---
 
-No task is in flight. Phase 1 (`01-foundation`) completed on 2026-08-29 and its
-pull request is open: https://github.com/shefali289/portfolio_ai/pull/1
+No task is in flight. Phase 2 (`02-portfolio-ui`) completed on 2026-08-29.
+Its PR body is ready, but GitHub CLI authentication must be repaired before the
+PR can be created:
+https://github.com/shefali289/portfolio_ai/compare/main...feature/02-portfolio-ui
 
-## Next command
+## Next action
 
 ```text
-/plan 02-portfolio-ui
+gh auth login -h github.com
 ```
 
-Phase 1 is archived under `harness/tasks/completed/`; Phase 2 is ready to plan.
+After the Phase 2 PR is open, the next lifecycle command is
+`/plan 03-rag-assistant`.

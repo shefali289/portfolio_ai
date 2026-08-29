@@ -2,8 +2,8 @@
 
 Where things live, and where to extend. Updated when a new area appears.
 
-> Phase 1 established the content, backend API/service, frontend component, and
-> typed-client seams. Later AI and integration areas remain planned.
+> Phases 1–2 established the validated content pipeline, aggregate portfolio API,
+> typed client, and data-driven UI. AI and integration areas remain planned.
 
 ## Areas
 
@@ -23,6 +23,10 @@ Where things live, and where to extend. Updated when a new area appears.
 
 - `ContentService` is the **only** reader of `content/`. RAG ingestion,
   API routes and MCP tools all go through it. Never open the JSON directly.
+- `/api/content` is the portfolio UI boundary: one response exposes all five
+  eagerly validated content models and one page owner handles request state.
+- Skill evidence refs are validated by `ContentService` before the frontend
+  resolves them into role/project/credential labels.
 - `AIProvider` and `EmbeddingProvider` are not yet built; keep them as separate
   abstractions because they have different deployment constraints. See
   `decisions.md`.

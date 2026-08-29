@@ -6,7 +6,7 @@
  * live in exactly one place.
  */
 
-import type { Profile } from '../types/content'
+import type { PortfolioContent, Profile } from '../types/content'
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? ''
 
@@ -40,6 +40,10 @@ async function request<T>(path: string): Promise<T> {
 
 export function getProfile(): Promise<Profile> {
   return request<Profile>('/api/profile')
+}
+
+export function getContent(): Promise<PortfolioContent> {
+  return request<PortfolioContent>('/api/content')
 }
 
 export function getHealth(): Promise<{ status: string }> {

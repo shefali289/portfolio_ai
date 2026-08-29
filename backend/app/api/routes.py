@@ -9,7 +9,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, Request
 
-from app.api.schemas import HealthResponse
+from app.api.schemas import ContentResponse, HealthResponse
 from app.services.content import ContentService
 from app.services.content_models import Profile
 
@@ -34,3 +34,14 @@ def health() -> HealthResponse:
 @router.get("/profile", response_model=Profile)
 def profile(content: ContentDep) -> Profile:
     return content.profile
+
+
+@router.get("/content", response_model=ContentResponse)
+def portfolio_content(content: ContentDep) -> ContentResponse:
+    return ContentResponse(
+        profile=content.profile,
+        experience=content.experience,
+        skills=content.skills,
+        projects=content.projects,
+        engineering_notes=content.engineering_notes,
+    )

@@ -2,8 +2,6 @@
 
 Patterns to copy. Written as "do X", not as prose.
 
-> Seeded from the agreed design. Confirm and correct after Phase 1.
-
 ## Content
 
 - Portfolio data lives in `content/*.json` and is rendered from there. Never
@@ -13,10 +11,14 @@ Patterns to copy. Written as "do X", not as prose.
 - Missing information is an explicit `TODO` placeholder, never an invented value.
 - Personal data intentionally excluded from public content is also excluded
   from documentation and reachable git history before any push.
+- Omit source-empty narrative sections and derive filter labels from existing
+  content; never turn TODO authoring notes into public portfolio copy.
 
 ## Backend
 
 - Routers are thin: parse, call a service, return. No logic in `api/`.
+- Validate cross-content references during eager content loading so the API
+  never serves evidence links that the UI cannot resolve.
 - Settings come from `pydantic-settings` in `config.py`. Never read `os.environ`
   directly in a module.
 - Providers are selected by env var and resolved through a factory, so adding an
@@ -25,12 +27,15 @@ Patterns to copy. Written as "do X", not as prose.
 ## Frontend
 
 - One API client (`lib/api.ts`). Components never call `fetch`.
-- Every data-driven component handles three states: loading, error, empty.
+- For an aggregate page request, the page owner handles loading/error/retry once;
+  pure collection components handle their own honest empty state.
 
 ## Tests
 
 - RED first: write it, run it, confirm it fails for the right reason.
 - Test behaviour, never styling, class names or animation timing.
+- Aggregate page fixtures include a non-empty item for every simple section;
+  focused interaction tests supplement rather than replace render coverage.
 - One grounding test is mandatory for every AI feature: an out-of-scope question
   must be refused, not answered.
 

@@ -4,13 +4,24 @@ Pointer to what is in flight. Maintained by `/plan` and `/complete`.
 
 ---
 
-No task is in flight. Phase 1 (`01-foundation`) completed on 2026-08-29 and its
-pull request is open: https://github.com/shefali289/portfolio_ai/pull/1
+| | |
+|---|---|
+| **Active task** | Portfolio UI |
+| **Slug** | `02-portfolio-ui` |
+| **Branch** | `feature/02-portfolio-ui` (to create before `/build`) |
+| **Phase** | 2 of 6 |
+| **Stage** | planned — G1 passed, awaiting `/build` |
+| **Task file** | `harness/tasks/active/02-portfolio-ui/task.md` |
+| **Started** | 2026-08-29 |
 
 ## Next command
 
 ```text
-/plan 02-portfolio-ui
+/build
 ```
 
-Phase 1 is archived under `harness/tasks/completed/`; Phase 2 is ready to plan.
+## Plan summary
+
+Eight steps: backend RED/GREEN for one aggregate endpoint and evidence integrity;
+frontend RED/GREEN for page states, disclosures and filters; responsive/a11y
+polish; full validation. No new dependency or invented content.

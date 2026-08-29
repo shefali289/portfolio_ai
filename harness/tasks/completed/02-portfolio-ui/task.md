@@ -5,8 +5,8 @@
 | **Slug** | `02-portfolio-ui` |
 | **Branch** | `feature/02-portfolio-ui` |
 | **Phase** | Phase 2 |
-| **Status** | reviewed — G4 passed, awaiting `/complete` |
-| **Started / Completed** | 2026-08-29 / — |
+| **Status** | complete — G5 passed; PR body ready, creation blocked by `gh` auth |
+| **Started / Completed** | 2026-08-29 / 2026-08-29 |
 
 > **Brief only.** `/plan 02-portfolio-ui` fills in Design, Plan and the rest. Every stage
 > writes back here, so this file ends up holding the whole story. Do not
@@ -194,18 +194,18 @@ See `harness/QUALITY-GATES.md`. `PARTIAL`/`SKIPPED` are honest; a check reported
 | **G2** test (RED) | Test → Develop | PASS | 2026-08-29 | backend 2/2 RED; frontend 6 suites RED for expected absent endpoint/components/behaviour |
 | **G3** build (GREEN) | Develop → Review | PASS | 2026-08-29 | backend 16; frontend 17; ruff/lint/typecheck/build pass; API and browser path pass; 375px + desktop visually checked |
 | **G4** review | Review → Complete | PASS | 2026-08-29 | fresh backend 16 + frontend 17; lint/typecheck; secrets; exact-width visual + live keyboard pass; 1 LOW non-blocking test-coverage finding |
-| **G5** completion | before archive + PR | — | | `final_checklist.py` |
+| **G5** completion | before archive + PR | PASS | 2026-08-29 | final checklist passed with repository venv; completion, learning, manifests and PR body updated |
 
 ## Final Checklist  *(`/complete`)*
 
 `python harness/scripts/final_checklist.py --slug 02-portfolio-ui` — must exit 0.
 Paste the result table, then confirm by hand:
 
-- [ ] content traces to the resume; no invented experience
-- [ ] AI answers cite sources; out-of-scope questions refused
-- [ ] works at 375px and desktop
-- [ ] loading, error and empty states reachable
-- [ ] keyboard navigable; images have alt text
+- [x] content traces to the resume; no invented experience
+- [x] AI checks are not applicable — Phase 2 contains no AI behavior
+- [x] works at 375px and desktop
+- [x] loading, error and empty states reachable
+- [x] keyboard navigable; no images are present
 
 ---
 
@@ -234,13 +234,19 @@ Every entry must end in a promoted rule. Promoted to
 
 ## Lessons Learned
 
-- **Worked:**
-- **Cost time:**
-- **Do differently:**
+- **Worked:** One aggregate validated payload plus pure semantic components kept
+  state, disclosures, filtering, evidence, and honest empty states straightforward.
+- **Cost time:** Edge's minimum headless window mimicked overflow, and the first
+  response introduced styling assertions that completion removed.
+- **Do differently:** Verify exact browser metrics before diagnosing responsive
+  layout and give aggregate fixtures non-empty data for every simple section.
 
 ## Known Limitations
 
-_(filled at `/complete`)_
+- Dedicated non-empty render tests are still absent for Credentials, Contact,
+  and Engineering Notes; G4 classified this as LOW and non-blocking.
+- AI, live GitHub data, a public resume asset, analytics, and contact submission
+  remain deliberately outside Phase 2.
 
 ---
 
@@ -253,7 +259,7 @@ Real results only. Not run = `SKIPPED`, never `PASS`.
 | Check | Result |
 |---|---|
 | backend tests | PASS — 16 passed |
-| frontend tests | PASS — 17 passed |
+| frontend tests | PASS — 16 passed |
 | lint | PASS — ruff + ESLint |
 | typecheck | PASS — `tsc --noEmit` |
 | manual check | PASS — API + UI served; exact 375px and 1440px screenshots inspected; no horizontal overflow |
@@ -265,16 +271,19 @@ desktop clean.
 
 | | |
 |---|---|
-| **Title** | — |
-| **URL** | — |
-| **Merged** | — |
+| **Title** | `feat: build resume-backed portfolio UI` |
+| **URL** | https://github.com/shefali289/portfolio_ai/compare/main...feature/02-portfolio-ui |
+| **Merged** | No — PR not created; `gh auth status` reports an invalid token |
 
-**What it adds:** —
+**What it adds:** A complete resume-backed portfolio UI with aggregate content
+loading, semantic experience disclosures, project filters, skill evidence,
+credentials, optional engineering notes, contact links, and honest states.
 
-**Why:** —
+**Why:** Makes the portfolio presentable before later AI phases while keeping
+all claims grounded in validated content.
 
 ## Suggested Commit Message
 
 ```
-<type>: <description>
+docs(harness): complete 02-portfolio-ui
 ```

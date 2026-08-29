@@ -29,3 +29,11 @@ digest.
   peer-range mismatches created avoidable setup churn.
 - **Do differently:** Resolve tool versions first and apply privacy boundaries
   consistently to content, documentation, and git history.
+
+### 02-portfolio-ui - 2026-08-29
+- **Worked:** One validated aggregate payload kept page state simple while pure
+  semantic components made disclosures, filters, and evidence easy to verify.
+- **Cost time:** Edge's minimum headless window masqueraded as mobile overflow,
+  and the first regression response coupled tests to Tailwind classes.
+- **Do differently:** Verify browser viewport metrics first, keep responsive
+  checks manual, and seed aggregate fixtures with every simple section.

@@ -41,3 +41,14 @@ One line each: the choice, and the reason. Rejected options included.
   backend seam reusable and mockable.
 - **Strict content models (`extra="forbid"`)** - typoed keys fail validation
   rather than silently rendering incomplete portfolio sections.
+
+## 2026-08-29 - Portfolio UI
+
+- **One aggregate content endpoint** - five cached models share one page-level
+  loading/error/retry lifecycle instead of repeating routes and request state.
+- **Evidence integrity before rendering** - validate every skill evidence ref at
+  content load, then resolve human-readable labels in the frontend.
+- **Content-derived filters and omitted empty narratives** - the resume does not
+  support a fixed taxonomy or Building/Learning/Beyond copy, so the UI invents neither.
+- **Semantic HTML and Tailwind over a UI/motion dependency** - native controls,
+  visible focus, and `motion-safe` CSS satisfy the interaction and a11y needs.

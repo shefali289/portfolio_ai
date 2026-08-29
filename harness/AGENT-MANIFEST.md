@@ -99,7 +99,7 @@ Every task below has a brief in `tasks/planned/<slug>/task.md`, so
 | Slug | Phase | Description | Status |
 |---|---|---|---|
 | `01-foundation` | 1 | React + FastAPI running, resume extracted to `content/*.json`, tests wired | **done** — 2026-08-29 |
-| `02-portfolio-ui` | 2 | All portfolio sections rendered from content — no AI yet | **active** — design started 2026-08-29 |
+| `02-portfolio-ui` | 2 | All portfolio sections rendered from content — no AI yet | **done** — 2026-08-29 |
 | `03-rag-assistant` | 3 | Chunking, embeddings, FAISS, providers, `/api/ai/chat`, Ask My Portfolio | brief ready |
 | `04-agentic-job-match` | 4 | Four-agent chain, `/api/ai/job-match`, Why Me? with live progress | brief ready |
 | `05-mcp-integration` | 5 | GitHub API + MCP server, From My GitHub, tool-sourced answers | brief ready |

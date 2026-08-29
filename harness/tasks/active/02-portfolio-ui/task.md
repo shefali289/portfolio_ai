@@ -5,7 +5,7 @@
 | **Slug** | `02-portfolio-ui` |
 | **Branch** | `feature/02-portfolio-ui` |
 | **Phase** | Phase 2 |
-| **Status** | planned — G1 passed, awaiting `/build` |
+| **Status** | built — G3 passed, awaiting commit approval |
 | **Started / Completed** | 2026-08-29 / — |
 
 > **Brief only.** `/plan 02-portfolio-ui` fills in Design, Plan and the rest. Every stage
@@ -137,6 +137,7 @@ tested and manually reviewed.
 
 **Backend**
 `backend/app/api/schemas.py` · `backend/app/api/routes.py` ·
+`backend/app/services/content.py` ·
 `backend/tests/test_api.py` · `backend/tests/test_content_service.py`
 
 **Frontend core**
@@ -146,7 +147,7 @@ tested and manually reviewed.
 `frontend/src/types/content.ts`
 
 **Frontend components**
-`frontend/src/components/Profile.tsx` · `ExperienceTimeline.tsx` + test ·
+`frontend/src/components/Profile.tsx` + `Profile.test.tsx` · `ExperienceTimeline.tsx` + test ·
 `ProjectGallery.tsx` + test · `SkillsExplorer.tsx` + test ·
 `Credentials.tsx` · `EngineeringNotes.tsx` · `Contact.tsx`
 
@@ -175,9 +176,9 @@ proof, and `final_checklist.py` checks for it.
 
 | | |
 |---|---|
-| **RED - command** | — |
-| **RED - failed for the right reason** | — |
-| **GREEN - result** | — |
+| **RED - command** | Backend: `.venv/Scripts/python.exe -m pytest -q tests/test_api.py::test_content_returns_all_five_validated_content_areas tests/test_content_service.py::test_invalid_skill_evidence_reference_raises_a_clear_error`; Frontend: `npm.cmd test -- <six Phase 2 test files>` |
+| **RED - failed for the right reason** | Yes. Backend: `/api/content` was 404 and invalid evidence did not raise. Frontend: four absent modules plus aggregate page/Profile behaviour absent; 6 suites failed, 6 new-behaviour tests failed. One pre-existing privacy invariant passed. Full evidence in `handoffs/3-test.md`. |
+| **GREEN - result** | Backend: `16 passed`; `ruff check .` passed. Frontend: `17 passed`; ESLint, `tsc --noEmit`, and production build passed. Exact browser viewports at 375px and 1440px rendered cleanly; `scrollWidth` equalled `clientWidth` at both widths. |
 
 ---
 
@@ -188,10 +189,10 @@ See `harness/QUALITY-GATES.md`. `PARTIAL`/`SKIPPED` are honest; a check reported
 
 | Gate | When | Result | Date | Note |
 |---|---|---|---|---|
-| **G0** branch | before `/build` writes | — | | `branch_gate.py` |
+| **G0** branch | before `/build` writes | PASS | 2026-08-29 | `feature/02-portfolio-ui`; clean; rebased onto `origin/main`; 1 commit ahead |
 | **G1** design | Design → Plan | PASS | 2026-08-29 | 7 questions answered; no dependency; `1-design.md` 39 lines; content/filter decision resolved |
-| **G2** test (RED) | Test → Develop | — | | failure output recorded |
-| **G3** build (GREEN) | Develop → Review | — | | |
+| **G2** test (RED) | Test → Develop | PASS | 2026-08-29 | backend 2/2 RED; frontend 6 suites RED for expected absent endpoint/components/behaviour |
+| **G3** build (GREEN) | Develop → Review | PASS | 2026-08-29 | backend 16; frontend 17; ruff/lint/typecheck/build pass; API and browser path pass; 375px + desktop visually checked |
 | **G4** review | Review → Complete | — | | tests · lint · typecheck · a11y |
 | **G5** completion | before archive + PR | — | | `final_checklist.py` |
 
@@ -220,6 +221,8 @@ Paste the result table, then confirm by hand:
 | 2026-08-29 | No new UI or motion dependency | Existing React, Tailwind, semantic HTML, and `motion-safe` CSS cover the behaviour |
 | 2026-08-29 | Resolve and validate skill evidence across all content types | Phase 1 deferred ref integrity; evidence UI must never link to a nonexistent item |
 | 2026-08-29 | Omit Resume CTA until a public asset exists | `docs/resume.md` is source material, not a served/downloadable resume; do not fabricate an asset |
+| 2026-08-29 | Add existing `Profile.test.tsx` to the planned file list | Planning named a `Profile.tsx` refactor but omitted its existing contract test; corrected before RED rather than widening scope silently |
+| 2026-08-29 | Add `backend/app/services/content.py` to the planned file list | RED proved cross-file evidence integrity cannot live in a thin router; user approved correcting the service-file omission before GREEN |
 
 ## User Overrides
 
@@ -249,11 +252,11 @@ Real results only. Not run = `SKIPPED`, never `PASS`.
 
 | Check | Result |
 |---|---|
-| backend tests | — |
-| frontend tests | — |
-| lint | — |
-| typecheck | — |
-| manual check | — |
+| backend tests | PASS — 16 passed |
+| frontend tests | PASS — 17 passed |
+| lint | PASS — ruff + ESLint |
+| typecheck | PASS — `tsc --noEmit` |
+| manual check | PASS — API + UI served; exact 375px and 1440px screenshots inspected; no horizontal overflow |
 
 All sections render real resume content; filters and expanders work; 375px and
 desktop clean.

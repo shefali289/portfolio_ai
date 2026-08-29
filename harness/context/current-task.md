@@ -8,16 +8,16 @@ Pointer to what is in flight. Maintained by `/plan` and `/complete`.
 |---|---|
 | **Active task** | Portfolio UI |
 | **Slug** | `02-portfolio-ui` |
-| **Branch** | `feature/02-portfolio-ui` (to create before `/build`) |
+| **Branch** | `feature/02-portfolio-ui` |
 | **Phase** | 2 of 6 |
-| **Stage** | planned — G1 passed, awaiting `/build` |
+| **Stage** | built — G0–G3 passed; awaiting commit approval |
 | **Task file** | `harness/tasks/active/02-portfolio-ui/task.md` |
 | **Started** | 2026-08-29 |
 
 ## Next command
 
 ```text
-/build
+/review
 ```
 
 ## Plan summary

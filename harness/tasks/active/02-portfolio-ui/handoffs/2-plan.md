@@ -43,3 +43,7 @@ None.
 ## New learnings
 - Treat content integrity as UI behaviour when the UI exposes cross-file refs;
   validate refs before building evidence navigation on them.
+- Planning correction before RED: a named component refactor must include its
+  existing test path (`Profile.test.tsx`) in the file list.
+- Planning correction after RED: cross-file validation belongs in the existing
+  `ContentService`; `backend/app/services/content.py` is approved for GREEN.

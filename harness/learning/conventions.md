@@ -64,6 +64,12 @@ Patterns to copy. Written as "do X", not as prose.
 ## Tests
 
 - RED first: write it, run it, confirm it fails for the right reason.
+- **A defect found in review leaves a test behind, not just a fix.** Deploy
+  config was invisible to the suite, which is why a bad runtime pin survived;
+  `test_deploy_config.py` now closes that class, not just that instance.
+- **A display-only feature still needs a falsifiable rule.** "A missing metric
+  omits its row" is testable; "show metrics" is not. Absence is the test worth
+  writing - a rendered `0.00 ms` is a fabricated measurement.
 - Test behaviour, never styling, class names or animation timing.
 - Aggregate page fixtures include a non-empty item for every simple section;
   focused interaction tests supplement rather than replace render coverage.

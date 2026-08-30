@@ -86,3 +86,14 @@ digest.
 - **Do differently:** check every mock of a module before growing its exports.
   `App.test.tsx` mocked `lib/api` and broke the moment a component imported a
   new function from it - a planning gap the file list should have caught.
+
+## 06-final-polish
+
+- **Worked:** designing the feature around a falsifiable rule. "A missing metric
+  omits its row" produced the phase's best test; "show metrics" would have
+  produced none.
+- **Cost time:** handoffs breaching the 60-line cap, repeatedly. Rephrasing does
+  not shorten a file - only cutting content does.
+- **Do differently:** check a version pin against its registry *before* writing
+  it, and never describe config as verified when it cannot be executed. Review
+  caught a runtime pin that would have failed the deploy at import.

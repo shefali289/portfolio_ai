@@ -392,8 +392,14 @@
     {
       "slug": "06-final-polish",
       "phase": 6,
-      "status": "active",
+      "status": "complete",
       "branch": "feature/06-final-polish"
+    },
+    {
+      "slug": "07-deploy",
+      "phase": 7,
+      "status": "planned",
+      "branch": "feature/07-deploy"
     }
   ],
   "excluded": {

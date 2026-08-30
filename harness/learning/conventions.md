@@ -72,5 +72,8 @@ Patterns to copy. Written as "do X", not as prose.
 
 ## Naming
 
-- Branches: `feature/<name>`, `fix/<name>`, `improvement/<name>`.
+- Branches: `feature/<name>`, `fix/<name>`, `improvement/<name>` for task work;
+  `chore/<name>` or `docs/<name>` for maintenance that has no task and should
+  not invent one. CI classifies the branch and reports task-scoped gates as
+  **SKIPPED** for maintenance - never PASS, and never relaxed for feature work.
 - Commits: conventional (`feat:`, `test:`, `docs:`, `chore:`).

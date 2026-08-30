@@ -87,7 +87,9 @@ Things that cost time. Symptom -> cause -> fix.
   `frontend` off `frontend/package.json`. A skipped job reports `SKIPPED`, never
   passed — never relax that to make a pipeline green.
 - **The branch gate blocks a PR whose slug has no task directory.** Run
-  `/plan <slug>` before opening the PR.
+  `/plan <slug>` before opening the PR. Maintenance work that legitimately has
+  no task goes on `chore/` or `docs/`, where CI skips the task-scoped gates and
+  says so; do not loosen the feature pattern to get a green pipeline.
 - **Tree scans must exclude dependency and cache directories.** Harness health
   walked into `backend/.venv`; skip generated trees before reading Markdown.
 

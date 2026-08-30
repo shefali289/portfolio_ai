@@ -37,6 +37,13 @@ Patterns to copy. Written as "do X", not as prose.
   gap is decided by score, never by asking whether evidence is "good enough".
 - Pair vector search with an exact-term check when a query is a name rather than
   a sentence — a one-token query scores low against a long chunk.
+- **A tool is a plain callable; MCP and HTTP are thin adapters over it.** Write
+  the capability once, test it directly, and let each surface only translate.
+- **Tool selection is deterministic, never model-decided** — match on data the
+  tool owns (a repo's language, topics, name parts), word-bounded so a short
+  term cannot match inside a longer word. Same guarantee as refusal-by-threshold.
+- An external call returns a `reason` instead of raising, and only successes are
+  cached — caching a blip turns it into an outage for the whole TTL.
 
 ## Frontend
 

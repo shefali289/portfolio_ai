@@ -89,4 +89,16 @@ Things that cost time. Symptom -> cause -> fix.
 
 ## AI behaviour
 
-_(none yet - expect entries once RAG is running)_
+- **A second consumer of retrieval does not inherit the first one's
+  guarantees.** Refusal lives in `AiService`, so the MCP `search_resume` tool
+  returns sub-threshold passages for a question chat refuses outright. Any new
+  reader of `Retriever` starts ungrounded.
+- **A tool on the answer path spends its timeout on every cache miss.** An
+  inline GitHub call added 5.0s to a grounded answer when the host hung, versus
+  537ms cold and 0.5ms warm. Latency is a property of *where* the call sits.
+- **Conversational filler sinks a lexical query below the grounding
+  threshold.** "What Python projects has she built?" scores 0.228 against 0.25
+  while "Python projects" scores 0.322 - the right chunk ranks first either way.
+  Expect this until `GEMINI_API_KEY` makes retrieval semantic.
+- **Verify a degraded path by degrading it.** Pointing `GITHUB_API_BASE` at a
+  dead port proved the real UI copy; its unit test could not.

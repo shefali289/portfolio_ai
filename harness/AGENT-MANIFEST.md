@@ -102,7 +102,7 @@ Every task below has a brief in `tasks/planned/<slug>/task.md`, so
 | `02-portfolio-ui` | 2 | All portfolio sections rendered from content — no AI yet | **done** — 2026-08-29 |
 | `03-rag-assistant` | 3 | Resume-as-is cleanup, then chunking, embeddings, FAISS, providers, `/api/ai/chat` | done 2026-08-30 |
 | `04-agentic-job-match` | 4 | Four-agent chain, `/api/ai/job-match`, Why Me? with honest gaps | done 2026-08-30 |
-| `05-mcp-integration` | 5 | GitHub API + MCP server, From My GitHub, tool-sourced answers | **active** — planned 2026-08-30 |
+| `05-mcp-integration` | 5 | GitHub API + MCP server, From My GitHub, tool-sourced answers | done 2026-08-30 |
 | `06-final-polish` | 6 | Engineer Mode, a11y, mobile, README, deploy to Vercel | brief ready |
 
 Detail: [`docs/plan.md`](../docs/plan.md).

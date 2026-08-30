@@ -76,3 +76,13 @@ digest.
 - **Do differently:** when a feature exists to report bad news, test that the
   bad news is *reachable*. An over-narrow extractor would have made an honest
   gap impossible by construction.
+
+## 05-mcp-integration
+
+- **Worked:** one tool layer with two thin adapters. Six callables were testable
+  directly, and the MCP surface needed four tests rather than a subprocess.
+- **Cost time:** nothing structural. Handoffs went over the 60-line cap three
+  times; rephrasing does not shorten a file, cutting content does.
+- **Do differently:** check every mock of a module before growing its exports.
+  `App.test.tsx` mocked `lib/api` and broke the moment a component imported a
+  new function from it - a planning gap the file list should have caught.

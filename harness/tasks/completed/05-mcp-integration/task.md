@@ -5,8 +5,8 @@
 | **Slug** | `05-mcp-integration` |
 | **Branch** | `feature/05-mcp-integration` |
 | **Phase** | Phase 5 |
-| **Status** | built — G0-G3 passed, awaiting `/review` |
-| **Started / Completed** | 2026-08-30 / — |
+| **Status** | complete — 2026-08-30 |
+| **Started / Completed** | 2026-08-30 / 2026-08-30 |
 
 > **Brief only.** `/plan 05-mcp-integration` fills in Design, Plan and the rest. Every stage
 > writes back here, so this file ends up holding the whole story. Do not
@@ -30,18 +30,18 @@ live capability) - and that they can answer one question together.
 
 Refined at `/plan`, checked off at `/review`.
 
-- [ ] the From My GitHub section renders live public repositories, non-fork,
+- [x] the From My GitHub section renders live public repositories, non-fork,
       most recently pushed first, capped at 6
-- [ ] rate-limit, timeout and network failure each yield an honest empty state
+- [x] rate-limit, timeout and network failure each yield an honest empty state
       with a reason — never an error dialog, never a fabricated repo
-- [ ] the MCP server lists exactly its six tools, and a tool call returns the
+- [x] the MCP server lists exactly its six tools, and a tool call returns the
       same payload as calling the underlying function
-- [ ] one question returns both portfolio and GitHub evidence, **attributed
+- [x] one question returns both portfolio and GitHub evidence, **attributed
       separately** in the response and visibly separated in the UI
-- [ ] **the RAG implementation is unchanged** — no repo text enters the index,
+- [x] **the RAG implementation is unchanged** — no repo text enters the index,
       `Retriever` and `GROUNDING_THRESHOLD` are untouched
-- [ ] an ungrounded question is still refused, with `live_sources == []`
-- [ ] the GitHub username is read from `content/profile.json`, never hardcoded
+- [x] an ungrounded question is still refused, with `live_sources == []`
+- [x] the GitHub username is read from `content/profile.json`, never hardcoded
 
 ## User Experience
 
@@ -206,8 +206,8 @@ See `harness/QUALITY-GATES.md`. `PARTIAL`/`SKIPPED` are honest; a check reported
 | **G1** design | Design → Plan | PASS | 2026-08-30 | 7 questions answered; no new dependency; `1-design.md` 60 lines, within cap |
 | **G2** test (RED) | Test → Develop | PASS | 2026-08-30 | `ModuleNotFoundError: app.integrations.github`; frontend `Failed to resolve import "./GitHubProjects"`. Two absence-guard tests cannot be RED — noted in `3-test.md` |
 | **G3** build (GREEN) | Develop → Review | PASS | 2026-08-30 | backend `79 passed`, frontend `39 passed`; ruff + eslint + tsc clean; `git diff -- backend/app/rag/` empty |
-| **G4** review | Review → Complete | — | | tests · lint · typecheck · a11y |
-| **G5** completion | before archive + PR | — | | `final_checklist.py` |
+| **G4** review | Review → Complete | PASS | 2026-08-30 | backend 79, frontend 39, ruff + eslint + tsc clean; 375px 0 overflow; states, keyboard and refusal verified live. 3 findings, none blocking — see `handoffs/5-review.md` |
+| **G5** completion | before archive + PR | PASS | 2026-08-30 | `final_checklist.py --slug 05-mcp-integration` exits 0 |
 
 ## Final Checklist  *(`/complete`)*
 
@@ -247,13 +247,32 @@ Every entry must end in a promoted rule. Promoted to
 
 ## Lessons Learned
 
-- **Worked:**
-- **Cost time:**
-- **Do differently:**
+- **Worked:** one tool layer with two thin adapters. The six callables were
+  testable directly, so the MCP surface needed four tests rather than a
+  subprocess, and the HTTP route was three lines.
+- **Cost time:** nothing structural. Handoffs breached the 60-line cap three
+  times — rephrasing does not shorten a file, only cutting content does.
+- **Do differently:** check every mock of a module before growing its exports.
+  `App.test.tsx` mocked `lib/api` and broke the moment a component imported a
+  new function from it — a planning gap the file list should have caught.
 
 ## Known Limitations
 
-_(filled at `/complete`)_
+Intentionally not implemented.
+
+- **The MCP `search_resume` tool does not apply the grounding threshold.** Chat
+  refuses "What is the capital of France?"; the tool returns four sub-threshold
+  passages for it. Scores are included so a client *can* filter, but nothing
+  marks them as below the bar. Review finding 1 — a decision, not an oversight.
+- **A hanging GitHub adds up to `github_timeout_s` (5s) to a grounded answer**,
+  once per 15-minute cache window. Review finding 2.
+- **`From GitHub (live)` is not a heading**, so screen-reader heading navigation
+  skips it. It is inside the `aria-live` region and is announced. Finding 3.
+- **Conversational phrasings are refused under lexical embeddings** — "What
+  Python projects has she built?" scores 0.228 against 0.25. Pre-existing Phase 3
+  behaviour; the user chose to leave the threshold until Gemini is wired up.
+- Authenticated GitHub, write operations, repo README ingestion and streaming
+  are all out of scope by design.
 
 ---
 
@@ -265,11 +284,11 @@ Real results only. Not run = `SKIPPED`, never `PASS`.
 
 | Check | Result |
 |---|---|
-| backend tests | — |
-| frontend tests | — |
-| lint | — |
-| typecheck | — |
-| manual check | — |
+| backend tests | **PASS** — `79 passed` |
+| frontend tests | **PASS** — `Test Files 10 passed (10)`, `Tests 39 passed (39)` |
+| lint | **PASS** — ruff and eslint clean |
+| typecheck | **PASS** — `tsc --noEmit` clean |
+| manual check | **PASS** — live against the real account: 6 repos render; `Python projects` returns portfolio evidence *and* `portfolio_ai` + `agentic-ai` separately attributed; an out-of-scope question still refuses with `live_sources: []`. Degradation proved by pointing `GITHUB_API_BASE` at a dead port — honest message, fallback link, no `role="alert"`, zero invented cards. 375px: `scrollWidth == clientWidth`, 0 overflowing elements. |
 
 Repos render live; MCP tools callable and listed.
 
@@ -277,16 +296,20 @@ Repos render live; MCP tools callable and listed.
 
 | | |
 |---|---|
-| **Title** | — |
-| **URL** | — |
-| **Merged** | — |
+| **Title** | `feat: github integration and a portfolio MCP server` |
+| **URL** | not opened - awaiting approval (`gh` is authenticated). Compare: https://github.com/shefali289/portfolio_ai/compare/feature/04-agentic-job-match...feature/05-mcp-integration |
+| **Merged** | no |
 
-**What it adds:** —
+**What it adds:** A public GitHub client, six portfolio tools exposed over both
+MCP and HTTP, a From My GitHub section, and live repository data attached to
+grounded answers as separately-attributed evidence.
 
-**Why:** —
+**Why:** it shows the distinction between RAG and tools — stored knowledge
+versus live external capability — and that one question can draw on both without
+either being mistaken for the other. Retrieval is provably untouched.
 
 ## Suggested Commit Message
 
 ```
-<type>: <description>
+feat: github integration and a portfolio MCP server
 ```

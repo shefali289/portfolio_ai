@@ -1,81 +1,149 @@
 {
-  "_note": "Skills are evidence-linked: each entry points at the role, project, certification or qualification where the resume states it was used. An empty evidence list is deliberate and honest — the resume lists the skill but never shows it in use, so the portfolio must not claim otherwise. Those carry a TODO.",
   "groups": [
     {
       "id": "ai-automation",
       "name": "AI & Automation",
       "skills": [
-        { "name": "Generative AI", "evidence": [{ "type": "role", "ref": "spark-ai-engineer" }, { "type": "role", "ref": "theta-intern" }] },
-        { "name": "Agentic AI", "evidence": [{ "type": "role", "ref": "spark-ai-engineer" }] },
-        { "name": "Azure Logic Apps", "evidence": [{ "type": "role", "ref": "spark-ai-engineer" }, { "type": "role", "ref": "spark-automation-engineer" }] },
-        { "name": "Workflow Automation", "evidence": [{ "type": "role", "ref": "spark-automation-engineer" }] },
-        { "name": "Azure AI Foundry", "evidence": [], "todo": "TODO: link evidence — the resume lists this skill but does not state where it was used" },
-        { "name": "RAG", "evidence": [], "todo": "TODO: link evidence — the resume lists this skill but does not state where it was used" },
-        { "name": "Microsoft Power Automate", "evidence": [], "todo": "TODO: link evidence — the resume lists this skill but does not state where it was used" }
+        {
+          "name": "Generative AI"
+        },
+        {
+          "name": "Agentic AI"
+        },
+        {
+          "name": "Azure Logic Apps"
+        },
+        {
+          "name": "Workflow Automation"
+        },
+        {
+          "name": "Azure AI Foundry"
+        },
+        {
+          "name": "RAG"
+        },
+        {
+          "name": "Microsoft Power Automate"
+        }
       ]
     },
     {
       "id": "programming",
       "name": "Programming & Software Development",
       "skills": [
-        { "name": "Python", "evidence": [{ "type": "role", "ref": "spark-ai-engineer" }, { "type": "project", "ref": "friday" }] },
-        { "name": "TypeScript", "evidence": [{ "type": "role", "ref": "spark-ai-engineer" }] },
-        { "name": "JavaScript", "evidence": [{ "type": "project", "ref": "boardscape" }] },
-        { "name": "REST APIs", "evidence": [{ "type": "role", "ref": "spark-ai-engineer" }] },
-        { "name": "API Integration", "evidence": [{ "type": "role", "ref": "spark-ai-engineer" }] },
-        { "name": "Java", "evidence": [], "todo": "TODO: link evidence — the resume lists this skill but does not state where it was used" }
+        {
+          "name": "Python"
+        },
+        {
+          "name": "TypeScript"
+        },
+        {
+          "name": "JavaScript"
+        },
+        {
+          "name": "REST APIs"
+        },
+        {
+          "name": "API Integration"
+        },
+        {
+          "name": "Java"
+        }
       ]
     },
     {
       "id": "ai-assisted-development",
       "name": "AI-Assisted Development",
       "skills": [
-        { "name": "AI Engineering Harness", "evidence": [{ "type": "role", "ref": "spark-ai-engineer" }] },
-        { "name": "AI-Assisted SDLC", "evidence": [{ "type": "role", "ref": "spark-ai-engineer" }] },
-        { "name": "Claude Code", "evidence": [{ "type": "achievement", "ref": "anthropic-claude-code" }] },
-        { "name": "Spec-Driven Development", "evidence": [], "todo": "TODO: link evidence — the resume lists this skill but does not state where it was used" },
-        { "name": "GitHub Copilot", "evidence": [], "todo": "TODO: link evidence — the resume lists this skill but does not state where it was used" }
+        {
+          "name": "AI Engineering Harness"
+        },
+        {
+          "name": "AI-Assisted SDLC"
+        },
+        {
+          "name": "Claude Code"
+        },
+        {
+          "name": "Spec-Driven Development"
+        },
+        {
+          "name": "GitHub Copilot"
+        }
       ]
     },
     {
       "id": "cloud-devops",
       "name": "Cloud & DevOps",
       "skills": [
-        { "name": "Microsoft Azure", "evidence": [{ "type": "role", "ref": "spark-ai-engineer" }, { "type": "role", "ref": "spark-automation-engineer" }, { "type": "certification", "ref": "az-ai-engineer" }, { "type": "certification", "ref": "az-developer" }] },
-        { "name": "CI/CD Pipelines", "evidence": [], "todo": "TODO: link evidence — the resume lists this skill but does not state where it was used" },
-        { "name": "Git", "evidence": [], "todo": "TODO: link evidence — the resume lists this skill but does not state where it was used" }
+        {
+          "name": "Microsoft Azure"
+        },
+        {
+          "name": "CI/CD Pipelines"
+        },
+        {
+          "name": "Git"
+        }
       ]
     },
     {
       "id": "frontend",
       "name": "Frontend Development",
       "skills": [
-        { "name": "ReactJS", "evidence": [{ "type": "role", "ref": "spark-automation-engineer" }, { "type": "role", "ref": "theta-intern" }, { "type": "project", "ref": "boardscape" }] },
-        { "name": "HTML", "evidence": [], "todo": "TODO: link evidence — the resume lists this skill but does not state where it was used" },
-        { "name": "CSS", "evidence": [], "todo": "TODO: link evidence — the resume lists this skill but does not state where it was used" },
-        { "name": "Bootstrap", "evidence": [], "todo": "TODO: link evidence — the resume lists this skill but does not state where it was used" },
-        { "name": "Material UI", "evidence": [], "todo": "TODO: link evidence — the resume lists this skill but does not state where it was used" },
-        { "name": "Ant Design", "evidence": [], "todo": "TODO: link evidence — the resume lists this skill but does not state where it was used" }
+        {
+          "name": "ReactJS"
+        },
+        {
+          "name": "HTML"
+        },
+        {
+          "name": "CSS"
+        },
+        {
+          "name": "Bootstrap"
+        },
+        {
+          "name": "Material UI"
+        },
+        {
+          "name": "Ant Design"
+        }
       ]
     },
     {
       "id": "databases",
       "name": "Databases",
       "skills": [
-        { "name": "Azure PostgreSQL DB", "evidence": [{ "type": "role", "ref": "spark-ai-engineer" }] },
-        { "name": "Azure Cosmos DB", "evidence": [{ "type": "role", "ref": "spark-ai-engineer" }] },
-        { "name": "MongoDB", "evidence": [{ "type": "project", "ref": "boardscape" }] },
-        { "name": "Azure SQL Database", "evidence": [], "todo": "TODO: link evidence — the resume lists this skill but does not state where it was used" },
-        { "name": "Microsoft SQL Server", "evidence": [], "todo": "TODO: link evidence — the resume lists this skill but does not state where it was used" },
-        { "name": "SQL Server Management Studio (SSMS)", "evidence": [], "todo": "TODO: link evidence — the resume lists this skill but does not state where it was used" }
+        {
+          "name": "Azure PostgreSQL DB"
+        },
+        {
+          "name": "Azure Cosmos DB"
+        },
+        {
+          "name": "MongoDB"
+        },
+        {
+          "name": "Azure SQL Database"
+        },
+        {
+          "name": "Microsoft SQL Server"
+        },
+        {
+          "name": "SQL Server Management Studio (SSMS)"
+        }
       ]
     },
     {
       "id": "data-analytics",
       "name": "Data & Analytics",
       "skills": [
-        { "name": "Microsoft Power BI", "evidence": [{ "type": "role", "ref": "maq-associate-swe" }] }
+        {
+          "name": "Microsoft Power BI"
+        }
       ]
     }
-  ]
+  ],
+  "_note": "Skills exactly as the resume lists them, grouped by its own categories. The resume states which skills there are, not where each was used, so no usage is inferred here."
 }

@@ -51,3 +51,38 @@ digest.
 - **Do differently:** state honestly when a test was not RED. One new test
   passed on write because the behaviour already existed; it is a regression
   guard and the gate says PARTIAL rather than implying evidence it lacks.
+
+## 03-rag-assistant (2026-08-30)
+
+- **Worked:** deleting inferred data rather than hiding it. Removing `evidence`
+  from `skills.json` simplified the schema, the service and the tests together.
+- **Cost time:** orphaned dev servers. A uvicorn child outlived its killed
+  parent and held port 8000, serving code without the new route; it read as a
+  routing bug for several rounds.
+- **Do differently:** verify the tool before believing its output. A "375px
+  overflow" that stood for three tasks was Chrome headless clamping to a 500px
+  minimum window and cropping the screenshot - not a layout bug at all.
+- **Do differently:** when adding a provider, document it in the same change.
+  The review caught `hashing` being the silent default with nothing describing it.
+
+## 04-agentic-job-match (2026-08-30)
+
+- **Worked:** four composed functions. Each live defect traced to exactly one
+  agent, and each agent was testable without the others.
+- **Cost time:** nothing structural - the defects surfaced within minutes of
+  running against the real resume instead of fixture content.
+- **Do differently:** run a feature against real data before trusting a green
+  suite. Both defects passed every test written from the plan.
+- **Do differently:** when a feature exists to report bad news, test that the
+  bad news is *reachable*. An over-narrow extractor would have made an honest
+  gap impossible by construction.
+
+## 05-mcp-integration
+
+- **Worked:** one tool layer with two thin adapters. Six callables were testable
+  directly, and the MCP surface needed four tests rather than a subprocess.
+- **Cost time:** nothing structural. Handoffs went over the 60-line cap three
+  times; rephrasing does not shorten a file, cutting content does.
+- **Do differently:** check every mock of a module before growing its exports.
+  `App.test.tsx` mocked `lib/api` and broke the moment a component imported a
+  new function from it - a planning gap the file list should have caught.

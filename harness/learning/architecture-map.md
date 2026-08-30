@@ -2,8 +2,8 @@
 
 Where things live, and where to extend. Updated when a new area appears.
 
-> Phases 1–2 established the validated content pipeline, aggregate portfolio API,
-> typed client, and data-driven UI. AI and integration areas remain planned.
+> Phases 1–5 are built: content pipeline, portfolio UI, RAG assistant, the
+> job-match chain, and the GitHub/MCP tool layer. Only Phase 6 polish remains.
 
 ## Areas
 
@@ -15,7 +15,7 @@ Where things live, and where to extend. Updated when a new area appears.
 | `backend/app/rag/` | retrieval + embedding providers | adding an `EmbeddingProvider` impl |
 | `backend/app/ai/` | generation providers, prompts | adding an `AIProvider` impl |
 | `backend/app/agents/` | sequential agent workflows | adding an agent module to a chain |
-| `backend/app/integrations/` | external systems - GitHub, MCP | adding an integration module |
+| `backend/app/integrations/` | external systems - GitHub, MCP | adding a callable to `tools.py` |
 | `frontend/src/components/` | UI components | new component + its test |
 | `frontend/src/lib/api.ts` | the single typed API client | adding a method |
 
@@ -27,9 +27,31 @@ Where things live, and where to extend. Updated when a new area appears.
   eagerly validated content models and one page owner handles request state.
 - Skill evidence refs are validated by `ContentService` before the frontend
   resolves them into role/project/credential labels.
-- `AIProvider` and `EmbeddingProvider` are not yet built; keep them as separate
-  abstractions because they have different deployment constraints. See
-  `decisions.md`.
+- `AIProvider` (`app/ai/provider.py`) and `EmbeddingProvider`
+  (`app/rag/embeddings.py`) are **separate on purpose** — different deployment
+  constraints. Each has a factory keyed by env var, and each degrades to a
+  zero-config fallback (`template`, `hashing`) rather than failing.
+- `AiService` (`app/services/ai.py`) owns retrieve -> ground -> generate. The
+  router only parses and returns.
+- **Refusal is a retrieval property**: `Retriever.is_grounded` compares the top
+  score with `GROUNDING_THRESHOLD` *before* any model is called.
+- The FAISS index stamps provider + dimension and refuses a mismatch; re-run
+  `python -m app.rag.ingest` after any content or provider change.
+- `app/agents/` is the job-match chain: `requirement -> portfolio -> evidence ->
+  response`, four composed functions with `chain.py` timing each and raising
+  `ChainError` on any failure. Extend by adding a function, not a framework.
+- **One retriever instance** is shared: `JobMatchService` is constructed with
+  `AiService.retriever`, so job match and Ask My Portfolio cannot drift apart.
+- **One tool layer, two adapters.** `integrations/tools.py` holds six plain
+  callables (`PortfolioTools`); `mcp_server.py` registers them and the HTTP
+  router calls the same objects. A capability is written and tested once, and
+  neither adapter may transform what a tool returns.
+- **Refusal lives in `AiService`, not in `Retriever`.** Anything else that reads
+  the retriever - the MCP `search_resume` tool included - starts ungrounded and
+  must apply the threshold itself if it needs the guarantee.
+- `GitHubClient` returns `RepoFetchResult(repos, reason)` and never raises: a
+  supplementary section must not be able to break a page. Only successes are
+  cached; the username is parsed from `content/profile.json`.
 - `frontend/src/lib/api.ts` is the only place `fetch` is called.
 
 ## Test layout

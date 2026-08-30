@@ -69,12 +69,10 @@ None during Phase 2.
 
 - Credentials, Contact, and non-empty Engineering Notes lack dedicated render tests.
 - AI, live GitHub data, resume download, analytics, and contact submission remain out of scope.
-- GitHub CLI authentication is invalid, so the PR is prepared but not created.
 
 ## PR
 
-Compare URL after push:
-https://github.com/shefali289/portfolio_ai/compare/main...feature/02-portfolio-ui
+**[#2](https://github.com/shefali289/portfolio_ai/pull/2)** - merged 2026-08-29 into `main`.
 
 ## Suggested Commit Message
 

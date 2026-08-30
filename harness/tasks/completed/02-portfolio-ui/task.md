@@ -272,8 +272,8 @@ desktop clean.
 | | |
 |---|---|
 | **Title** | `feat: build resume-backed portfolio UI` |
-| **URL** | https://github.com/shefali289/portfolio_ai/compare/main...feature/02-portfolio-ui |
-| **Merged** | No — PR not created; `gh auth status` reports an invalid token |
+| **URL** | https://github.com/shefali289/portfolio_ai/pull/2 |
+| **Merged** | yes - 2026-08-30 |
 
 **What it adds:** A complete resume-backed portfolio UI with aggregate content
 loading, semantic experience disclosures, project filters, skill evidence,

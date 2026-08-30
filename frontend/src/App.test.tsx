@@ -4,14 +4,19 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import App from './App'
 
-const { mockGetContent, mockGetProfile } = vi.hoisted(() => ({
+// The GitHub section fetches on mount, so its stub must be hoisted alongside
+// the others; these tests stay about the aggregate content request, and
+// GitHubProjects has its own suite.
+const { mockGetContent, mockGetProfile, mockGetGithubRepos } = vi.hoisted(() => ({
   mockGetContent: vi.fn(),
   mockGetProfile: vi.fn(() => new Promise(() => {})),
+  mockGetGithubRepos: vi.fn(() => Promise.resolve({ repos: [], reason: null })),
 }))
 
 vi.mock('./lib/api', () => ({
   getContent: mockGetContent,
   getProfile: mockGetProfile,
+  getGithubRepos: mockGetGithubRepos,
 }))
 
 const contentFixture = {

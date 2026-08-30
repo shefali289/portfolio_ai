@@ -14,10 +14,43 @@ permissions:
   pull-requests: read
 
 jobs:
+  # ---------------------------------------------------------------- class
+  # A PR is either feature work (has a harness task and must record a gate
+  # log) or maintenance (records reconciliation, docs, CI - no task exists
+  # and inventing one would be ceremony). Task-scoped gates SKIP for
+  # maintenance and are reported SKIPPED, never PASS. Feature enforcement is
+  # unchanged: a feature branch still needs its task and its full gate log.
+  classify:
+    name: Branch class
+    runs-on: ubuntu-latest
+    outputs:
+      kind: ${{ steps.k.outputs.kind }}
+    steps:
+      - id: k
+        run: |
+          BRANCH="${{ github.head_ref }}"
+          echo "Branch: $BRANCH"
+          if [ "$BRANCH" = "main" ]; then
+            echo "::error::Work must never happen on main."
+            exit 1
+          fi
+          if echo "$BRANCH" | grep -Eq '^(feature|fix|improvement)/[a-z0-9][a-z0-9-]*$'; then
+            echo "kind=feature" >> "$GITHUB_OUTPUT"
+            echo "::notice::Feature branch - all gates enforced."
+          elif echo "$BRANCH" | grep -Eq '^(chore|docs)/[a-z0-9][a-z0-9-]*$'; then
+            echo "kind=maintenance" >> "$GITHUB_OUTPUT"
+            echo "::notice::Maintenance branch - G0 slug and G1-G5 report SKIPPED, never PASS."
+          else
+            echo "::error::'$BRANCH' must be feature/<slug>, fix/<slug> or improvement/<slug> for task work, or chore/<slug> or docs/<slug> for maintenance (lowercase, hyphenated)."
+            exit 1
+          fi
+
   # ---------------------------------------------------------------- G0
   branch-gate:
     name: G0 · Branch gate
     runs-on: ubuntu-latest
+    needs: classify
+    if: needs.classify.outputs.kind == 'feature'
     steps:
       - uses: actions/checkout@v4
         with: { fetch-depth: 0 }
@@ -63,6 +96,8 @@ jobs:
   gate-log:
     name: G1–G5 · Gate log recorded
     runs-on: ubuntu-latest
+    needs: classify
+    if: needs.classify.outputs.kind == 'feature'
     steps:
       - uses: actions/checkout@v4
       - name: Task records its gate results
@@ -227,7 +262,7 @@ jobs:
   checklist:
     name: Final checklist
     runs-on: ubuntu-latest
-    needs: [branch-gate, harness, gate-log, secrets, backend, frontend]
+    needs: [classify, branch-gate, harness, gate-log, secrets, backend, frontend]
     if: always()
     steps:
       - name: Render checklist
@@ -236,8 +271,11 @@ jobs:
           {
             echo "## Final Checklist"
             echo ""
+            echo "Branch class: **${{ needs.classify.outputs.kind }}**"
+            echo ""
             echo "| Gate | Check | Result |"
             echo "|---|---|---|"
+            echo "| — | Branch class recognised | $(mark '${{ needs.classify.result }}') |"
             echo "| G0 | Branch gate — off main, slug matches task | $(mark '${{ needs.branch-gate.result }}') |"
             echo "| — | Harness health — caps, index, links | $(mark '${{ needs.harness.result }}') |"
             echo "| G1–G5 | Gate log recorded in task.md | $(mark '${{ needs.gate-log.result }}') |"
@@ -257,9 +295,10 @@ jobs:
 
       - name: Fail if any required check failed
         run: |
-          for r in "${{ needs.branch-gate.result }}" "${{ needs.harness.result }}" \
-                   "${{ needs.gate-log.result }}" "${{ needs.secrets.result }}" \
-                   "${{ needs.backend.result }}" "${{ needs.frontend.result }}"; do
+          for r in "${{ needs.classify.result }}" "${{ needs.branch-gate.result }}" \
+                   "${{ needs.harness.result }}" "${{ needs.gate-log.result }}" \
+                   "${{ needs.secrets.result }}" "${{ needs.backend.result }}" \
+                   "${{ needs.frontend.result }}"; do
             case "$r" in
               success|skipped) ;;
               *) echo "::error::A required check did not pass. See the checklist summary."; exit 1 ;;

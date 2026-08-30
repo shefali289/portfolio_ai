@@ -374,19 +374,19 @@
     {
       "slug": "03-rag-assistant",
       "phase": 3,
-      "status": "planned",
+      "status": "complete",
       "branch": "feature/03-rag-assistant"
     },
     {
       "slug": "04-agentic-job-match",
       "phase": 4,
-      "status": "planned",
+      "status": "complete",
       "branch": "feature/04-agentic-job-match"
     },
     {
       "slug": "05-mcp-integration",
       "phase": 5,
-      "status": "planned",
+      "status": "complete",
       "branch": "feature/05-mcp-integration"
     },
     {

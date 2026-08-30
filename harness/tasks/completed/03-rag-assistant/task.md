@@ -5,8 +5,8 @@
 | **Slug** | `03-rag-assistant` |
 | **Branch** | `feature/03-rag-assistant` |
 | **Phase** | Phase 3 |
-| **Status** | built — G0-G3 passed, awaiting `/review` |
-| **Started / Completed** | 2026-08-30 / — |
+| **Status** | complete — 2026-08-30 |
+| **Started / Completed** | 2026-08-30 / 2026-08-30 |
 
 > **Brief only.** `/plan 03-rag-assistant` fills in Design, Plan and the rest. Every stage
 > writes back here, so this file ends up holding the whole story. Do not
@@ -44,19 +44,19 @@ experience the resume does not contain.
 Refined at `/plan`, checked off at `/review`.
 
 **Part A**
-- [ ] no derived counts, coverage line, evidence expansion or `content/*.json`
+- [x] no derived counts, coverage line, evidence expansion or `content/*.json`
       footer appears anywhere in the UI
-- [ ] skills render as plain grouped lists, exactly as the resume categorises them
-- [ ] `skills.json` carries no inferred `evidence` refs and no `todo` authoring notes
-- [ ] the design system, dark scheme, timeline and project cards are unchanged
+- [x] skills render as plain grouped lists, exactly as the resume categorises them
+- [x] `skills.json` carries no inferred `evidence` refs and no `todo` authoring notes
+- [x] the design system, dark scheme, timeline and project cards are unchanged
 
 **Part B**
-- [ ] "What AI experience does she have?" returns a grounded answer drawn from
+- [x] "What AI experience does she have?" returns a grounded answer drawn from
       the AI Engineer role
-- [ ] **an out-of-scope question is refused, not answered** (grounding test)
-- [ ] the index refuses to load when provider or dimension mismatches
-- [ ] works end to end with `AI_PROVIDER=template` and no API key
-- [ ] the endpoint returns retrieval and generation timings for Engineer Mode
+- [x] **an out-of-scope question is refused, not answered** (grounding test)
+- [x] the index refuses to load when provider or dimension mismatches
+- [x] works end to end with `AI_PROVIDER=template` and no API key
+- [x] the endpoint returns retrieval and generation timings for Engineer Mode
 
 ## User Experience
 
@@ -211,9 +211,9 @@ proof, and `final_checklist.py` checks for it.
 
 | | |
 |---|---|
-| **RED - command** | — |
-| **RED - failed for the right reason** | — |
-| **GREEN - result** | — |
+| **RED - command** | `cd backend && .venv/Scripts/python.exe -m pytest` · `cd frontend && npm test` |
+| **RED - failed for the right reason** | Yes. `ModuleNotFoundError: No module named 'app.rag.chunk'` and `'app.ai.provider'`; `Failed to resolve import "./AskPortfolio"`. Greenfield modules, so the absent module is the correct RED. Output in `handoffs/3-test.md`. |
+| **GREEN - result** | backend `27 passed`; frontend `Test Files 8 passed (8)`, `Tests 24 passed (24)` |
 
 ---
 
@@ -228,8 +228,8 @@ See `harness/QUALITY-GATES.md`. `PARTIAL`/`SKIPPED` are honest; a check reported
 | **G1** design | Design → Plan | PASS | 2026-08-30 | 7 questions answered; no new dependency; `1-design.md` under 60 lines; one open question recorded, non-blocking |
 | **G2** test (RED) | Test → Develop | PASS | 2026-08-30 | 13 new tests, all RED for the right reason; output in `3-test.md` |
 | **G3** build (GREEN) | Develop → Review | PASS | 2026-08-30 | backend 27/27, frontend 24/24, ruff+eslint+tsc clean, verified live; 4 deviations recorded |
-| **G4** review | Review → Complete | — | | tests · lint · typecheck · a11y |
-| **G5** completion | before archive + PR | — | | `final_checklist.py` |
+| **G4** review | Review → Complete | PASS | 2026-08-30 | all checks PASS incl. **375px measured in-browser** (`scrollWidth=375`, 0 overflowing elements); 1 MEDIUM finding (undocumented provider) fixed in cycle; 2 LOW recorded |
+| **G5** completion | before archive + PR | PASS | 2026-08-30 | `final_checklist.py --slug 03-rag-assistant` exits 0 |
 
 ## Final Checklist  *(`/complete`)*
 
@@ -269,13 +269,27 @@ Every entry must end in a promoted rule. Promoted to
 
 ## Lessons Learned
 
-- **Worked:**
-- **Cost time:**
-- **Do differently:**
+- **Worked:** deleting the inferred data rather than hiding it. Removing
+  `evidence` from `skills.json` meant the assumption left the content, not just
+  the view — the schema, the service and the tests all got simpler with it.
+- **Cost time:** stale and orphaned dev servers. A uvicorn child outlived its
+  killed parent and kept port 8000, serving code without `/api/ai/chat`, which
+  read as a routing bug for several rounds.
+- **Do differently:** verify the tool before believing its output. A "375px
+  overflow" that stood for three tasks was Chrome headless clamping to a 500px
+  minimum window and cropping the screenshot — not a layout bug at all.
 
 ## Known Limitations
 
-_(filled at `/complete`)_
+- **Retrieval is lexical without a `GEMINI_API_KEY`.** The hashing fallback
+  matches shared terms, not meaning, so it misses paraphrases. "What did she do
+  at Spark?" ranks a skills group above the Spark roles, though both stay in the
+  top 4.
+- **`GROUNDING_THRESHOLD = 0.25` is tuned against lexical vectors** and has not
+  been validated against Gemini embeddings, whose score distribution differs.
+- **Answers do not show their sources.** The API returns them; the decision was
+  deferred to Phase 6, which surfaces retrieval internals anyway.
+- The persisted index is not committed; deployment will need a prebuilt one.
 
 ---
 
@@ -287,11 +301,11 @@ Real results only. Not run = `SKIPPED`, never `PASS`.
 
 | Check | Result |
 |---|---|
-| backend tests | — |
-| frontend tests | — |
-| lint | — |
-| typecheck | — |
-| manual check | — |
+| backend tests | **PASS** — `27 passed` |
+| frontend tests | **PASS** — `Test Files 8 passed (8)`, `Tests 24 passed (24)` |
+| lint | **PASS** — ruff and eslint clean |
+| typecheck | **PASS** — `tsc --noEmit` clean |
+| manual check | **PASS** — verified live: a grounded question answers with timings and sources; "What is the capital of France?" returns `grounded=false` plus the refusal; a blank question is 422. **375px measured in-browser**: `clientWidth=375 scrollWidth=375 overflow=false`, 0 elements past the boundary. |
 
 Re-ingest succeeds after a content change; answers cite real sources.
 
@@ -299,13 +313,19 @@ Re-ingest succeeds after a content change; answers cite real sources.
 
 | | |
 |---|---|
-| **Title** | — |
-| **URL** | — |
-| **Merged** | — |
+| **Title** | `feat: resume-as-is portfolio with a grounded assistant` |
+| **URL** | not opened — `gh` unauthenticated. Compare: https://github.com/shefali289/portfolio_ai/compare/main...feature/03-rag-assistant |
+| **Merged** | no |
 
-**What it adds:** —
+**What it adds:** The portfolio shows the resume as it is — the provenance layer
+is gone and the inferred skill-evidence links are deleted from the content, not
+merely hidden. On top of that, a grounded assistant: chunking through
+`ContentService`, embedding and generation provider abstractions, a FAISS index
+that refuses a provider mismatch, and `POST /api/ai/chat`.
 
-**Why:** —
+**Why:** the previous design described the tool to the reader instead of showing
+them the resume, and several of its links were inferred rather than stated. The
+assistant answers from that content and refuses anything it cannot support.
 
 ## Suggested Commit Message
 

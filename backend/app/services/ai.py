@@ -28,6 +28,11 @@ class AiService:
         self._retriever = retriever
         self._settings = settings
 
+    @property
+    def retriever(self) -> Retriever:
+        """Shared with job-match so there is exactly one search path."""
+        return self._retriever
+
     @classmethod
     def build(
         cls, content: ContentService, settings: Settings, embedding_provider=None

@@ -136,3 +136,34 @@ export interface ChatAnswer {
   generation_ms: number
   provider: string
 }
+
+// --- job match -------------------------------------------------------------
+
+export type Verdict = 'match' | 'partial' | 'gap'
+
+export interface RequirementEvidence {
+  text: string
+  source: string
+  score: number
+}
+
+export interface RequirementMatch {
+  requirement: { text: string; source_line: string }
+  verdict: Verdict
+  evidence: RequirementEvidence[]
+}
+
+export interface AgentStep {
+  name: string
+  label: string
+  status: string
+  ms: number
+}
+
+export interface JobMatchReport {
+  matches: RequirementMatch[]
+  gaps: RequirementMatch[]
+  summary: string
+  steps: AgentStep[]
+  provider: string
+}

@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from pydantic import BaseModel, Field, field_validator
 
+from app.agents.base import JobMatchReport
 from app.services.content_models import (
     EngineeringNotes,
     Experience,
@@ -64,3 +65,18 @@ class ChatResponse(BaseModel):
     retrieval_ms: float
     generation_ms: float
     provider: str
+
+
+class JobMatchRequest(BaseModel):
+    job_description: str = Field(min_length=1, max_length=20000)
+
+    @field_validator("job_description")
+    @classmethod
+    def _not_blank(cls, value: str) -> str:
+        cleaned = value.strip()
+        if not cleaned:
+            raise ValueError("job_description must not be blank")
+        return cleaned
+
+
+JobMatchResponse = JobMatchReport

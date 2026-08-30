@@ -51,3 +51,16 @@ digest.
 - **Do differently:** state honestly when a test was not RED. One new test
   passed on write because the behaviour already existed; it is a regression
   guard and the gate says PARTIAL rather than implying evidence it lacks.
+
+## 03-rag-assistant (2026-08-30)
+
+- **Worked:** deleting inferred data rather than hiding it. Removing `evidence`
+  from `skills.json` simplified the schema, the service and the tests together.
+- **Cost time:** orphaned dev servers. A uvicorn child outlived its killed
+  parent and held port 8000, serving code without the new route; it read as a
+  routing bug for several rounds.
+- **Do differently:** verify the tool before believing its output. A "375px
+  overflow" that stood for three tasks was Chrome headless clamping to a 500px
+  minimum window and cropping the screenshot - not a layout bug at all.
+- **Do differently:** when adding a provider, document it in the same change.
+  The review caught `hashing` being the silent default with nothing describing it.

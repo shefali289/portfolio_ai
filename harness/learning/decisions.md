@@ -63,3 +63,15 @@ One line each: the choice, and the reason. Rejected options included.
   control; two similar toggles is worse than one.
 - **Webfonts via a `<link>`, motion via CSS + IntersectionObserver** - keeps the
   no-new-dependency rule intact; rejected a UI kit and an animation library.
+
+## 2026-08-30 - RAG assistant
+
+- **Show the resume, assume nothing** - the provenance layer was removed and the
+  inferred skill-evidence links deleted from `skills.json`, not merely hidden.
+- **Refusal decided by retrieval, before generation** - a similarity threshold
+  is a guarantee where an instruction to the model is only a request.
+- **A lexical `hashing` embedding provider added as the zero-config fallback** -
+  a missing key must cost quality, never the ability to boot. Rejected: failing
+  startup, and a null service that refuses everything.
+- **Index stamps provider + dimension and refuses a mismatch** - incompatible
+  vectors return confident nonsense, which is worse than an error.

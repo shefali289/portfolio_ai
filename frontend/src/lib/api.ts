@@ -6,7 +6,12 @@
  * live in exactly one place.
  */
 
-import type { ChatAnswer, PortfolioContent, Profile } from '../types/content'
+import type {
+  ChatAnswer,
+  JobMatchReport,
+  PortfolioContent,
+  Profile,
+} from '../types/content'
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL ?? ''
 
@@ -55,5 +60,13 @@ export function askPortfolio(question: string): Promise<ChatAnswer> {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ question }),
+  })
+}
+
+export function matchJob(jobDescription: string): Promise<JobMatchReport> {
+  return request<JobMatchReport>('/api/ai/job-match', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ job_description: jobDescription }),
   })
 }

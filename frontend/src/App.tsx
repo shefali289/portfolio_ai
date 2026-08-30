@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 
 import { AskPortfolio } from './components/AskPortfolio'
 import { Contact } from './components/Contact'
+import { JobMatch } from './components/JobMatch'
 import { Credentials } from './components/Credentials'
 import { EngineeringNotes } from './components/EngineeringNotes'
 import { ExperienceTimeline } from './components/ExperienceTimeline'
@@ -19,6 +20,7 @@ type State =
 
 const sections = [
   { id: 'ask', label: 'Ask', eyebrow: 'Grounded in this portfolio' },
+  { id: 'why-me', label: 'Why me', eyebrow: 'Match a role against this portfolio' },
   { id: 'experience', label: 'Experience', eyebrow: 'Career' },
   { id: 'projects', label: 'Projects', eyebrow: 'Selected work' },
   { id: 'skills', label: 'Skills', eyebrow: 'Technical' },
@@ -182,6 +184,7 @@ export default function App() {
                     <div className="rule mt-5" />
                     <div className="mt-8">
                       {section.id === 'ask' && <AskPortfolio />}
+                      {section.id === 'why-me' && <JobMatch />}
                       {section.id === 'experience' && (
                         <ExperienceTimeline roles={state.content.experience.roles} />
                       )}

@@ -374,13 +374,13 @@
     {
       "slug": "03-rag-assistant",
       "phase": 3,
-      "status": "active",
+      "status": "complete",
       "branch": "feature/03-rag-assistant"
     },
     {
       "slug": "04-agentic-job-match",
       "phase": 4,
-      "status": "planned",
+      "status": "active",
       "branch": "feature/04-agentic-job-match"
     },
     {

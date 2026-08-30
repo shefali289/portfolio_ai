@@ -45,6 +45,21 @@ Things that cost time. Symptom -> cause -> fix.
   375px bitmap may crop a ~492px CSS viewport; use DevTools device metrics and
   verify `innerWidth`, `clientWidth`, and `scrollWidth` before judging layout.
 
+- **Chrome headless clamps the window to ~500px wide.** `--window-size=375`
+  renders at 500 and crops the screenshot, which reads exactly like horizontal
+  overflow. Measure narrow layouts inside a 375px same-origin iframe and read
+  `scrollWidth`.
+- **Uvicorn `--reload` watches `.venv`** and reloads on dependency noise while
+  missing app edits. An orphaned child can keep the port after its parent dies,
+  so `Get-NetTCPConnection` reports a PID that no longer exists — find it with
+  `Get-CimInstance Win32_Process` and kill the child.
+- **Python's `hash()` for strings is randomised per process.** Any hashing
+  vectoriser must use `zlib.crc32`, or a persisted index becomes unreadable by
+  the next run and test fixtures stop being reproducible.
+- **A `len(token) < 3` filter silently drops "AI"** — the most load-bearing term
+  in this corpus. Check that a stopword or length filter is not eating a
+  domain's core vocabulary.
+
 ## Deployment
 
 - **Vercel Python bundle limit is 500 MB.** `torch` + `sentence-transformers` is

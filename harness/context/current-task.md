@@ -6,12 +6,12 @@ Pointer to what is in flight. Maintained by `/plan` and `/complete`.
 
 | | |
 |---|---|
-| **Active task** | RAG Assistant — Ask My Portfolio |
-| **Slug** | `03-rag-assistant` |
-| **Branch** | `feature/03-rag-assistant` (stacked on unmerged `improvement/visual-design`) |
-| **Phase** | 3 of 6 |
+| **Active task** | Agentic Job Match — Why Me? |
+| **Slug** | `04-agentic-job-match` |
+| **Phase** | 4 of 6 |
+| **Branch** | `feature/04-agentic-job-match` (third in the unmerged stack) |
 | **Stage** | built — G0-G3 passed, awaiting `/review` |
-| **Task file** | `harness/tasks/active/03-rag-assistant/task.md` |
+| **Task file** | `harness/tasks/active/04-agentic-job-match/task.md` |
 | **Started** | 2026-08-30 |
 
 ## Next command
@@ -20,9 +20,9 @@ Pointer to what is in flight. Maintained by `/plan` and `/complete`.
 /review
 ```
 
-All 10 steps done. Backend 27/27, frontend 24/24, lint + tsc clean. Verified
-live: a grounded question answers with timings, an out-of-scope one is refused.
-Commits staged and unapproved.
+All 8 steps done. Backend 42/42, frontend 30/30, lint + tsc clean. Verified live:
+FastAPI and PostgreSQL attributed to the Spark role; Kubernetes and Terraform
+reported as gaps. Commits staged and unapproved.
 
 ## Handoffs written
 
@@ -40,14 +40,16 @@ Commits staged and unapproved.
 
 ## Open questions
 
-**None.** Source chips are hidden and the decision is **deferred to Phase 6**,
-where Engineer Mode surfaces retrieval internals anyway. The API still returns
-`sources`; only `AskPortfolio.tsx` omits them, so it is a few lines to reverse.
+None.
 
 ## Carried over
 
-- `improvement/visual-design` is committed but **its PR is not open** — `gh` is
-  unauthenticated. Body ready at `harness/tasks/completed/visual-design/pull-request.md`.
-- A real 375px browser check is still owed. Chrome headless clamps its window to
-  a 500px minimum on this machine, so `--window-size=375` silently renders at
-  500 and crops — do not read that crop as horizontal overflow.
+- **Three branches are committed but unmerged**, each stacked on the last:
+  `improvement/visual-design`, `feature/03-rag-assistant`, and Phase 4 next.
+  `gh` is still unauthenticated, so no PR has opened since Phase 2:
+  ```text
+  gh auth login -h github.com
+  ```
+  PR bodies are ready in each task's `pull-request.md`.
+- **Retrieval is lexical until `GEMINI_API_KEY` is set.** Phase 4's evidence
+  matching inherits that, so gap detection will be sharper with a key.

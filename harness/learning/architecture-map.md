@@ -27,9 +27,16 @@ Where things live, and where to extend. Updated when a new area appears.
   eagerly validated content models and one page owner handles request state.
 - Skill evidence refs are validated by `ContentService` before the frontend
   resolves them into role/project/credential labels.
-- `AIProvider` and `EmbeddingProvider` are not yet built; keep them as separate
-  abstractions because they have different deployment constraints. See
-  `decisions.md`.
+- `AIProvider` (`app/ai/provider.py`) and `EmbeddingProvider`
+  (`app/rag/embeddings.py`) are **separate on purpose** — different deployment
+  constraints. Each has a factory keyed by env var, and each degrades to a
+  zero-config fallback (`template`, `hashing`) rather than failing.
+- `AiService` (`app/services/ai.py`) owns retrieve -> ground -> generate. The
+  router only parses and returns.
+- **Refusal is a retrieval property**: `Retriever.is_grounded` compares the top
+  score with `GROUNDING_THRESHOLD` *before* any model is called.
+- The FAISS index stamps provider + dimension and refuses a mismatch; re-run
+  `python -m app.rag.ingest` after any content or provider change.
 - `frontend/src/lib/api.ts` is the only place `fetch` is called.
 
 ## Test layout

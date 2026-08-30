@@ -29,6 +29,23 @@ class Settings(BaseSettings):
     content_dir: Path = Field(default=REPO_ROOT / "content")
     cors_origins: list[str] = Field(default=["http://localhost:5173"])
 
+    # --- AI / RAG (Phase 3) ------------------------------------------------
+    # Generation and embedding are selected separately: they have different
+    # deployment constraints. See docs/setup.md.
+    ai_provider: str = Field(default="template")
+    embedding_provider: str = Field(default="gemini")
+    index_dir: Path = Field(default=REPO_ROOT / "backend" / ".index")
+
+    gemini_api_key: str = Field(default="")
+    gemini_model: str = Field(default="gemini-2.0-flash")
+    gemini_embedding_model: str = Field(default="gemini-embedding-001")
+    gemini_embedding_dim: int = Field(default=768)
+
+    ollama_base_url: str = Field(default="http://localhost:11434")
+    ollama_model: str = Field(default="llama3.2")
+
+    embedding_model: str = Field(default="sentence-transformers/all-MiniLM-L6-v2")
+
     @field_validator("cors_origins", mode="before")
     @classmethod
     def _split_origins(cls, value: object) -> object:

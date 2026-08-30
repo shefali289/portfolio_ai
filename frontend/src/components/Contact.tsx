@@ -32,8 +32,7 @@ export function Contact({ profile }: ContactProps) {
       </h2>
 
       <p className="lede mt-4 max-w-2xl">
-        Every claim on this page links back to the work behind it. Happy to talk
-        through any of it.
+        Open to conversations about AI engineering and automation work.
       </p>
 
       <div className="mt-8 flex flex-wrap gap-3">
@@ -43,8 +42,6 @@ export function Contact({ profile }: ContactProps) {
           </a>
         ))}
       </div>
-
-      <p className="meta mt-8">content/profile.json · links only, no contact form</p>
     </section>
   )
 }

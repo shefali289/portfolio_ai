@@ -7,7 +7,7 @@ copy of `Profile` here to drift out of step with the content files.
 
 from __future__ import annotations
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, field_validator
 
 from app.services.content_models import (
     EngineeringNotes,
@@ -36,3 +36,31 @@ class ContentResponse(BaseModel):
     skills: Skills
     projects: Projects
     engineering_notes: EngineeringNotes
+
+
+class ChatRequest(BaseModel):
+    question: str = Field(min_length=1, max_length=1000)
+
+    @field_validator("question")
+    @classmethod
+    def _not_blank(cls, value: str) -> str:
+        cleaned = value.strip()
+        if not cleaned:
+            raise ValueError("question must not be blank")
+        return cleaned
+
+
+class ChatSource(BaseModel):
+    source: str
+    type: str
+
+
+class ChatResponse(BaseModel):
+    """`grounded=False` means the question was refused, not answered."""
+
+    answer: str
+    grounded: bool
+    sources: list[ChatSource]
+    retrieval_ms: float
+    generation_ms: float
+    provider: str

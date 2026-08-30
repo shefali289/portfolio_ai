@@ -61,15 +61,9 @@ export interface Experience {
   roles: Role[]
 }
 
-export interface SkillEvidence {
-  type: string
-  ref: string
-}
-
+/** Just the name — the resume lists skills, not where each was used. */
 export interface Skill {
   name: string
-  evidence: SkillEvidence[]
-  todo: string | null
 }
 
 export interface SkillGroup {
@@ -124,4 +118,21 @@ export interface PortfolioContent {
   skills: Skills
   projects: Projects
   engineering_notes: EngineeringNotes
+}
+
+// --- AI chat ---------------------------------------------------------------
+
+export interface ChatSource {
+  source: string
+  type: string
+}
+
+export interface ChatAnswer {
+  answer: string
+  /** false means the question was refused, not answered. */
+  grounded: boolean
+  sources: ChatSource[]
+  retrieval_ms: number
+  generation_ms: number
+  provider: string
 }

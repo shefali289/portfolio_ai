@@ -75,3 +75,14 @@ One line each: the choice, and the reason. Rejected options included.
   startup, and a null service that refuses everything.
 - **Index stamps provider + dimension and refuses a mismatch** - incompatible
   vectors return confident nonsense, which is worse than an error.
+
+## 2026-08-30 - Agentic job match
+
+- **Four composed functions, no agent framework** - the decomposition is the
+  demonstration; a library would hide the thing worth showing.
+- **Gap decided by retrieval score, never by the model** - the per-requirement
+  form of Phase 3's refusal guarantee.
+- **Exact-term evidence alongside vector search** - single-token requirements
+  produced false gaps, which understate real experience.
+- **Steps returned, not streamed** - SSE would be a new transport for one
+  feature; a `steps[]` array renders the chain fine.

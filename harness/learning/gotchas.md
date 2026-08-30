@@ -60,6 +60,10 @@ Things that cost time. Symptom -> cause -> fix.
   in this corpus. Check that a stopword or length filter is not eating a
   domain's core vocabulary.
 
+- **A green suite is not a working feature.** Both Phase 4 defects — a false gap
+  on FastAPI, and "Engineer" extracted as a requirement — passed every test
+  written from the plan. Run against real content before trusting it.
+
 ## Deployment
 
 - **Vercel Python bundle limit is 500 MB.** `torch` + `sentence-transformers` is

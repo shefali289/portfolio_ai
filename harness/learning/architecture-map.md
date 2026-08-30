@@ -37,6 +37,11 @@ Where things live, and where to extend. Updated when a new area appears.
   score with `GROUNDING_THRESHOLD` *before* any model is called.
 - The FAISS index stamps provider + dimension and refuses a mismatch; re-run
   `python -m app.rag.ingest` after any content or provider change.
+- `app/agents/` is the job-match chain: `requirement -> portfolio -> evidence ->
+  response`, four composed functions with `chain.py` timing each and raising
+  `ChainError` on any failure. Extend by adding a function, not a framework.
+- **One retriever instance** is shared: `JobMatchService` is constructed with
+  `AiService.retriever`, so job match and Ask My Portfolio cannot drift apart.
 - `frontend/src/lib/api.ts` is the only place `fetch` is called.
 
 ## Test layout

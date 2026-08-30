@@ -64,3 +64,15 @@ digest.
   minimum window and cropping the screenshot - not a layout bug at all.
 - **Do differently:** when adding a provider, document it in the same change.
   The review caught `hashing` being the silent default with nothing describing it.
+
+## 04-agentic-job-match (2026-08-30)
+
+- **Worked:** four composed functions. Each live defect traced to exactly one
+  agent, and each agent was testable without the others.
+- **Cost time:** nothing structural - the defects surfaced within minutes of
+  running against the real resume instead of fixture content.
+- **Do differently:** run a feature against real data before trusting a green
+  suite. Both defects passed every test written from the plan.
+- **Do differently:** when a feature exists to report bad news, test that the
+  bad news is *reachable*. An over-narrow extractor would have made an honest
+  gap impossible by construction.

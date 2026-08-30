@@ -5,8 +5,8 @@
 | **Slug** | `04-agentic-job-match` |
 | **Branch** | `feature/04-agentic-job-match` |
 | **Phase** | Phase 4 |
-| **Status** | built — G0-G3 passed, awaiting `/review` |
-| **Started / Completed** | 2026-08-30 / — |
+| **Status** | complete — 2026-08-30 |
+| **Started / Completed** | 2026-08-30 / 2026-08-30 |
 
 > **Brief only.** `/plan 04-agentic-job-match` fills in Design, Plan and the rest. Every stage
 > writes back here, so this file ends up holding the whole story. Do not
@@ -30,12 +30,12 @@ produce an honest match report a recruiter would find useful.
 
 Refined at `/plan`, checked off at `/review`.
 
-- [ ] a pasted job description yields matches, evidence and gaps
-- [ ] the four steps appear in the UI as they run
-- [ ] **a requirement with no evidence is reported as a gap, never softened**
-- [ ] a JD demanding an absent skill (e.g. Kubernetes) reports it as a gap
-- [ ] the chain reuses the existing RAG retrieval - no second search path
-- [ ] a failing step propagates rather than returning a partial result
+- [x] a pasted job description yields matches, evidence and gaps
+- [x] the four steps appear in the UI as they run
+- [x] **a requirement with no evidence is reported as a gap, never softened**
+- [x] a JD demanding an absent skill (e.g. Kubernetes) reports it as a gap
+- [x] the chain reuses the existing RAG retrieval - no second search path
+- [x] a failing step propagates rather than returning a partial result
 
 ## User Experience
 
@@ -181,9 +181,9 @@ proof, and `final_checklist.py` checks for it.
 
 | | |
 |---|---|
-| **RED - command** | — |
-| **RED - failed for the right reason** | — |
-| **GREEN - result** | — |
+| **RED - command** | `cd backend && .venv/Scripts/python.exe -m pytest` · `cd frontend && npm test` |
+| **RED - failed for the right reason** | Yes. `ModuleNotFoundError: No module named 'app.agents.chain'`; the 5 endpoint tests failed 404-vs-200/422 and `KeyError: 'steps'`; `Failed to resolve import "./JobMatch"`. Output in `handoffs/3-test.md`. |
+| **GREEN - result** | backend `42 passed`; frontend `Test Files 9 passed (9)`, `Tests 30 passed (30)` |
 
 ---
 
@@ -198,8 +198,8 @@ See `harness/QUALITY-GATES.md`. `PARTIAL`/`SKIPPED` are honest; a check reported
 | **G1** design | Design → Plan | PASS | 2026-08-30 | 7 questions answered; no new dependency (explicitly no agent framework); `1-design.md` under 60 lines |
 | **G2** test (RED) | Test → Develop | PASS | 2026-08-30 | 15 tests RED for the right reason; output in `3-test.md` |
 | **G3** build (GREEN) | Develop → Review | PASS | 2026-08-30 | backend 42/42, frontend 30/30, lint+tsc clean; 2 live defects found and fixed with regressions |
-| **G4** review | Review → Complete | — | | tests · lint · typecheck · a11y |
-| **G5** completion | before archive + PR | — | | `final_checklist.py` |
+| **G4** review | Review → Complete | PASS | 2026-08-30 | all checks PASS incl. 375px measured in-browser (0 overflowing elements) and honest-gap verification against the real resume; 3 LOW findings, none blocking |
+| **G5** completion | before archive + PR | PASS | 2026-08-30 | `final_checklist.py --slug 04-agentic-job-match` exits 0 |
 
 ## Final Checklist  *(`/complete`)*
 
@@ -236,13 +236,28 @@ Every entry must end in a promoted rule. Promoted to
 
 ## Lessons Learned
 
-- **Worked:**
-- **Cost time:**
-- **Do differently:**
+- **Worked:** four composed functions instead of a framework. Each agent was
+  testable alone, and the two live defects were each traceable to exactly one
+  of them.
+- **Cost time:** nothing structural. The defects were found in minutes once
+  the chain ran against the real resume rather than fixture content.
+- **Do differently:** run a feature against real data *before* trusting a
+  green suite. Both defects passed every test written from the plan.
 
 ## Known Limitations
 
-_(filled at `/complete`)_
+Intentionally not implemented.
+
+- **A bare skills-list mention counts as a *strong* match.** `EXACT_TERM_SCORE`
+  puts any verbatim term above `STRONG_MATCH`, so a requirement met only by an
+  entry in `skills.json` reads like one demonstrated in a role. The evidence is
+  shown, so a reader can tell — but it is worth deciding deliberately.
+- **Requirement extraction is heuristic** — capitalisation plus an empirical
+  stopword list. It will misfire on unusual job ads.
+- `STRONG_MATCH = 0.45` is tuned against lexical vectors, unvalidated against
+  Gemini embeddings.
+- Progress is returned, not streamed; the UI renders the steps after the run.
+- No LLM path for extraction or summary yet — both are deterministic.
 
 ---
 
@@ -254,11 +269,11 @@ Real results only. Not run = `SKIPPED`, never `PASS`.
 
 | Check | Result |
 |---|---|
-| backend tests | — |
-| frontend tests | — |
-| lint | — |
-| typecheck | — |
-| manual check | — |
+| backend tests | **PASS** — `42 passed` |
+| frontend tests | **PASS** — `Test Files 9 passed (9)`, `Tests 30 passed (30)` |
+| lint | **PASS** — ruff and eslint clean |
+| typecheck | **PASS** — `tsc --noEmit` clean |
+| manual check | **PASS** — live against the real resume: FastAPI and PostgreSQL attributed to the Spark role, Kubernetes and Terraform reported as gaps (both genuinely absent). 375px measured in-browser with the new sections: `scrollWidth=375`, 0 overflowing elements. |
 
 A real job description produces a defensible match report.
 
@@ -266,16 +281,21 @@ A real job description produces a defensible match report.
 
 | | |
 |---|---|
-| **Title** | — |
-| **URL** | — |
-| **Merged** | — |
+| **Title** | `feat: agentic job match with honest gaps` |
+| **URL** | not opened — `gh` unauthenticated. Compare: https://github.com/shefali289/portfolio_ai/compare/main...feature/04-agentic-job-match |
+| **Merged** | no |
 
-**What it adds:** —
+**What it adds:** A four-agent chain — requirement, portfolio, evidence,
+response — behind `POST /api/ai/job-match`, and a Why Me? section that takes a
+pasted job description and reports evidenced requirements alongside honest gaps.
 
-**Why:** —
+**Why:** it demonstrates decomposed agent responsibility rather than one large
+prompt, and produces a match report a recruiter can trust — because a
+requirement the portfolio cannot evidence is reported as a gap rather than
+softened into a near-match.
 
 ## Suggested Commit Message
 
 ```
-<type>: <description>
+feat: agentic job match with honest gaps
 ```

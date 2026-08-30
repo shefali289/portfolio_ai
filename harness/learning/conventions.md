@@ -33,7 +33,10 @@ Patterns to copy. Written as "do X", not as prose.
 - **A provider is not finished until `.env.example` documents it**, including
   what it trades away.
 - Ground refusal in retrieval, not in the prompt. A threshold is a guarantee; an
-  instruction to the model is a request.
+  instruction to the model is a request. The same applies per-requirement: a
+  gap is decided by score, never by asking whether evidence is "good enough".
+- Pair vector search with an exact-term check when a query is a name rather than
+  a sentence — a one-token query scores low against a long chunk.
 
 ## Frontend
 

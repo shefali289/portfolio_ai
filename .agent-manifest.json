@@ -380,7 +380,7 @@
     {
       "slug": "04-agentic-job-match",
       "phase": 4,
-      "status": "active",
+      "status": "complete",
       "branch": "feature/04-agentic-job-match"
     },
     {

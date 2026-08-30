@@ -2,8 +2,8 @@
 
 Where things live, and where to extend. Updated when a new area appears.
 
-> Phases 1–5 are built: content pipeline, portfolio UI, RAG assistant, the
-> job-match chain, and the GitHub/MCP tool layer. Only Phase 6 polish remains.
+> All six phases are built. Deployment config exists and is tested; the deploy
+> itself has not been run - it needs credentials the harness does not hold.
 
 ## Areas
 
@@ -53,6 +53,13 @@ Where things live, and where to extend. Updated when a new area appears.
   supplementary section must not be able to break a page. Only successes are
   cached; the username is parsed from `content/profile.json`.
 - `frontend/src/lib/api.ts` is the only place `fetch` is called.
+- **Engineer Mode is a display layer, not instrumentation.** `lib/engineerMode`
+  holds the toggle, `lib/engineerModeContext` the hook (split so neither file
+  exports both a component and a hook), and `components/Metrics` renders only
+  fields the AI responses already carry - a metric it lacks is omitted, never
+  zeroed.
+- `api/index.py` + `vercel.json` are the deploy surface, covered by
+  `tests/test_deploy_config.py`: it fails if a Python runtime is pinned again.
 
 ## Test layout
 

@@ -117,7 +117,10 @@ jobs:
             if [ -z "$ROW" ]; then
               echo "::error::$TASK has no table row for $GATE"; FAILED=1; continue
             fi
-            RESULT=$(printf '%s\n' "$ROW" | awk -F'|' '{gsub(/^[ \t]+|[ \t]+$/, "", $4); print toupper($4)}')
+            # Strip markdown emphasis as well as whitespace: **PARTIAL** is the
+            # same result as PARTIAL, and rejecting it made the workflow fail
+            # to recognise a value it documents itself.
+            RESULT=$(printf '%s\n' "$ROW" | awk -F'|' '{gsub(/[*_`]/, "", $4); gsub(/^[ \t]+|[ \t]+$/, "", $4); print toupper($4)}')
             case "$RESULT" in
               PASS) ;;
               PARTIAL|SKIPPED)

@@ -87,6 +87,22 @@ One line each: the choice, and the reason. Rejected options included.
 - **Steps returned, not streamed** - SSE would be a new transport for one
   feature; a `steps[]` array renders the chain fine.
 
+## 2026-08-30 - Final polish
+
+- **Engineer Mode displays; it does not measure** - every metric was already
+  returned by the Phase 3-5 endpoints, so the phase added no instrumentation.
+- **A missing metric omits its row** - rendering `0.00 ms` would present a
+  fabricated measurement as real, which is inventing content in another costume.
+- **The deferred theme toggle was declined** - `prefers-color-scheme` already
+  honours the OS choice and two header controls is clutter. Phase 6 owned the
+  decision and closed it rather than deferring again.
+- **The Definition of Done was transcribed, not invented** - the six per-phase
+  "Done when" lines plus the harness checklist. Grading the work against a bar
+  set by the same agent is worthless.
+- **No Python runtime pinned in `vercel.json`** - an unverifiable pin is worse
+  than none because it looks deliberate. Rejected: pinning a "safe-looking"
+  version without checking what Python it ships.
+
 ## 2026-08-30 - MCP + GitHub
 
 - **One tool layer, two adapters** - six callables in `integrations/tools.py`;

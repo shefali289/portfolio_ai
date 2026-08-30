@@ -1,6 +1,8 @@
 import { useId, useState } from 'react'
 
 import { matchJob } from '../lib/api'
+import { useEngineerMode } from '../lib/engineerModeContext'
+import { Metrics } from './Metrics'
 import type { JobMatchReport, RequirementMatch } from '../types/content'
 
 type State =
@@ -20,6 +22,7 @@ export function JobMatch() {
   const [text, setText] = useState('')
   const [state, setState] = useState<State>({ status: 'idle' })
   const fieldId = useId()
+  const { enabled: engineerMode } = useEngineerMode()
 
   const submit = (event: React.FormEvent) => {
     event.preventDefault()
@@ -121,6 +124,14 @@ export function JobMatch() {
                 ))}
               </ul>
             </section>
+          )}
+
+          {engineerMode && (
+            <Metrics
+              endpoint="/api/ai/job-match"
+              provider={state.report.provider}
+              steps={state.report.steps}
+            />
           )}
         </div>
       )}

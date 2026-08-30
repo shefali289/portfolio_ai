@@ -4,7 +4,10 @@ A personal portfolio where AI features are part of the product, not demos bolted
 onto the side — built with an AI development harness that is itself part of the
 portfolio.
 
-**Status:** scaffolded. Phase 1 not started. Run `/plan 01-foundation` to begin.
+**Status:** all six phases built. Portfolio UI, grounded RAG assistant, agentic
+job match, live GitHub + MCP tools and Engineer Mode are implemented and tested
+(backend 79, frontend 53). Deployment config is written; the deploy itself has
+not been run — see [`docs/deployment.md`](docs/deployment.md).
 
 ---
 

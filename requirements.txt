@@ -1,0 +1,8 @@
+# Vercel installs the Python function from this file at the repo root.
+#
+# It includes backend/requirements.txt rather than copying the pins: two lists
+# of the same dependencies drift, and a deployed backend differing from the
+# tested one is the failure this avoids. The cost is that pytest and ruff ship
+# with the function - a few MB against a 500 MB limit, and worth it for a
+# single source of truth. Split runtime from dev pins if that ever gets tight.
+-r backend/requirements.txt

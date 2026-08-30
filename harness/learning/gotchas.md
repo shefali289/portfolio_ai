@@ -13,9 +13,15 @@ Things that cost time. Symptom -> cause -> fix.
   `final_checklist.py` reported backend tests as FAIL purely because the system
   Python has no pytest — a lie about the code under test.
 
-- **Python here is 3.14.7** - newer than most wheels target. Verify a package
-  resolves (`uv pip compile --python-version 3.14`) before pinning it. A pin
-  recalled from memory produced a version that does not exist.
+- **Verify a version pin against its registry, not memory - and ask whether it
+  runs this code, not merely whether it exists.** Twice now: a Python pin
+  recalled from memory did not exist, and `@vercel/python@4.3.0` *did* exist but
+  shipped a Python older than 3.11, so it could not import `StrEnum`. Applies to
+  platform runtimes as much as packages. Python here is 3.14.7, newer than most
+  wheels target - check with `uv pip compile --python-version 3.14`.
+- **Config you cannot execute is not verified config.** `api/index.py` was
+  provable by importing it and serving a request; `vercel.json` was not. Say
+  which is which rather than reporting both as "written and verified".
 - **No Ollama, no Docker installed.** The GitHub integration must use the
   public REST API, which needs no auth for public repos.
 - **`gh` 2.98.0 is installed and authenticated** (account `shefali289`, scopes
@@ -81,7 +87,9 @@ Things that cost time. Symptom -> cause -> fix.
 
 - **CI gate parsing must match the canonical task table.** The workflow expected
   a nonexistent `## Gate Log` heading while every task used `# 5 · Gates`; parse
-  the G1–G5 table rows and accept honestly recorded `PARTIAL`/`SKIPPED` results.
+  the G1–G5 table rows and accept honestly recorded `PARTIAL`/`SKIPPED` results,
+  **normalising the cell before comparing**: `**PARTIAL**` was rejected as
+  invalid, so the parser failed to recognise a value it documents itself.
 - **CI runs Python 3.12, local is 3.14.** Pin nothing that only resolves on one.
 - **App jobs skip until built.** `backend` keys off `backend/app/main.py`,
   `frontend` off `frontend/package.json`. A skipped job reports `SKIPPED`, never

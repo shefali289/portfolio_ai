@@ -201,7 +201,7 @@ See `harness/QUALITY-GATES.md`. `PARTIAL`/`SKIPPED` are honest; a check reported
 | **G1** design | Design → Plan | PASS | 2026-08-30 | 7 questions answered; no new dependency; `1-design.md` 60 lines, within cap |
 | **G2** test (RED) | Test → Develop | PASS | 2026-08-30 | 3 suites failed to resolve `./engineerMode`, `./Metrics`, `../lib/engineerMode`. Output in `handoffs/3-test.md` |
 | **G3** build (GREEN) | Develop → Review | PASS | 2026-08-30 | backend `85 passed`, frontend `53 passed`; ruff + eslint + tsc clean; build succeeds. Rebuilt after review: runtime pin and install stub removed, guarded by `tests/test_deploy_config.py`. Step 8 skipped (unapproved) |
-| **G4** review | Review → Complete | **PARTIAL** | 2026-08-30 | Re-review after rebuild. backend `85 passed`, frontend `53 passed`, ruff + eslint + tsc clean, build succeeds. The blocking runtime-pin finding is **fixed and regression-tested**. PARTIAL, not PASS: the deploy criterion is `SKIPPED` (needs the user's Vercel account) and the `/api/(.*)` rewrite is unverifiable without deploying. See `handoffs/5-review.md` |
+| **G4** review | Review → Complete | PARTIAL | 2026-08-30 | Re-review after rebuild. backend `85 passed`, frontend `53 passed`, ruff + eslint + tsc clean, build succeeds. The blocking runtime-pin finding is **fixed and regression-tested**. PARTIAL, not PASS: the deploy criterion is `SKIPPED` (needs the user's Vercel account) and the `/api/(.*)` rewrite is unverifiable without deploying. See `handoffs/5-review.md` |
 | **G5** completion | before archive + PR | PASS | 2026-08-30 | `final_checklist.py --slug 06-final-polish` exits 0 after the deployed-site criterion was descoped to `07-deploy` — split out, not ticked falsely |
 
 ## Final Checklist  *(`/complete`)*

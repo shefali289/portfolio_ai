@@ -87,7 +87,9 @@ Things that cost time. Symptom -> cause -> fix.
 
 - **CI gate parsing must match the canonical task table.** The workflow expected
   a nonexistent `## Gate Log` heading while every task used `# 5 · Gates`; parse
-  the G1–G5 table rows and accept honestly recorded `PARTIAL`/`SKIPPED` results.
+  the G1–G5 table rows and accept honestly recorded `PARTIAL`/`SKIPPED` results,
+  **normalising the cell before comparing**: `**PARTIAL**` was rejected as
+  invalid, so the parser failed to recognise a value it documents itself.
 - **CI runs Python 3.12, local is 3.14.** Pin nothing that only resolves on one.
 - **App jobs skip until built.** `backend` keys off `backend/app/main.py`,
   `frontend` off `frontend/package.json`. A skipped job reports `SKIPPED`, never

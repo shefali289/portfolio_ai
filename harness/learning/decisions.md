@@ -52,3 +52,14 @@ One line each: the choice, and the reason. Rejected options included.
   support a fixed taxonomy or Building/Learning/Beyond copy, so the UI invents neither.
 - **Semantic HTML and Tailwind over a UI/motion dependency** - native controls,
   visible focus, and `motion-safe` CSS satisfy the interaction and a11y needs.
+
+## 2026-08-30 - Visual design
+
+- **Design identity fixed before the AI phases** - Phases 3-5 add UI on top, so
+  designing after them would mean reworking their surfaces.
+- **Token system over per-component styling** - `@theme` palette plus semantic
+  vars redefined once per colour scheme; a third scheme is one block.
+- **Dark-first, no toggle** - Phase 6 owns Engineer Mode and should own that
+  control; two similar toggles is worse than one.
+- **Webfonts via a `<link>`, motion via CSS + IntersectionObserver** - keeps the
+  no-new-dependency rule intact; rejected a UI kit and an animation library.

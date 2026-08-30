@@ -98,15 +98,35 @@ def check_tdd(task: Path) -> None:
         record("PASS", "TDD - GREEN", "implementation handoff present")
 
 
+def backend_python(be: Path) -> str:
+    """Prefer the backend venv over whatever interpreter is running this script.
+
+    The harness runs on the system Python, which has neither pytest nor ruff
+    installed; reporting FAIL for that is a lie about the code under test.
+    """
+    for candidate in (be / ".venv" / "Scripts" / "python.exe",
+                      be / ".venv" / "bin" / "python"):
+        if candidate.exists():
+            return str(candidate)
+    return sys.executable
+
+
 def check_backend() -> None:
     be = ROOT / "backend"
     if not (be / "app" / "main.py").exists():
         record("SKIP", "backend tests", "backend not built yet")
         record("SKIP", "backend lint", "backend not built yet")
         return
-    p = run([sys.executable, "-m", "pytest", "-q"], be)
+
+    py = backend_python(be)
+    if py == sys.executable and not (be / ".venv").exists():
+        record("SKIP", "backend tests", "no backend/.venv - run uv venv --python 3.14")
+        record("SKIP", "backend lint", "no backend/.venv")
+        return
+
+    p = run([py, "-m", "pytest", "-q"], be)
     record("PASS" if p.returncode == 0 else "FAIL", "backend tests", tail(p))
-    p = run([sys.executable, "-m", "ruff", "check", "."], be)
+    p = run([py, "-m", "ruff", "check", "."], be)
     record("PASS" if p.returncode == 0 else "FAIL", "backend lint", tail(p))
 
 

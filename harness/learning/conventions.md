@@ -27,6 +27,16 @@ Patterns to copy. Written as "do X", not as prose.
 ## Frontend
 
 - One API client (`lib/api.ts`). Components never call `fetch`.
+- Style through a shared `@layer components` seam, not per-component utilities:
+  a whole re-skin then becomes a one-file change and no behaviour test moves.
+- Define colour as semantic vars (`--surface-*`, `--text-*`, `--accent`) over
+  `@theme` palette tokens; redefine only the semantic layer per colour scheme.
+- Progressive enhancement degrades **open**: put the class that hides content
+  inside `@media (prefers-reduced-motion: no-preference)` so content is never
+  stranded behind an observer that cannot run.
+- Announce state with `aria-describedby`, not `aria-label`, when the element
+  already has a good accessible name — renaming it breaks behaviour tests and
+  makes the control harder to refer to.
 - For an aggregate page request, the page owner handles loading/error/retry once;
   pure collection components handle their own honest empty state.
 

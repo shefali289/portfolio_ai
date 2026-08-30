@@ -6,6 +6,13 @@ Things that cost time. Symptom -> cause -> fix.
 
 ## Environment
 
+- **Kill stale dev servers before verifying.** Three orphaned Vite instances
+  held 5173-5175 and a stale uvicorn held 8000 serving old code, which returned
+  200-with-HTML for a JSON route and looked like a proxy bug.
+- **Harness scripts must use `backend/.venv`, not `sys.executable`.**
+  `final_checklist.py` reported backend tests as FAIL purely because the system
+  Python has no pytest — a lie about the code under test.
+
 - **Python here is 3.14.7** - newer than most wheels target. Verify a package
   resolves (`uv pip compile --python-version 3.14`) before pinning it. A pin
   recalled from memory produced a version that does not exist.

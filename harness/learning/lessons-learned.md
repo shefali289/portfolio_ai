@@ -37,3 +37,17 @@ digest.
   and the first regression response coupled tests to Tailwind classes.
 - **Do differently:** Verify browser viewport metrics first, keep responsive
   checks manual, and seed aggregate fixtures with every simple section.
+
+## visual-design (2026-08-30)
+
+- **Worked:** a shared `@layer components` seam made a full re-skin a one-file
+  change; 16 existing behaviour tests passed untouched, which is the proof it
+  stayed presentation-only.
+- **Cost time:** orphaned dev servers on 5173-5175 and port 8000 served stale
+  code during verification and produced misleading responses.
+- **Do differently:** compute contrast rather than trusting the eye. Eleven
+  token pairs looked fine and were; the twelfth looked fine and was a real
+  WCAG AA failure on the primary button.
+- **Do differently:** state honestly when a test was not RED. One new test
+  passed on write because the behaviour already existed; it is a regression
+  guard and the gate says PARTIAL rather than implying evidence it lacks.

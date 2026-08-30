@@ -366,6 +366,12 @@
       "branch": "feature/02-portfolio-ui"
     },
     {
+      "slug": "visual-design",
+      "phase": null,
+      "status": "complete",
+      "branch": "improvement/visual-design"
+    },
+    {
       "slug": "03-rag-assistant",
       "phase": 3,
       "status": "planned",

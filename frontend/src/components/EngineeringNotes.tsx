@@ -17,8 +17,8 @@ export function EngineeringNotes({ notes }: EngineeringNotesProps) {
     <section aria-label="Engineering notes" className="grid gap-5 md:grid-cols-3">
       {sections.map((section) => (
         <article key={section.id} className="section-card">
-          <h2 className="text-xl font-semibold text-slate-950">{section.title}</h2>
-          <ul className="mt-4 space-y-2 text-slate-700">{section.items.map((item) => <li key={item}>{item}</li>)}</ul>
+          <h2 className="card-title text-xl">{section.title}</h2>
+          <ul className="body-text mt-4 space-y-2">{section.items.map((item) => <li key={item}>{item}</li>)}</ul>
         </article>
       ))}
     </section>

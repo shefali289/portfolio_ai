@@ -12,6 +12,7 @@ import { ProjectGallery } from './components/ProjectGallery'
 import { SkillsExplorer } from './components/SkillsExplorer'
 import { Reveal } from './components/Reveal'
 import { getContent } from './lib/api'
+import { EngineerModeProvider, EngineerModeToggle } from './lib/engineerMode'
 import type { PortfolioContent } from './types/content'
 
 type State =
@@ -89,6 +90,7 @@ export default function App() {
   const active = useActiveSection(ready)
 
   return (
+    <EngineerModeProvider>
     <div className="min-h-screen overflow-x-hidden">
       <a
         href="#main"
@@ -129,6 +131,7 @@ export default function App() {
               ))}
             </ul>
           </nav>
+          <EngineerModeToggle />
         </div>
       </header>
 
@@ -227,5 +230,6 @@ export default function App() {
         </div>
       </footer>
     </div>
+    </EngineerModeProvider>
   )
 }

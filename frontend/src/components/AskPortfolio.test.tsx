@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { AskPortfolio } from './AskPortfolio'
+import { EngineerModeProvider } from '../lib/engineerMode'
 import { askPortfolio } from '../lib/api'
 import type { ChatAnswer } from '../types/content'
 
@@ -101,5 +102,35 @@ describe('AskPortfolio', () => {
     await user.click(screen.getByRole('button', { name: /ask/i }))
 
     expect(mockedAsk).not.toHaveBeenCalled()
+  })
+
+  describe('Engineer Mode', () => {
+    async function askWithEngineerMode(on: boolean) {
+      const user = userEvent.setup()
+      window.localStorage.setItem('engineer-mode', on ? '1' : '0')
+      render(
+        <EngineerModeProvider>
+          <AskPortfolio />
+        </EngineerModeProvider>,
+      )
+      await user.type(screen.getByRole('textbox', { name: /ask/i }), 'question')
+      await user.click(screen.getByRole('button', { name: /ask/i }))
+    }
+
+    it('hides the metrics panel while Engineer Mode is off', async () => {
+      mockedAsk.mockResolvedValue(grounded)
+      await askWithEngineerMode(false)
+
+      await screen.findByText(/AI Engineer at Spark New Zealand/i)
+      expect(screen.queryByText('/api/ai/chat')).not.toBeInTheDocument()
+    })
+
+    it('shows the endpoint and timings while Engineer Mode is on', async () => {
+      mockedAsk.mockResolvedValue(grounded)
+      await askWithEngineerMode(true)
+
+      expect(await screen.findByText('/api/ai/chat')).toBeInTheDocument()
+      expect(screen.getByText(/retrieval/i)).toBeInTheDocument()
+    })
   })
 })

@@ -1,6 +1,8 @@
 import { useId, useState } from 'react'
 
 import { askPortfolio } from '../lib/api'
+import { useEngineerMode } from '../lib/engineerModeContext'
+import { Metrics } from './Metrics'
 import type { ChatAnswer } from '../types/content'
 
 type State =
@@ -20,6 +22,7 @@ export function AskPortfolio() {
   const [question, setQuestion] = useState('')
   const [state, setState] = useState<State>({ status: 'idle' })
   const inputId = useId()
+  const { enabled: engineerMode } = useEngineerMode()
 
   const submit = (event: React.FormEvent) => {
     event.preventDefault()
@@ -105,6 +108,17 @@ export function AskPortfolio() {
                 ))}
               </ul>
             </div>
+          )}
+
+          {engineerMode && (
+            <Metrics
+              endpoint="/api/ai/chat"
+              chunks={state.result.sources.length}
+              retrievalMs={state.result.retrieval_ms}
+              generationMs={state.result.generation_ms}
+              provider={state.result.provider}
+              tools={(state.result.live_sources ?? []).map((s) => s.source)}
+            />
           )}
         </div>
       )}

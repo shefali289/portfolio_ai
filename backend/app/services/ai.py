@@ -15,8 +15,9 @@ import time
 
 from app.ai.prompts import REFUSAL
 from app.ai.provider import generate_with_fallback, resolve_provider
-from app.api.schemas import ChatResponse, ChatSource
+from app.api.schemas import ChatResponse, ChatSource, LiveSource
 from app.config import Settings
+from app.integrations.github import GitHubClient, repos_matching
 from app.rag.retriever import Retriever
 from app.services.content import ContentService
 
@@ -24,9 +25,15 @@ logger = logging.getLogger(__name__)
 
 
 class AiService:
-    def __init__(self, retriever: Retriever, settings: Settings) -> None:
+    def __init__(
+        self,
+        retriever: Retriever,
+        settings: Settings,
+        github: GitHubClient | None = None,
+    ) -> None:
         self._retriever = retriever
         self._settings = settings
+        self._github = github
 
     @property
     def retriever(self) -> Retriever:
@@ -35,7 +42,11 @@ class AiService:
 
     @classmethod
     def build(
-        cls, content: ContentService, settings: Settings, embedding_provider=None
+        cls,
+        content: ContentService,
+        settings: Settings,
+        embedding_provider=None,
+        github: GitHubClient | None = None,
     ) -> AiService:
         """Build the in-memory index at startup.
 
@@ -47,7 +58,7 @@ class AiService:
             from app.rag.embeddings import get_embedding_provider  # noqa: PLC0415
 
             embedding_provider = get_embedding_provider(settings)
-        return cls(Retriever.from_content(content, embedding_provider), settings)
+        return cls(Retriever.from_content(content, embedding_provider), settings, github)
 
     def answer(self, question: str, k: int = 4) -> ChatResponse:
         started = time.perf_counter()
@@ -78,4 +89,26 @@ class AiService:
             retrieval_ms=round(retrieval_ms, 2),
             generation_ms=round(generation_ms, 2),
             provider=used,
+            live_sources=self._live_sources(question),
         )
+
+    def _live_sources(self, question: str) -> list[LiveSource]:
+        """Live repositories the question names, attached to a grounded answer.
+
+        Reached only *after* grounding has already been decided, and only on the
+        answer path — never on the refusal path. A tool supplements an answer
+        retrieval already supports; it never widens what the assistant will
+        answer, and it cannot rescue a question retrieval refused.
+
+        A GitHub failure costs the supplement, never the answer.
+        """
+        if self._github is None:
+            return []
+        result = self._github.list_repos()
+        if result.reason is not None:
+            logger.info("GitHub unavailable, answering without live sources: %s", result.reason)
+            return []
+        return [
+            LiveSource(source=repo.name, type="github-repo", url=repo.url)
+            for repo in repos_matching(question, result.repos)
+        ]

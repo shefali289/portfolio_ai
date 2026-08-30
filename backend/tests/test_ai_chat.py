@@ -4,10 +4,13 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import httpx
 import pytest
 from fastapi.testclient import TestClient
 
 from app.ai.provider import TemplateProvider, resolve_provider
+from app.config import Settings
+from app.integrations.github import GitHubClient
 from app.main import create_app
 
 
@@ -64,3 +67,98 @@ def test_unknown_provider_falls_back_to_template(monkeypatch: pytest.MonkeyPatch
     monkeypatch.setenv("AI_PROVIDER", "does-not-exist")
 
     assert isinstance(resolve_provider("does-not-exist"), TemplateProvider)
+
+
+# ---------------------------------------------------------------------------
+# Phase 5 — live GitHub sources attached to a grounded answer.
+#
+# The rule under test is rule 15: a tool never reshapes RAG. Live repos may
+# *supplement* an answer retrieval already grounded; they may never rescue one
+# it refused. The refusal test above must keep passing untouched — that is the
+# evidence the guarantee survived this phase.
+# ---------------------------------------------------------------------------
+REPOS = [
+    {
+        "name": "friday",
+        "description": "A Python assistant.",
+        "html_url": "https://github.com/test/friday",
+        "language": "Python",
+        "topics": ["ai"],
+        "pushed_at": "2026-08-01T00:00:00Z",
+        "fork": False,
+    }
+]
+
+
+def _github_client(payload: list[dict] | None = None) -> GitHubClient:
+    def handler(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(200, json=payload if payload is not None else REPOS)
+
+    return GitHubClient(
+        username="test", settings=Settings(), transport=httpx.MockTransport(handler)
+    )
+
+
+@pytest.fixture
+def live_client(content_dir: Path, monkeypatch: pytest.MonkeyPatch) -> TestClient:
+    monkeypatch.setenv("AI_PROVIDER", "template")
+    return TestClient(create_app(content_dir=content_dir, github_client=_github_client()))
+
+
+def test_a_grounded_answer_attaches_live_sources_separately(live_client: TestClient) -> None:
+    """Portfolio evidence and live repo data, attributed to their own origins."""
+    body = live_client.post(
+        "/api/ai/chat", json={"question": "What Python work has the Test Engineer done?"}
+    ).json()
+
+    assert body["grounded"] is True
+    assert body["sources"], "portfolio evidence should still be present"
+    assert body["live_sources"], "the Python repo should have been attached"
+    assert body["live_sources"][0]["type"] == "github-repo"
+    assert body["live_sources"][0]["url"] == "https://github.com/test/friday"
+    # Separately attributed: a live repo must never appear as portfolio evidence.
+    assert all(s["type"] != "github-repo" for s in body["sources"])
+
+
+def test_an_ungrounded_question_is_still_refused_with_no_live_sources(
+    live_client: TestClient,
+) -> None:
+    """A tool must not widen what the assistant is willing to answer."""
+    body = live_client.post(
+        "/api/ai/chat", json={"question": "What is the capital of France?"}
+    ).json()
+
+    assert body["grounded"] is False
+    assert body["live_sources"] == []
+
+
+def test_an_unrelated_grounded_question_attaches_nothing(live_client: TestClient) -> None:
+    """The tool fires on a metadata match, not on every grounded question."""
+    body = live_client.post(
+        "/api/ai/chat", json={"question": "Where did the Test Person study?"}
+    ).json()
+
+    assert body["grounded"] is True
+    assert body["live_sources"] == []
+
+
+def test_chat_works_when_github_is_unavailable(
+    content_dir: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A dead tool degrades the answer, never the endpoint."""
+    monkeypatch.setenv("AI_PROVIDER", "template")
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        raise httpx.ConnectError("no route to host")
+
+    broken = GitHubClient(
+        username="test", settings=Settings(), transport=httpx.MockTransport(handler)
+    )
+    client = TestClient(create_app(content_dir=content_dir, github_client=broken))
+
+    body = client.post(
+        "/api/ai/chat", json={"question": "What Python work has the Test Engineer done?"}
+    ).json()
+
+    assert body["grounded"] is True
+    assert body["live_sources"] == []

@@ -46,6 +46,15 @@ class Settings(BaseSettings):
 
     embedding_model: str = Field(default="sentence-transformers/all-MiniLM-L6-v2")
 
+    # --- GitHub / MCP (Phase 5) --------------------------------------------
+    # The public API needs no token for public repositories, which is why this
+    # phase adds no secret. Unauthenticated callers share 60 requests/hour per
+    # IP, so responses are cached rather than fetched per visitor.
+    github_api_base: str = Field(default="https://api.github.com")
+    github_repo_limit: int = Field(default=6)
+    github_cache_ttl_s: int = Field(default=900)
+    github_timeout_s: float = Field(default=5.0)
+
     @field_validator("cors_origins", mode="before")
     @classmethod
     def _split_origins(cls, value: object) -> object:

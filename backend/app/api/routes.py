@@ -14,9 +14,11 @@ from app.api.schemas import (
     ChatRequest,
     ChatResponse,
     ContentResponse,
+    GithubReposResponse,
     HealthResponse,
     JobMatchRequest,
 )
+from app.integrations.tools import PortfolioTools
 from app.services.ai import AiService
 from app.services.content import ContentService
 from app.services.content_models import Profile
@@ -38,11 +40,16 @@ def get_job_match(request: Request) -> JobMatchService:
     return request.app.state.job_match
 
 
+def get_tools(request: Request) -> PortfolioTools:
+    return request.app.state.tools
+
+
 # Annotated form rather than a `Depends()` default: ruff flags the default-arg
 # form as B008, and this is FastAPI's current idiom regardless.
 ContentDep = Annotated[ContentService, Depends(get_content)]
 AiDep = Annotated[AiService, Depends(get_ai)]
 JobMatchDep = Annotated[JobMatchService, Depends(get_job_match)]
+ToolsDep = Annotated[PortfolioTools, Depends(get_tools)]
 
 
 @router.get("/health", response_model=HealthResponse)
@@ -84,3 +91,14 @@ def job_match(request: JobMatchRequest, service: JobMatchDep) -> JobMatchReport:
     ticking over. A requirement with no evidence comes back as a gap.
     """
     return service.match(request.job_description)
+
+
+@router.get("/github/repos", response_model=GithubReposResponse)
+def github_repos(tools: ToolsDep) -> GithubReposResponse:
+    """Live public repositories.
+
+    Always 200. A supplementary section must never surface to the browser as a
+    failed request, so an unavailable GitHub returns an empty list plus the
+    reason and the UI says why.
+    """
+    return GithubReposResponse(**tools.get_github_projects())

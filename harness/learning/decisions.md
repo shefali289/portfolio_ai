@@ -86,3 +86,19 @@ One line each: the choice, and the reason. Rejected options included.
   produced false gaps, which understate real experience.
 - **Steps returned, not streamed** - SSE would be a new transport for one
   feature; a `steps[]` array renders the chain fine.
+
+## 2026-08-30 - MCP + GitHub
+
+- **One tool layer, two adapters** - six callables in `integrations/tools.py`;
+  MCP and HTTP both thin over them. Rejected: implementing each surface
+  separately, and a backend MCP client calling its own server.
+- **Live data supplements a grounded answer, never rescues an ungrounded one** -
+  rule 15 applied to refusal. A tool must not widen what the assistant answers.
+- **Deterministic tool selection over LLM tool-calling** - keeps the feature
+  working with `template` and no key, and keeps the RAG-vs-tool distinction
+  visible instead of hidden inside a model's choice.
+- **Repos ranked by recency, never curated** - a hand-picked list would be
+  portfolio content the resume does not support. Forks excluded as others' work.
+- **No new dependency** - `mcp` and `httpx` were already pinned; verified
+  installed before designing around them. MCP 2.x renamed `FastMCP` to
+  `MCPServer`.

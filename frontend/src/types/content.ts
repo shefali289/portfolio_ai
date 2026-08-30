@@ -127,6 +127,18 @@ export interface ChatSource {
   type: string
 }
 
+/**
+ * Evidence fetched live from a tool, not retrieved from the portfolio.
+ *
+ * Deliberately a separate field from `sources`: stored knowledge and live data
+ * are different claims, and a reader must be able to tell them apart.
+ */
+export interface LiveSource {
+  source: string
+  type: string
+  url: string
+}
+
 export interface ChatAnswer {
   answer: string
   /** false means the question was refused, not answered. */
@@ -135,6 +147,25 @@ export interface ChatAnswer {
   retrieval_ms: number
   generation_ms: number
   provider: string
+  /** Optional so an answer from before tools existed still typechecks. */
+  live_sources?: LiveSource[]
+}
+
+// --- live GitHub -----------------------------------------------------------
+
+export interface GithubRepo {
+  name: string
+  description: string | null
+  url: string
+  language: string | null
+  topics: string[]
+  pushed_at: string
+}
+
+export interface GithubRepos {
+  repos: GithubRepo[]
+  /** Why the list is empty, when it is. Null on success. */
+  reason: string | null
 }
 
 // --- job match -------------------------------------------------------------

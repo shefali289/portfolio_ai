@@ -6,6 +6,7 @@ import { JobMatch } from './components/JobMatch'
 import { Credentials } from './components/Credentials'
 import { EngineeringNotes } from './components/EngineeringNotes'
 import { ExperienceTimeline } from './components/ExperienceTimeline'
+import { GitHubProjects } from './components/GitHubProjects'
 import { Profile } from './components/Profile'
 import { ProjectGallery } from './components/ProjectGallery'
 import { SkillsExplorer } from './components/SkillsExplorer'
@@ -23,6 +24,7 @@ const sections = [
   { id: 'why-me', label: 'Why me', eyebrow: 'Match a role against this portfolio' },
   { id: 'experience', label: 'Experience', eyebrow: 'Career' },
   { id: 'projects', label: 'Projects', eyebrow: 'Selected work' },
+  { id: 'github', label: 'GitHub', eyebrow: 'Live from the GitHub API' },
   { id: 'skills', label: 'Skills', eyebrow: 'Technical' },
   { id: 'credentials', label: 'Credentials', eyebrow: 'Learning and recognition' },
   { id: 'contact', label: 'Contact', eyebrow: 'Get in touch' },
@@ -190,6 +192,11 @@ export default function App() {
                       )}
                       {section.id === 'projects' && (
                         <ProjectGallery projects={state.content.projects.projects} />
+                      )}
+                      {section.id === 'github' && (
+                        <GitHubProjects
+                          profileUrl={state.content.profile.links.github}
+                        />
                       )}
                       {section.id === 'skills' && (
                         <SkillsExplorer content={state.content} />

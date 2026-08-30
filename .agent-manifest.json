@@ -386,7 +386,7 @@
     {
       "slug": "05-mcp-integration",
       "phase": 5,
-      "status": "planned",
+      "status": "complete",
       "branch": "feature/05-mcp-integration"
     },
     {

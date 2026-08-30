@@ -18,10 +18,14 @@ Things that cost time. Symptom -> cause -> fix.
   recalled from memory produced a version that does not exist.
 - **No Ollama, no Docker installed.** The GitHub integration must use the
   public REST API, which needs no auth for public repos.
-- **`gh` 2.98.0 is installed** at `C:\Program Files\GitHub CLI\gh.exe`, but a
-  new shell may be needed for it to be on `PATH`. If `gh auth status` says not
-  logged in, `/complete` cannot open a PR — run `gh auth login` once. Remote
-  `origin` is `github.com/shefali289/portfolio_ai`.
+- **`gh` 2.98.0 is installed and authenticated** (account `shefali289`, scopes
+  `repo`/`workflow`) at `C:\Program Files\GitHub CLI\gh.exe`; a new shell may be
+  needed for it to be on `PATH`, so call the full path if `gh` is not found.
+  Remote `origin` is `github.com/shefali289/portfolio_ai`.
+- **Merging a stacked PR does not advance `main`.** PRs #4-#6 each targeted
+  their parent branch, so merging them moved the parents and left `main` at #3.
+  A stack needs either bottom-up merges *in order*, or a final integration
+  merge of the branch that transitively holds everything.
 - **OneDrive locks directories during `git checkout`/`stash`.** Switching
   branches with untracked dirs present can fail with "Permission denied" and
   leave work stashed. Commit before switching branches; if a pop half-fails, the

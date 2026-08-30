@@ -305,8 +305,8 @@ Body written to `pull-request.md` from `harness/templates/pull-request.md`.
 | | |
 |---|---|
 | **Title** | `feat(frontend): evidence-led visual design` |
-| **URL** | not opened — `gh` unauthenticated. Compare: https://github.com/shefali289/portfolio_ai/compare/main...improvement/visual-design |
-| **Merged** | no |
+| **URL** | https://github.com/shefali289/portfolio_ai/pull/3 |
+| **Merged** | yes - 2026-08-30 |
 
 **What it adds:** A design identity for the portfolio — a token system carrying
 dark-first and light schemes — plus an evidence explorer where selecting a skill

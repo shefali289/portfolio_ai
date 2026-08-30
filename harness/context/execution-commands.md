@@ -45,8 +45,9 @@ git push -u origin feature/<slug>
 gh pr create --title "<type>: <desc>" --body-file harness/tasks/active/<slug>/pull-request.md
 ```
 
-`gh` needs a one-off `gh auth login`. If it is not authenticated, push the
-branch and use the compare URL instead:
+`gh` is authenticated (`shefali289`). Pass `--base` explicitly when the branch
+sits on another feature branch rather than `main`. If a token is ever revoked,
+push the branch and use the compare URL instead:
 `https://github.com/shefali289/portfolio_ai/compare/main...feature/<slug>`
 
 ## Notes

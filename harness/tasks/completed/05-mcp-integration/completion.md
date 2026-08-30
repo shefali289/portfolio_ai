@@ -126,18 +126,9 @@ override of an agent decision.
 
 ## PR
 
-**Not created** — `gh` is unauthenticated. Branch is pushed. To open it:
-
-```bash
-gh auth login -h github.com
-gh pr create --base feature/04-agentic-job-match \
-  --title "feat: github integration and a portfolio MCP server" \
-  --body-file harness/tasks/completed/05-mcp-integration/pull-request.md
-```
-
-Compare URL:
-https://github.com/shefali289/portfolio_ai/compare/feature/04-agentic-job-match...feature/05-mcp-integration
-
+**[#6](https://github.com/shefali289/portfolio_ai/pull/6)** - merged 2026-08-30,
+based on `feature/04-agentic-job-match` (the fifth branch in a stack; basing it
+on `main` would have shown four phases of ancestors as this PR's own work).
 ## Suggested Commit Message
 
 ```

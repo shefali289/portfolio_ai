@@ -282,8 +282,8 @@ A real job description produces a defensible match report.
 | | |
 |---|---|
 | **Title** | `feat: agentic job match with honest gaps` |
-| **URL** | not opened — `gh` unauthenticated. Compare: https://github.com/shefali289/portfolio_ai/compare/main...feature/04-agentic-job-match |
-| **Merged** | no |
+| **URL** | https://github.com/shefali289/portfolio_ai/pull/5 |
+| **Merged** | yes - 2026-08-30 |
 
 **What it adds:** A four-agent chain — requirement, portfolio, evidence,
 response — behind `POST /api/ai/job-match`, and a Why Me? section that takes a

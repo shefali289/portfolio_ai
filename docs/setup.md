@@ -14,9 +14,9 @@ Verified before scaffolding:
 
 ## Installed since
 
-- **GitHub CLI 2.98.0** — needed by `/complete` to open PRs. Requires a one-off
-  `gh auth login`. Without auth the harness writes the PR body and gives you the
-  compare URL instead.
+- **GitHub CLI 2.98.0** — needed by `/complete` to open PRs. Already
+  authenticated as `shefali289`. If a token is ever revoked, the harness writes
+  the PR body and gives you the compare URL instead of failing.
 
 ## Not installed
 
@@ -24,7 +24,7 @@ Verified before scaffolding:
 |---|---|---|
 | **Ollama** | local LLM (Phase 3+) | Optional - see AI provider below |
 | Docker | nothing | Not required by this project |
-| gh CLI | opening PRs at `/complete` | **Installed** (2.98.0) — run `gh auth login` once |
+| gh CLI | opening PRs at `/complete` | **Installed** (2.98.0) and authenticated |
 | pnpm | nothing | npm is fine |
 
 ## AI provider - chosen by env var, no lock-in

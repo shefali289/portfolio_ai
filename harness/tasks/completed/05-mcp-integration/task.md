@@ -297,8 +297,8 @@ Repos render live; MCP tools callable and listed.
 | | |
 |---|---|
 | **Title** | `feat: github integration and a portfolio MCP server` |
-| **URL** | not opened - awaiting approval (`gh` is authenticated). Compare: https://github.com/shefali289/portfolio_ai/compare/feature/04-agentic-job-match...feature/05-mcp-integration |
-| **Merged** | no |
+| **URL** | https://github.com/shefali289/portfolio_ai/pull/6 |
+| **Merged** | yes - 2026-08-30 |
 
 **What it adds:** A public GitHub client, six portfolio tools exposed over both
 MCP and HTTP, a From My GitHub section, and live repository data attached to

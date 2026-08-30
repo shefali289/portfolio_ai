@@ -18,24 +18,24 @@ Vercel. Deployment constraints already known: the Vercel Python bundle limit is
 500 MB, so `requirements.txt` must stay free of ML dependencies and production
 must use Gemini embeddings.
 
-## Blocking everything downstream
+## Branches — all merged
 
-**Five branches are pushed but unmerged**, each stacked on the last:
+All six PRs are merged. `main` carries every phase.
 
-```
-main ── improvement/visual-design ── feature/03-rag-assistant
-     ── feature/04-agentic-job-match ── feature/05-mcp-integration
-```
+| PR | Branch | Merged into |
+|---|---|---|
+| #1 | `feature/01-foundation` | `main` |
+| #2 | `feature/02-portfolio-ui` | `main` |
+| #3 | `improvement/visual-design` | `main` |
+| #4 | `feature/03-rag-assistant` | `improvement/visual-design` |
+| #5 | `feature/04-agentic-job-match` | `feature/03-rag-assistant` |
+| #6 | `feature/05-mcp-integration` | `feature/04-agentic-job-match` |
 
-No PR has opened since Phase 2 because GitHub CLI is unauthenticated:
+**#4-#6 targeted their parent branch, not `main`**, which is how a stack works
+and why merging them did not advance `main` on its own. `chore/sync-task-records`
+carried the collapsed stack into `main` in one integration merge.
 
-```text
-gh auth login -h github.com
-```
-
-PR bodies are ready in each task's `pull-request.md`. **Each PR must target its
-parent branch, not `main`** — otherwise every PR shows its ancestors' commits.
-Merge bottom-up. Phase 6 ends in a deploy, so this stack has to clear first.
+**Branch Phase 6 off `main`.** The stack is finished; there is nothing to stack on.
 
 ## Owed — decisions the user still holds
 

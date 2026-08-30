@@ -314,8 +314,8 @@ Re-ingest succeeds after a content change; answers cite real sources.
 | | |
 |---|---|
 | **Title** | `feat: resume-as-is portfolio with a grounded assistant` |
-| **URL** | not opened — `gh` unauthenticated. Compare: https://github.com/shefali289/portfolio_ai/compare/main...feature/03-rag-assistant |
-| **Merged** | no |
+| **URL** | https://github.com/shefali289/portfolio_ai/pull/4 |
+| **Merged** | yes - 2026-08-30 |
 
 **What it adds:** The portfolio shows the resume as it is — the provenance layer
 is gone and the inferred skill-evidence links are deleted from the content, not

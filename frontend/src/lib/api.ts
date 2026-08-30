@@ -8,6 +8,7 @@
 
 import type {
   ChatAnswer,
+  GithubRepos,
   JobMatchReport,
   PortfolioContent,
   Profile,
@@ -69,4 +70,9 @@ export function matchJob(jobDescription: string): Promise<JobMatchReport> {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ job_description: jobDescription }),
   })
+}
+
+/** Live public repositories. Returns 200 with a `reason` when GitHub is down. */
+export function getGithubRepos(): Promise<GithubRepos> {
+  return request<GithubRepos>('/api/github/repos')
 }

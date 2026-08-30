@@ -68,6 +68,32 @@ describe('AskPortfolio', () => {
     expect(await screen.findByRole('alert')).toBeInTheDocument()
   })
 
+  it('attributes live GitHub results separately from portfolio sources', async () => {
+    mockedAsk.mockResolvedValue({
+      ...grounded,
+      live_sources: [
+        { source: 'friday', type: 'github-repo', url: 'https://github.com/test/friday' },
+      ],
+    })
+    await ask()
+
+    // The distinction is the point of the phase: a reader must be able to tell
+    // stored portfolio evidence from live repository data.
+    expect(await screen.findByText(/from github \(live\)/i)).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /friday/i })).toHaveAttribute(
+      'href',
+      'https://github.com/test/friday',
+    )
+  })
+
+  it('shows no live section when nothing was attached', async () => {
+    mockedAsk.mockResolvedValue(grounded)
+    await ask()
+
+    await screen.findByText(/AI Engineer at Spark New Zealand/i)
+    expect(screen.queryByText(/from github \(live\)/i)).not.toBeInTheDocument()
+  })
+
   it('does not submit an empty question', async () => {
     const user = userEvent.setup()
     render(<AskPortfolio />)

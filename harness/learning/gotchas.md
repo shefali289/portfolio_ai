@@ -45,6 +45,25 @@ Things that cost time. Symptom -> cause -> fix.
   375px bitmap may crop a ~492px CSS viewport; use DevTools device metrics and
   verify `innerWidth`, `clientWidth`, and `scrollWidth` before judging layout.
 
+- **Chrome headless clamps the window to ~500px wide.** `--window-size=375`
+  renders at 500 and crops the screenshot, which reads exactly like horizontal
+  overflow. Measure narrow layouts inside a 375px same-origin iframe and read
+  `scrollWidth`.
+- **Uvicorn `--reload` watches `.venv`** and reloads on dependency noise while
+  missing app edits. An orphaned child can keep the port after its parent dies,
+  so `Get-NetTCPConnection` reports a PID that no longer exists — find it with
+  `Get-CimInstance Win32_Process` and kill the child.
+- **Python's `hash()` for strings is randomised per process.** Any hashing
+  vectoriser must use `zlib.crc32`, or a persisted index becomes unreadable by
+  the next run and test fixtures stop being reproducible.
+- **A `len(token) < 3` filter silently drops "AI"** — the most load-bearing term
+  in this corpus. Check that a stopword or length filter is not eating a
+  domain's core vocabulary.
+
+- **A green suite is not a working feature.** Both Phase 4 defects — a false gap
+  on FastAPI, and "Engineer" extracted as a requirement — passed every test
+  written from the plan. Run against real content before trusting it.
+
 ## Deployment
 
 - **Vercel Python bundle limit is 500 MB.** `torch` + `sentence-transformers` is
@@ -70,4 +89,16 @@ Things that cost time. Symptom -> cause -> fix.
 
 ## AI behaviour
 
-_(none yet - expect entries once RAG is running)_
+- **A second consumer of retrieval does not inherit the first one's
+  guarantees.** Refusal lives in `AiService`, so the MCP `search_resume` tool
+  returns sub-threshold passages for a question chat refuses outright. Any new
+  reader of `Retriever` starts ungrounded.
+- **A tool on the answer path spends its timeout on every cache miss.** An
+  inline GitHub call added 5.0s to a grounded answer when the host hung, versus
+  537ms cold and 0.5ms warm. Latency is a property of *where* the call sits.
+- **Conversational filler sinks a lexical query below the grounding
+  threshold.** "What Python projects has she built?" scores 0.228 against 0.25
+  while "Python projects" scores 0.322 - the right chunk ranks first either way.
+  Expect this until `GEMINI_API_KEY` makes retrieval semantic.
+- **Verify a degraded path by degrading it.** Pointing `GITHUB_API_BASE` at a
+  dead port proved the real UI copy; its unit test could not.

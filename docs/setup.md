@@ -37,7 +37,12 @@ production. See [deployment.md](deployment.md) for why.
 |---|---|---|---|---|
 | Production (default) | `gemini` | `gemini` | yes, free | yes |
 | Fully offline dev | `ollama` | `local` | no | no |
-| Zero setup / fallback | `template` | either | no | yes |
+| Zero setup / fallback | `template` | `hashing` | no | yes |
+
+**With no key at all the app still runs.** Generation falls back to `template`
+and embedding to `hashing`, a lexical vectoriser with no dependencies. Retrieval
+and refusal both work; answers are simply less good at matching a paraphrase.
+Set `GEMINI_API_KEY` to get semantic retrieval.
 
 - **Gemini** - free tier key from https://aistudio.google.com/apikey. Works
   locally and deployed. `gemini-embedding-001` covers embeddings on the same key.

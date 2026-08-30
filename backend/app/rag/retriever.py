@@ -41,6 +41,11 @@ class Retriever:
         )
         return cls(index, chunks, provider)
 
+    @property
+    def chunks(self) -> list[Chunk]:
+        """The indexed corpus, for exact-term lookups alongside vector search."""
+        return self._chunks
+
     def retrieve(self, question: str, k: int = 4) -> list[Hit]:
         vector = self._provider.embed([question])[0]
         return [

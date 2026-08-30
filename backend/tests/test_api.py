@@ -4,9 +4,12 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import httpx
 import pytest
 from fastapi.testclient import TestClient
 
+from app.config import Settings
+from app.integrations.github import GitHubClient
 from app.main import create_app
 
 
@@ -83,3 +86,51 @@ def test_cors_headers_allow_the_configured_origin(client: TestClient) -> None:
     response = client.get("/api/health", headers={"Origin": "http://localhost:5173"})
 
     assert response.headers["access-control-allow-origin"] == "http://localhost:5173"
+
+
+# --- Phase 5: GET /api/github/repos ----------------------------------------
+def _github(payload: list[dict] | None = None, *, status: int = 200) -> GitHubClient:
+    def handler(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(status, json=payload if payload is not None else [])
+
+    return GitHubClient(
+        username="test", settings=Settings(), transport=httpx.MockTransport(handler)
+    )
+
+
+def test_github_repos_returns_live_repositories(content_dir: Path) -> None:
+    app = create_app(
+        content_dir=content_dir,
+        github_client=_github(
+            [
+                {
+                    "name": "friday",
+                    "description": "An assistant.",
+                    "html_url": "https://github.com/test/friday",
+                    "language": "Python",
+                    "topics": ["ai"],
+                    "pushed_at": "2026-08-01T00:00:00Z",
+                    "fork": False,
+                }
+            ]
+        ),
+    )
+
+    response = TestClient(app).get("/api/github/repos")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert [r["name"] for r in body["repos"]] == ["friday"]
+    assert body["reason"] is None
+
+
+def test_github_repos_returns_200_with_a_reason_when_unavailable(content_dir: Path) -> None:
+    """A supplementary section must never surface as a failed request."""
+    app = create_app(content_dir=content_dir, github_client=_github(status=500))
+
+    response = TestClient(app).get("/api/github/repos")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["repos"] == []
+    assert body["reason"]

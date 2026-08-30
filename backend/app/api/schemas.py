@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from pydantic import BaseModel, Field, field_validator
 
+from app.agents.base import JobMatchReport
 from app.services.content_models import (
     EngineeringNotes,
     Experience,
@@ -55,6 +56,19 @@ class ChatSource(BaseModel):
     type: str
 
 
+class LiveSource(BaseModel):
+    """Evidence fetched from an external tool, not retrieved from the portfolio.
+
+    Kept in its own field rather than mixed into `sources` so a reader can
+    always tell stored knowledge from live data — the distinction Phase 5
+    exists to demonstrate.
+    """
+
+    source: str
+    type: str
+    url: str
+
+
 class ChatResponse(BaseModel):
     """`grounded=False` means the question was refused, not answered."""
 
@@ -64,3 +78,35 @@ class ChatResponse(BaseModel):
     retrieval_ms: float
     generation_ms: float
     provider: str
+    live_sources: list[LiveSource] = []
+
+
+class GithubRepoResponse(BaseModel):
+    name: str
+    description: str | None
+    url: str
+    language: str | None
+    topics: list[str]
+    pushed_at: str
+
+
+class GithubReposResponse(BaseModel):
+    """`reason` says why the list is empty, so the UI degrades honestly."""
+
+    repos: list[GithubRepoResponse]
+    reason: str | None = None
+
+
+class JobMatchRequest(BaseModel):
+    job_description: str = Field(min_length=1, max_length=20000)
+
+    @field_validator("job_description")
+    @classmethod
+    def _not_blank(cls, value: str) -> str:
+        cleaned = value.strip()
+        if not cleaned:
+            raise ValueError("job_description must not be blank")
+        return cleaned
+
+
+JobMatchResponse = JobMatchReport

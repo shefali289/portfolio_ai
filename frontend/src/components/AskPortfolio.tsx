@@ -82,6 +82,30 @@ export function AskPortfolio() {
       {state.status === 'answered' && (
         <div className="mt-5" aria-live="polite">
           <p className="body-text whitespace-pre-line">{state.result.answer}</p>
+
+          {/*
+            Live tool results, kept visually and semantically apart from the
+            portfolio answer above. The portfolio is stored knowledge; these
+            repositories were fetched just now. Collapsing the two would hide
+            exactly the distinction this section is meant to show.
+          */}
+          {(state.result.live_sources ?? []).length > 0 && (
+            <div
+              className="mt-6 pt-5"
+              style={{ borderTop: '1px solid var(--border-subtle)' }}
+            >
+              <p className="eyebrow">From GitHub (live)</p>
+              <ul className="mt-3 flex list-none flex-wrap gap-3 p-0">
+                {(state.result.live_sources ?? []).map((source) => (
+                  <li key={source.url}>
+                    <a className="text-link" href={source.url}>
+                      {source.source}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       )}
     </div>

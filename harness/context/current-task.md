@@ -4,50 +4,48 @@ Pointer to what is in flight. Maintained by `/plan` and `/complete`.
 
 ---
 
-| | |
-|---|---|
-| **Active task** | RAG Assistant — Ask My Portfolio |
-| **Slug** | `03-rag-assistant` |
-| **Branch** | `feature/03-rag-assistant` (stacked on unmerged `improvement/visual-design`) |
-| **Phase** | 3 of 6 |
-| **Stage** | built — G0-G3 passed, awaiting `/review` |
-| **Task file** | `harness/tasks/active/03-rag-assistant/task.md` |
-| **Started** | 2026-08-30 |
+No task is in flight. `05-mcp-integration` completed 2026-08-30 and is archived
+in `harness/tasks/completed/05-mcp-integration/`.
 
-## Next command
+## Next lifecycle command
 
 ```
-/review
+/plan 06-final-polish
 ```
 
-All 10 steps done. Backend 27/27, frontend 24/24, lint + tsc clean. Verified
-live: a grounded question answers with timings, an out-of-scope one is refused.
-Commits staged and unapproved.
+**The last phase.** Engineer Mode, accessibility, mobile, README, and deploy to
+Vercel. Deployment constraints already known: the Vercel Python bundle limit is
+500 MB, so `requirements.txt` must stay free of ML dependencies and production
+must use Gemini embeddings.
 
-## Handoffs written
+## Blocking everything downstream
 
-- `handoffs/1-design.md` — Design → Planning
-- `handoffs/2-plan.md` — Planning → Test
-- `handoffs/3-test.md` — Test → Developer (RED evidence)
-- `handoffs/4-develop.md` — Developer → Review
+**Five branches are pushed but unmerged**, each stacked on the last:
 
-## Gates passed
+```
+main ── improvement/visual-design ── feature/03-rag-assistant
+     ── feature/04-agentic-job-match ── feature/05-mcp-integration
+```
 
-- **G0** branch — PASS, 2026-08-30
-- **G1** design — PASS, 2026-08-30
-- **G2** test RED — PASS, 2026-08-30
-- **G3** build GREEN — PASS, 2026-08-30
+No PR has opened since Phase 2 because GitHub CLI is unauthenticated:
 
-## Open questions
+```text
+gh auth login -h github.com
+```
 
-**None.** Source chips are hidden and the decision is **deferred to Phase 6**,
-where Engineer Mode surfaces retrieval internals anyway. The API still returns
-`sources`; only `AskPortfolio.tsx` omits them, so it is a few lines to reverse.
+PR bodies are ready in each task's `pull-request.md`. **Each PR must target its
+parent branch, not `main`** — otherwise every PR shows its ancestors' commits.
+Merge bottom-up. Phase 6 ends in a deploy, so this stack has to clear first.
 
-## Carried over
+## Owed — decisions the user still holds
 
-- `improvement/visual-design` is committed but **its PR is not open** — `gh` is
-  unauthenticated. Body ready at `harness/tasks/completed/visual-design/pull-request.md`.
-- A real 375px browser check is still owed. Chrome headless clamps its window to
-  a 500px minimum on this machine, so `--window-size=375` silently renders at
-  500 and crops — do not read that crop as horizontal overflow.
+- **The MCP `search_resume` tool does not apply the grounding threshold**
+  (Phase 5, review finding 1). Chat refuses a question the tool answers with
+  four sub-threshold passages. Decide whether the tool should enforce the
+  threshold, return a `grounded` flag, or stay as-is.
+- **A bare skills-list mention counts as a strong job match** (Phase 4 finding).
+  Decide whether a listing should rank below a demonstrated role.
+- **`GROUNDING_THRESHOLD` and `STRONG_MATCH` are tuned against lexical
+  vectors** and unvalidated against semantic ones. The user chose to leave them
+  until `GEMINI_API_KEY` is set — a genuine Phase 6 task, since moving either
+  number changes behaviour for every question.

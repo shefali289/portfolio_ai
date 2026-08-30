@@ -16,29 +16,15 @@ recorded but not promoted will be made again. **Cap: 80 lines.**
 
 ---
 
-### 2026-08-29 - Harness setup
+### 2026-08-29 - Harness setup and structure  *(condensed; rules live elsewhere)*
 
-- **Agent proposed:** a five-agent lifecycle where each agent inspects the
-  repository for the context it needs.
-- **User chose:** `/plan` as a single entry point, explicit handoffs between
-  agents, and a learning store so context is not re-sent per task.
-- **Why:** re-deriving context every stage burns tokens and scales badly - cost
-  would grow with repo size, agent count and feature count together.
-- **Rule now:** read budgets per agent (`HANDOFF-PROTOCOL.md`), handoffs capped
-  at 60 lines, `learning/` read before exploring. Promoted to
-  `HARNESS-RULES.md` rules 5-9.
-
-### 2026-08-29 - Harness structure
-
-- **Agent proposed:** terse file names (`manifest.md`, `rules.md`, `memory/`).
-- **User chose:** self-describing names - `AGENT-MANIFEST.md`,
-  `HARNESS-RULES.md`, `learning/` - plus quality gates, branch gate, PR on
-  completion, and a harness health check.
-- **Why:** the repo is an interview artefact. A stranger should understand the
-  structure from the file names alone, and process discipline should be visible
-  rather than implied.
-- **Rule now:** top-level harness docs use uppercase self-describing names; every
-  feature passes G0-G5 and ends in a PR. See `QUALITY-GATES.md`.
+- **Agent proposed:** agents that inspect the repo per stage; terse file names.
+- **User chose:** `/plan` as one entry point with explicit handoffs and a
+  learning store; self-describing uppercase names; gates G0-G5 ending in a PR.
+- **Why:** re-deriving context every stage scales badly, and the repo is an
+  interview artefact where process discipline should be visible.
+- **Rule now:** `HARNESS-RULES.md` rules 5-9, `HANDOFF-PROTOCOL.md` budgets,
+  60-line handoffs, `QUALITY-GATES.md`.
 
 ### 2026-08-29 - Commit and push approval
 
@@ -73,3 +59,16 @@ recorded but not promoted will be made again. **Cap: 80 lines.**
 - **Rule now:** a phase that ships UI must state its **art direction**, not only
   its structure. "Renders correctly" is not "designed", and no phase plan should
   leave visual design unowned.
+
+### 2026-08-30 - Show the resume, assume nothing
+
+- **Agent proposed:** an "Evidence" design presenting information about the
+  content beside the content - derived counts, a skills coverage ratio,
+  per-skill evidence expansion and `content/*.json` source labels.
+- **User chose:** show the resume as it is; assume nothing beyond it.
+- **Why:** the layer described the tool to the reader instead of showing them
+  the resume, and several evidence links were the agent's inference rather than
+  resume facts.
+- **Rule now:** the UI renders resume content only - no derived statistic,
+  coverage ratio, source label or inferred link presented as portfolio content.
+  **Inferred data is deleted, not hidden.** Promoted to `conventions.md`.

@@ -63,3 +63,42 @@ One line each: the choice, and the reason. Rejected options included.
   control; two similar toggles is worse than one.
 - **Webfonts via a `<link>`, motion via CSS + IntersectionObserver** - keeps the
   no-new-dependency rule intact; rejected a UI kit and an animation library.
+
+## 2026-08-30 - RAG assistant
+
+- **Show the resume, assume nothing** - the provenance layer was removed and the
+  inferred skill-evidence links deleted from `skills.json`, not merely hidden.
+- **Refusal decided by retrieval, before generation** - a similarity threshold
+  is a guarantee where an instruction to the model is only a request.
+- **A lexical `hashing` embedding provider added as the zero-config fallback** -
+  a missing key must cost quality, never the ability to boot. Rejected: failing
+  startup, and a null service that refuses everything.
+- **Index stamps provider + dimension and refuses a mismatch** - incompatible
+  vectors return confident nonsense, which is worse than an error.
+
+## 2026-08-30 - Agentic job match
+
+- **Four composed functions, no agent framework** - the decomposition is the
+  demonstration; a library would hide the thing worth showing.
+- **Gap decided by retrieval score, never by the model** - the per-requirement
+  form of Phase 3's refusal guarantee.
+- **Exact-term evidence alongside vector search** - single-token requirements
+  produced false gaps, which understate real experience.
+- **Steps returned, not streamed** - SSE would be a new transport for one
+  feature; a `steps[]` array renders the chain fine.
+
+## 2026-08-30 - MCP + GitHub
+
+- **One tool layer, two adapters** - six callables in `integrations/tools.py`;
+  MCP and HTTP both thin over them. Rejected: implementing each surface
+  separately, and a backend MCP client calling its own server.
+- **Live data supplements a grounded answer, never rescues an ungrounded one** -
+  rule 15 applied to refusal. A tool must not widen what the assistant answers.
+- **Deterministic tool selection over LLM tool-calling** - keeps the feature
+  working with `template` and no key, and keeps the RAG-vs-tool distinction
+  visible instead of hidden inside a model's choice.
+- **Repos ranked by recency, never curated** - a hand-picked list would be
+  portfolio content the resume does not support. Forks excluded as others' work.
+- **No new dependency** - `mcp` and `httpx` were already pinned; verified
+  installed before designing around them. MCP 2.x renamed `FastMCP` to
+  `MCPServer`.

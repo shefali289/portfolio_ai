@@ -35,6 +35,75 @@
                   GitHub API  ·  MCP Server
 ```
 
+## Diagram
+
+Rendered by GitHub. Mermaid rather than an exported image so it diffs in git and
+needs no tool to edit.
+
+```mermaid
+flowchart TD
+    subgraph FE["React + TypeScript (Vite)"]
+        UI["Portfolio UI"]
+        ASK["Ask My Portfolio"]
+        WHY["Why Me?"]
+        GH["From My GitHub"]
+        EM["Engineer Mode<br/><i>displays, never measures</i>"]
+    end
+
+    subgraph API["FastAPI - thin routers"]
+        CONTENT["/api/content"]
+        CHAT["/api/ai/chat"]
+        MATCH["/api/ai/job-match"]
+        REPOS["/api/github/repos"]
+    end
+
+    subgraph SVC["Services"]
+        CS["ContentService<br/><i>the only reader of content/</i>"]
+        AI["AiService<br/><b>refusal lives here</b>"]
+        JM["JobMatchService"]
+    end
+
+    subgraph RAG["Retrieval - stored knowledge"]
+        CHUNK["chunk"]
+        EMB["EmbeddingProvider<br/>gemini | local | hashing"]
+        IDX["FAISS index<br/><i>built in memory at boot</i>"]
+        RET["Retriever<br/>GROUNDING_THRESHOLD"]
+    end
+
+    subgraph TOOLS["Integrations - live capability"]
+        PT["PortfolioTools<br/><i>six callables</i>"]
+        GHC["GitHubClient<br/><i>TTL cache, never raises</i>"]
+        MCP["MCP server<br/><i>stdio</i>"]
+    end
+
+    JSON[("content/*.json<br/>source of truth")]
+
+    UI --> CONTENT --> CS --> JSON
+    ASK --> CHAT --> AI
+    WHY --> MATCH --> JM
+    GH --> REPOS --> PT
+    EM -.reads fields already in<br/>chat and job-match responses.-> ASK
+
+    CS --> CHUNK --> EMB --> IDX --> RET
+    AI --> RET
+    JM --> RET
+    AI -.supplements a grounded answer<br/>never rescues an ungrounded one.-> GHC
+    PT --> CS
+    PT --> GHC
+    PT --> RET
+    MCP --> PT
+
+    classDef guarantee fill:#0d3b2e,stroke:#0a9a77,color:#e8f5f0
+    class AI,RET guarantee
+```
+
+**What the diagram is saying.** `content/*.json` feeds both the UI and the AI,
+through one reader. Retrieval answers from stored knowledge; integrations reach
+live capability; the two never merge (rule 15). Refusal is decided in
+`AiService` against a retrieval threshold *before* any model runs — which is
+also why the MCP `search_resume` tool, reading the retriever directly, does not
+inherit that guarantee.
+
 ## Content is the single source of truth
 
 ```

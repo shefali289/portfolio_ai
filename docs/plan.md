@@ -86,6 +86,39 @@ Both halves of the MCP story, kept small:
 
 ---
 
+## Definition of Done
+
+Transcribed, not invented: the six per-phase "Done when" lines above, plus the
+checks `harness/scripts/final_checklist.py` already enforces. Nothing here is a
+new bar.
+
+| # | From | Done when |
+|---|---|---|
+| 1 | Phase 1 | The browser renders the real name and title fetched from the API. |
+| 2 | Phase 2 | A polished, complete portfolio stands on its own without AI. |
+| 3 | Phase 3 | An out-of-scope question is refused, not answered. |
+| 4 | Phase 4 | A requirement the portfolio cannot evidence is reported as a gap. |
+| 5 | Phase 5 | One question returns both portfolio evidence and live repo data, separately attributed. |
+| 6 | Phase 6 | Engineer Mode shows real metrics, and a missing metric omits its row. |
+
+Plus, for every phase:
+
+- [ ] Backend and frontend suites, lint and typecheck all green
+- [ ] Content traces to the resume; no invented experience
+- [ ] AI answers cite sources; out-of-scope questions are refused
+- [ ] Works at 375px and at desktop width
+- [ ] Loading, error and empty states are reachable
+- [ ] Keyboard navigable; images have alt text
+- [ ] Gate log G0-G5 recorded honestly; `SKIPPED` where a check did not run
+- [ ] Lessons learned and user overrides promoted into `harness/learning/`
+
+**Deployment is deliberately not on this list.** It needs a Vercel account and
+a `GEMINI_API_KEY` that only the repository owner holds, so it cannot be
+satisfied by the harness. Config is written and verified; running it is a
+manual step recorded as `SKIPPED` with its reason.
+
+---
+
 ## Sequencing notes
 
 - Phase 2 delivers a portfolio that is already presentable. If the day runs
